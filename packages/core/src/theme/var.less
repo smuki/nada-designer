@@ -1,0 +1,186 @@
+// Light theme
+@nada-primary-color: #3e8bf2;
+@nada-designer-color: #fafafc;
+@nada-designer-dot-color: #373739;
+@nada-edit-range-color: #fff;
+@nada-view-color: #fff;
+@nada-edit-color: #ccc;
+@nada-action-bar-color: #fff;
+@nada-header-color: white;
+@nada-action-hover-color: #f8f8f8;
+@nada-widget-hover-color: #f8f8f8;
+@nada-event-item-color: #f8f8f8;
+@nada-shadow-color: #0000003d;
+@nada-text-main: #000000de;
+@nada-text-medium: #000000ab;
+@nada-text-secondary: #00000099;
+
+@nada-text-helper: #00000066;
+@nada-text-disabled: #00000042;
+@nada-border-color: #d9d9d9;
+@nada-compoent-tabs-color: #f8f8f8;
+@nada-text-sm: 12px;
+@nada-text-md: 14px;
+@nada-text-lg: 16px;
+
+// Dark theme
+@nada-dark-primary-color: #3e8bf2;
+@nada-dark-designer-color: #18181c;
+@nada-dark-designer-dot-color: #86909c;
+@nada-dark-edit-range-color: #232324;
+@nada-dark-view-color: #252526;
+@nada-dark-edit-color: #ccc;
+@nada-dark-action-bar-color: #252526;
+@nada-dark-header-color: #252526;
+@nada-dark-action-hover-color: #000;
+@nada-dark-widget-hover-color: #111;
+@nada-dark-event-item-color: #111;
+@nada-dark-shadow-color: #000000;
+@nada-dark-text-main: #ffffffde;
+@nada-dark-text-medium: #ffffffab;
+@nada-dark-text-secondary: #ffffff99;
+@nada-dark-text-helper: #ffffff66;
+@nada-dark-text-disabled: #666;
+@nada-dark-border-color: #ffffff20;
+@nada-dark-compoent-tabs-color: #2c2c2c;
+
+:root {
+  // 主色
+  --nada-primary-color: @nada-primary-color;
+  // hover颜色
+  --nada-primary-hover-color: rgba(@nada-primary-color, 8%);
+
+  // 设计器背景色
+  --nada-designer-color: @nada-designer-color;
+  // 设计器点颜色
+  --nada-designer-dot-color: @nada-designer-dot-color;
+  // 画布背景
+  --nada-edit-range-color: @nada-edit-range-color;
+
+  // 属性视图背景色
+  --nada-view-color: @nada-view-color;
+
+  // 拖拽区域背景色
+  --nada-edit-color: @nada-edit-color;
+
+  // 活动视图切换器背景色
+  --nada-action-bar-color: @nada-action-bar-color;
+
+  // 顶部颜色
+  --nada-header-color: @nada-header-color;
+
+  // 动作栏 hover
+  --nada-action-hover-color: @nada-action-hover-color;
+
+  // 窗口部件 hover
+  --nada-widget-hover-color: @nada-widget-hover-color;
+
+  // 窗口部件遮罩颜色
+  --nada-widget-shade-color: rgba(@nada-primary-color, 6%);
+
+  // 事件项背景色
+  --nada-event-item-color: @nada-event-item-color;
+
+  // 阴影颜色
+  --nada-shadow-color: @nada-shadow-color;
+
+  // 主要文本颜色
+  --nada-text-main: @nada-text-main;
+
+  /* 次级级文本颜色 */
+  --nada-text-medium: @nada-text-medium;
+
+  // 二级文本颜色
+  --nada-text-secondary: @nada-text-secondary;
+
+  // 辅助文本颜色（更浅）
+  --nada-text-helper: @nada-text-helper;
+  
+  // 禁用文本颜色
+  --nada-text-disabled: @nada-text-disabled;
+
+  // 边框颜色
+  --nada-border-color: @nada-border-color;
+
+  // 组件tabs颜色
+  --nada-compoent-tabs-color: @nada-compoent-tabs-color;
+
+  // 组件hover颜色
+  --nada-compoent-hover-color: rgba(@nada-primary-color, 6%);
+
+  // 字体大小
+  --nada-text-sm: @nada-text-sm;
+  --nada-text-md: @nada-text-md;
+  --nada-text-lg: @nada-text-lg;
+
+  --nada-divider-color: #e2e8f0;
+}
+
+// 黑暗主题 start
+.dark {
+  // 主色
+  --nada-primary-color: @nada-dark-primary-color;
+
+  --nada-primary-hover-color: rgba(@nada-dark-primary-color, 8%);
+
+  // 设计器背景色
+  --nada-designer-color: @nada-dark-designer-color;
+
+  --nada-designer-dot-color: @nada-dark-designer-dot-color;
+  // 画布背景
+  --nada-edit-range-color: @nada-dark-edit-range-color;
+
+  // 属性视图背景色
+  --nada-view-color: @nada-dark-view-color;
+
+  // 拖拽区域背景色
+  --nada-edit-color: @nada-dark-edit-color;
+
+  // 活动视图切换器背景色
+  --nada-action-bar-color: @nada-dark-action-bar-color;
+
+  // 顶部颜色
+  --nada-header-color: @nada-dark-header-color;
+
+  // 动作栏 hover
+  --nada-action-hover-color: @nada-dark-action-hover-color;
+
+  // 窗口部件 hover
+  --nada-widget-hover-color: @nada-dark-widget-hover-color;
+
+  // 窗口部件遮罩颜色
+  --nada-widget-shade-color: rgba(@nada-dark-primary-color, 6%);
+
+  // 事件项背景色
+  --nada-event-item-color: @nada-dark-event-item-color;
+
+  // 阴影颜色
+  --nada-shadow-color: @nada-dark-shadow-color;
+
+  // 主要文本颜色
+  --nada-text-main: @nada-dark-text-main;
+
+  /* 次级级文本颜色 */
+  --nada-text-medium: @nada-dark-text-medium;
+
+  // 二级文本颜色（介于正文和标题之间）
+  --nada-text-secondary: @nada-dark-text-secondary;
+
+  // 辅助文本颜色（更浅）
+  --nada-text-helper: @nada-dark-text-helper;
+  
+  // 禁用文本颜色
+  --nada-text-disabled: @nada-dark-text-disabled;
+
+  // 边框颜色
+  --nada-border-color: @nada-dark-border-color;
+
+  // 组件tabs颜色
+  --nada-compoent-tabs-color: @nada-dark-compoent-tabs-color;
+
+  // 组件hover颜色
+  --nada-compoent-hover-color: rgba(@nada-dark-primary-color, 6%);
+
+  --nada-divider-color: #3e434c;
+}
+// 黑暗主题 end

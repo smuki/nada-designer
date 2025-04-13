@@ -1,0 +1,120 @@
+.nada-tree {
+  .nada-tree-main {
+    padding-right: 10px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  a {
+    color: var(--nada-text-main);
+    display: flex;
+
+    &:hover {
+      color: var(--nada-text-main);
+    }
+
+    .text {
+      display: inline-block;
+      width: 100%;
+
+      &.hover {
+        background-color: var(--nada-widget-hover-color);
+      }
+
+      &.checked {
+        background: var(--nada-primary-hover-color);
+        color: var(--nada-primary-color);
+      }
+
+      .nada-text-padding {
+        padding: 0 6px;
+        white-space: nowrap;
+        color: var(--nada-text-main);
+
+        &.hidden {
+          color: var(--nada-text-helper);
+        }
+        &:hover .nada-copy-id-btn{
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .nada-node-type-text {
+    font-size: var(--nada-text-sm);
+    color: var(--nada-text-disabled);
+    margin-left: 6px;
+  }
+
+  .nada-tree-node {
+    &.level-1 {
+      padding-left: 10px;
+    }
+
+    padding-left: 16px;
+    min-height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+
+    .icon-expanded {
+      position: absolute;
+      left: 8px;
+      transition: transform 0.3s;
+      color: var(--nada-border-color);
+      font-size: var(--nada-text-sm);
+
+      &.expanded {
+        transform: rotate(90deg);
+      }
+    }
+  }
+
+  .nada-tree-sublist {
+    height: 0;
+    overflow: hidden;
+
+    &.expanded {
+      height: auto;
+    }
+
+    .nada-tree-node {
+      position: relative;
+
+      &::after,
+      &::before {
+        content: "";
+        position: absolute;
+        background: var(--nada-border-color);
+        z-index: 99;
+      }
+
+      &::after {
+        width: 1px;
+        height: 100%;
+        left: 4px;
+        top: 0;
+      }
+
+      &::before {
+        width: 8px;
+        height: 1px;
+        left: 4px;
+        top: 13px;
+      }
+
+      &.expanded::before {
+        display: none;
+      }
+
+      &:last-child {
+        &::after {
+          height: 13px;
+        }
+      }
+    }
+  }
+}

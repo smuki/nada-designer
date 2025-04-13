@@ -1,0 +1,36 @@
+// 属性编辑
+.nada-attribute-view,
+.nada-style-view {
+  padding: 16px;
+  .nada-attr-item {
+    display: flex;
+    // align-items  : center;
+    margin-bottom: 12px;
+
+    &.vertical {
+      display: block;
+    }
+
+    // &:hover{
+    //   background-color: var(--nada-primary-color);
+    // }
+    .nada-attr-label {
+      width: 80px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: var(--nada-text-sm);
+      line-height: 32px;
+    }
+
+    .nada-attr-input {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+.nada-designer-main .el-collapse .el-collapse-item__header {
+  box-sizing: border-box;
+}

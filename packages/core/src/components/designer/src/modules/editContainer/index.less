@@ -1,0 +1,172 @@
+// 编辑画布
+.nada-edit-canvas {
+  flex: 1;
+
+  background-size: 15px 15px;
+  overflow: hidden;
+
+  .nada-edit-range {
+    overflow-y: auto;
+    box-shadow:
+      rgba(0, 0, 0, 0.1) 0px 20px 25px -5px,
+      rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+    cursor: pointer;
+    background-color: var(--nada-edit-range-color);
+
+    .nada-draggable-range {
+      min-height: 60px;
+      height: 100%;
+      border: 1px var(--nada-border-color) dashed;
+      width: 100%;
+    }
+
+    >div>div>.nada-draggable-range {
+      border: transparent;
+
+      // 屏蔽antd element-plus label点击事件
+      .ant-form-item-label>label,
+      .el-form-item>.el-form-item__label {
+        pointer-events: none;
+      }
+    }
+
+    .root-node>.form-main>form>.nada-draggable-range {
+      border: transparent;
+    }
+  }
+
+  .nada-hover-widget {
+    border: 1px var(--nada-primary-color) dashed;
+    box-sizing: border-box;
+  }
+
+  .nada-checked-widget {
+    border: 1px var(--nada-primary-color) dashed;
+    background: var(--nada-widget-shade-color);
+
+    &::before {
+      content: "";
+      height: 5px;
+      background: var(--nada-primary-color);
+      position: absolute;
+      left: 0;
+      width: 100%;
+    }
+
+    &.top,
+    &.center {
+      &::before {
+        top: -5px;
+      }
+    }
+
+    &.bottom {
+      &::before {
+        bottom: -5px;
+      }
+    }
+
+    .nada-widget-action-box {
+      position: absolute;
+      z-index: 999;
+      height: 30px;
+      background: var(--nada-primary-color);
+      border-radius: 4px 4px 0px 0px;
+      display: flex;
+      padding: 0 4px;
+
+      .nada-widget-action-item {
+        height: 30px;
+        padding: 0 4px;
+        cursor: pointer;
+        color: white;
+        display: flex;
+        align-items: center;
+
+        .iconfont {
+          font-size: 16px;
+        }
+      }
+    }
+
+    .form-main {
+      padding: 6px;
+      border: 1px solid #f0f0f0;
+    }
+  }
+
+  // 隐藏设计区域滚动条
+  .nada-edit-screen-container {
+    &::-webkit-scrollbar {
+      // display: none;
+      width: 6px;
+      height: 6px;
+    }
+  }
+
+  .nada-edit-toolbar {
+    height: 40px;
+    background: var(--nada-view-color);
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--nada-border-color);
+
+    .nada-divider {
+      width: 1px;
+      height: 20px;
+      background-color: var(--nada-divider-color);
+      margin: 0 4px;
+    }
+
+    .nada-action-item {
+      color: var(--nada-text-medium);
+      height: 32px;
+      border-radius: 4px;
+
+      &.disabled {
+        color: var(--nada-text-disabled);
+        cursor: no-drop;
+      }
+
+      &:hover {
+        background: var(--nada-action-hover-color);
+      }
+    }
+
+    .nada-device {
+      border: 1px solid var(--nada-border-color);
+
+      .nada-device-item {
+
+        &.checked {
+          color: var(--nada-primary-color);
+          background: var(--nada-action-hover-color);
+        }
+      }
+    }
+
+  }
+
+  .edit-draggable-widget {
+    cursor: move;
+    // display: inline-block;
+    &.nada-unmover-item{
+      display: contents;
+    }
+  }
+
+  background-image: linear-gradient(var(--nada-designer-color) 14px, transparent 0),
+  linear-gradient(90deg, transparent 14px, var(--nada-designer-dot-color) 0);
+}
+
+.nada-node-mask {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "@nada-designer/utils",
+  "version": "1.0.1",
+  "description": "nada-designer utils",
+  "author": "kchengz",
+  "main": "src/index.ts"
+}

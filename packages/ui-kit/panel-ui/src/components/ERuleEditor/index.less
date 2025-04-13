@@ -1,0 +1,17 @@
+.rule-item-main {
+  background-color: var(--nada-view-color);
+  border-color: var(--nada-border-color);
+  &:hover{
+  border-color: var(--nada-primary-color);
+  }
+  .rule-btn-delete {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:hover > .rule-btn-delete {
+    opacity: 1;
+    pointer-events: all;
+    background-color: var(--nada-primary-color);
+  }
+}
