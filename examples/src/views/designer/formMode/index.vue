@@ -22,7 +22,7 @@ function handleSubmit(e: PageSchema) {
     @save="handleSubmit"
   >
     <template #header-prefix>
-      <div>欢迎使用EpicDesigner设计器</div>
+      <div>欢迎使用NadaDesigner设计器</div>
     </template>
   </EDesigner>
 </template>

@@ -3,12 +3,7 @@ import { computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useTheme } from '@nada-designer/hooks';
-import {
-  setupAntd,
-  setupArcod,
-  setupElementPlus,
-  setupNaiveUi,
-} from '@nada-designer/ui';
+import { setupAntd, setupElementPlus, setupNaiveUi } from '@nada-designer/ui';
 import { pluginManager } from '@nada-designer/utils';
 import { useStorage } from '@vueuse/core';
 import { Divider, Select, Switch } from 'ant-design-vue';
@@ -30,7 +25,7 @@ watch(
 const links = [
   {
     title: '文档',
-    url: 'https://docs.epicjs.cn',
+    url: 'https://docs.nadajs.cn',
   },
   {
     title: '更新日志',
@@ -42,10 +37,6 @@ const selectOptions = [
   {
     label: 'antDesigneVue',
     value: 'ant-designe-vue',
-  },
-  {
-    label: 'arcoDesigneVue',
-    value: 'arco-designe-vue',
   },
   {
     label: 'elementPlus',
@@ -84,12 +75,6 @@ function switchUI(ui: string) {
 
       break;
     }
-
-    case 'arco-designe-vue': {
-      setupArcod();
-
-      break;
-    }
     case 'element-plus': {
       setupElementPlus();
 
@@ -110,11 +95,11 @@ switchUI(selectValue.value);
   <div class="nada-demo-header h-64px flex items-center justify-between px-6">
     <a
       class="decoration-none flex items-center"
-      href="https://docs.epicjs.cn"
+      href="https://docs.nadajs.cn"
       target="_blank"
     >
       <img src="@/assets/logo.png" class="w-22px h-22px" alt="" srcset="" />
-      <span class="text-16px ml-4 font-bold">EpicDesigner低代码设计器</span>
+      <span class="text-16px ml-4 font-bold">NadaDesigner低代码设计器</span>
     </a>
 
     <div class="nada-demo-header-right flex items-center">

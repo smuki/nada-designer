@@ -1,16 +1,6 @@
 {
-  "name": "nada-examples",
-  "version": "1.0.1",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "vite --host",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
-    "@arco-design/web-vue": "^2.57.0",
     "@shikijs/monaco": "^1.24.4",
     "ant-design-vue": "^4.2.6",
     "dayjs": "^1.11.13",
@@ -28,5 +18,14 @@
     "vite-plugin-monaco-editor": "^1.1.0",
     "vite-plugin-vue-devtools": "7.6.8",
     "vue-tsc": "^2.2.0"
-  }
+  },
+  "name": "nada-examples",
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --host",
+    "preview": "vite preview"
+  },
+  "type": "module",
+  "version": "1.0.1"
 }

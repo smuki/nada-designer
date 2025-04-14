@@ -3,12 +3,12 @@ import { computed, inject, onMounted, ref } from 'vue';
 
 import { PageSchema } from '@nada-designer/types';
 
-import nadaEditScreenContainer from './editScreenContainer.vue';
-import nadaNodeItem from './nodeItem.vue';
-import nadaPreviewWidgets from './previewWidgets.vue';
+import NadaEditScreenContainer from './editScreenContainer.vue';
+import NadaNodeItem from './nodeItem.vue';
+import NadaPreviewWidgets from './previewWidgets.vue';
 
 const nadaEditRangeRef = ref<HTMLDivElement | null>(null);
-const nadaPreviewWidgetsRef = ref<null | typeof nadaPreviewWidgets>(null);
+const nadaPreviewWidgetsRef = ref<null | typeof NadaPreviewWidgets>(null);
 
 const pageSchema = inject('pageSchema') as PageSchema;
 const rootSchema = computed(() => {
@@ -28,15 +28,15 @@ onMounted(() => {
 </script>
 <template>
   <section class="nada-edit-canvas">
-    <nadaEditScreenContainer>
+    <NadaEditScreenContainer>
       <div
         ref="nadaEditRangeRef"
         class="nada-edit-range relative overflow-auto rounded-md"
         :style="getEditRangestyle"
       >
-        <nadaNodeItem :schema="rootSchema" />
-        <nadaPreviewWidgets ref="nadaPreviewWidgetsRef" />
+        <NadaNodeItem :schema="rootSchema" />
+        <NadaPreviewWidgets ref="nadaPreviewWidgetsRef" />
       </div>
-    </nadaEditScreenContainer>
+    </NadaEditScreenContainer>
   </section>
 </template>
