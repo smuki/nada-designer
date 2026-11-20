@@ -255,8 +255,13 @@ export function createPageManager() {
       let methodArgs = action.args ? JSON.parse(action.args) : args;
 
       // 处理数据参数
+      const formNames = Object.keys(forms);
       const context = {
         event: args,
+        // 移植自上游 892de66e：动作表达式需要能读取 formData
+        formData: (formNames.length === 1
+          ? forms[formNames[0]]
+          : forms) as Record<string, any>,
       };
       methodArgs = methodArgs.map((arg: any) => {
         // 如果是对象且标记为表达式，调用 jsep 计算

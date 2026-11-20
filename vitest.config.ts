@@ -25,6 +25,11 @@ export default defineConfig({
       ],
       provider: 'v8',
       reporter: ['text-summary', 'json-summary'],
+      thresholds: {
+        'packages/hooks/**': { statements: 45 },
+        'packages/manager/**': { statements: 75 },
+        'packages/utils/**': { statements: 50 },
+      },
     },
   },
 });
