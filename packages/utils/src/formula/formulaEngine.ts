@@ -73,6 +73,9 @@ export class FormulaEngine {
       case '!==': {
         return l !== r;
       }
+      case '&&': {
+        return l && r;
+      }
       case '*': {
         return (l as number) * (r as number);
       }
@@ -100,6 +103,9 @@ export class FormulaEngine {
       }
       case '>=': {
         return l >= r;
+      }
+      case '||': {
+        return l || r;
       }
       default: {
         return 0;
@@ -201,7 +207,13 @@ export class FormulaEngine {
       case 'UnaryExpression': {
         const unaryNode = node as jsep.UnaryExpression;
         const arg = this._execute(unaryNode.argument, ctx);
-        return unaryNode.operator === '-' ? -arg : arg;
+        if (unaryNode.operator === '-') {
+          return -arg;
+        }
+        if (unaryNode.operator === '!') {
+          return !arg;
+        }
+        return arg;
       }
 
       default: {
