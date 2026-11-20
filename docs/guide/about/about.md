@@ -2,13 +2,10 @@
 
 如果您正在使用这个项目并感觉良好，或者是想支持我们继续开发，您可以通过如下`任意`方式支持我们：
 
-1. Star 并向您的朋友推荐或分享 [Gitee](https://github.com/smuki/nada-designer) [Github](https://github.com/smuki/nada-designer) 🚀
-2. 通过以下二维码进行一次性捐款，请我们喝一杯咖啡 ☕️
-3. 提交 Issue 或 PR，帮助完善项目功能或修复 bug 🌟
+1. Star 并向您的朋友推荐或分享 [Github](https://github.com/smuki/nada-designer) 🚀
+2. 提交 Issue 或 PR，帮助完善项目功能或修复 bug 🌟
 
 非常感谢！
-
-![](https://examples.nadajs.cn/static/donation.png)
 
 ## 捐赠名单
 

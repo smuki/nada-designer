@@ -54,7 +54,7 @@ const pageSchema = ref<PageSchema>({
               "field": "upload",
               "input": true,
               "props": {
-                "action": "https://examples.nadajs.cn/nada-mock/common/upload",
+                "action": "/api/upload",
                 "name": "file",
                 "showFileList": true
               },

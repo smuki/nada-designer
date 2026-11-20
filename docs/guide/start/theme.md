@@ -29,7 +29,7 @@ import "nada-designer/dist/style.css";
 import './styles/common-vars.css'
 ```
 
- ![](https://examples.nadajs.cn/static/theme.jpg)
+ ![](/theme.jpg)
 
 ## UI组件主题定制
 

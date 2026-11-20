@@ -188,4 +188,4 @@ MIT License
 
 ---
 
-更多详细信息请查看 [Nada Designer 文档](https://docs.nadajs.cn/)
+更多详细信息请查看 [Nada Designer 文档源码](https://github.com/smuki/nada-designer/tree/main/docs)

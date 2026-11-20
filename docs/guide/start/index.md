@@ -22,15 +22,9 @@
 
 📦github仓库：[https://github.com/smuki/nada-designer](https://github.com/smuki/nada-designer)
 
-📦gitee仓库：[https://github.com/smuki/nada-designer](https://github.com/smuki/nada-designer)
+📖文档源码：[https://github.com/smuki/nada-designer/tree/main/docs](https://github.com/smuki/nada-designer/tree/main/docs)
 
-📖文档地址：[https://docs.nadajs.cn](https://docs.nadajs.cn)
-
-💎项目预览地址：
-
-- ElementPlus：[https://examples.nadajs.cn/element-plus/designer/basic](https://examples.nadajs.cn/element-plus/designer/basic?maximize=1)
-- AntDesignVue：[https://examples.nadajs.cn/ant-designe-vue/designer/basic](https://examples.nadajs.cn/ant-designe-vue/designer/basic?maximize=1)
-- NaiveUi：[https://examples.nadajs.cn/naive-ui/designer/basic](https://examples.nadajs.cn/naive-ui/designer/basic?maximize=1)
+💎本地示例：运行 `pnpm i && pnpm dev` 后访问 [http://localhost:9980/element-plus/designer/basic](http://localhost:9980/element-plus/designer/basic)
 
 ## 特性
 

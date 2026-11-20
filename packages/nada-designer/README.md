@@ -20,7 +20,7 @@
 > ```
 
 ---
-![](https://examples.nadajs.cn/static/logo.png#pic_center)
+![](https://raw.githubusercontent.com/smuki/nada-designer/main/docs/public/logo.png)
 
 <h3 align="center" style="background-image:-webkit-linear-gradient(left,#44c0fa,#c26cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">nadaDesigner</h3>
 
@@ -42,17 +42,9 @@
 
 📦github仓库：[https://github.com/smuki/nada-designer](https://github.com/smuki/nada-designer)
 
-📦gitee仓库：[https://github.com/smuki/nada-designer](https://github.com/smuki/nada-designer)
+📖文档源码：[https://github.com/smuki/nada-designer/tree/main/docs](https://github.com/smuki/nada-designer/tree/main/docs)（本地运行 `pnpm docs:dev` 预览）
 
-📖文档地址：[https://docs.nadajs.cn](https://docs.nadajs.cn)
-
-📖文档备用地址：[https://www.kcz66.com/nada-designer/](https://www.kcz66.com/nada-designer/)
-
-💎项目预览地址：
-
-- ElementPlus：[https://examples.nadajs.cn/element-plus/designer/basic](https://examples.nadajs.cn/element-plus/designer/basic?maximize=1)
-- AntDesignVue：[https://examples.nadajs.cn/ant-designe-vue/designer/basic](https://examples.nadajs.cn/ant-designe-vue/designer/basic?maximize=1)
-- NaiveUi：[https://examples.nadajs.cn/naive-ui/designer/basic](https://examples.nadajs.cn/naive-ui/designer/basic?maximize=1)
+💎本地示例：运行 `pnpm i && pnpm dev` 后访问 [http://localhost:9980/element-plus/designer/basic](http://localhost:9980/element-plus/designer/basic)
 
 > 使用必须遵守国家法律法规，⛔不允许非法项目使用，后果自负❗
 
@@ -245,9 +237,4 @@ const pageSchema = {
 点击链接加入 qq 群聊
 
 - [【nada-designer 交流群：747609683】](https://jq.qq.com/?_wv=1027&k=CtrM9ce2)
-
-## 捐赠
-如果你觉得nada-designer对你有帮助，欢迎给我捐赠
-
-![](https://examples.nadajs.cn/static/donation.png)
 

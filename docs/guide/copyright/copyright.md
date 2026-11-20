@@ -32,7 +32,7 @@ SOFTWARE.
 
 ## 软件著作权证书
 
-<img src="https://examples.nadajs.cn/static/certificate.jpg" width="320px">
+<img src="/certificate.jpg" width="320px">
 
 
 

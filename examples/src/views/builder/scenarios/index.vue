@@ -23,10 +23,26 @@ const pageSchema = computed<PageSchema>(() => fixture.value?.pageSchema as PageS
 const formData = computed(() => fixture.value?.formData);
 const fieldStates = computed<FieldStates | undefined>(() => fixture.value?.fieldStates);
 
+// 场景可能需要在渲染前注册专用组件（如子表演示组件）
+watch(
+  () => fixture.value?.key,
+  () => {
+    try {
+      fixture.value?.setup?.();
+    } catch (error) {
+      console.error('[scenario] setup 失败', error);
+    }
+  },
+  { immediate: true },
+);
+
 /** 读取当前表单数据 */
 async function refresh() {
   try {
-    data.value = (await ebRef.value?.getData()) ?? {};
+    const builder: any = ebRef.value;
+    data.value = (await (fixture.value?.readData
+      ? fixture.value.readData(builder)
+      : builder?.getData())) ?? {};
   } catch (error) {
     data.value = { error: String(error) };
   }
@@ -55,7 +71,10 @@ function handleChange(payload: unknown) {
 
 async function handleValidate() {
   try {
-    const result = await ebRef.value?.validate();
+    const builder: any = ebRef.value;
+    const result = await (fixture.value?.runValidate
+      ? fixture.value.runValidate(builder)
+      : builder?.validate());
     validateResult.value = { message: '校验通过', ok: true };
     return result;
   } catch (error: any) {
@@ -114,10 +133,12 @@ watch(
         <EBuilder
           :key="fixture.key"
           ref="ebRef"
+          :disabled="fixture.disabled"
           :field-states="fieldStates"
           :form-data="formData"
           :page-schema="pageSchema"
           :readonly="fixture.readonly"
+          :table-view="fixture.tableView"
           @change="handleChange"
           @ready="handleReady"
         />

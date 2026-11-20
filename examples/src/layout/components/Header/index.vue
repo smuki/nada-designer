@@ -27,11 +27,11 @@ watch(
 const links = [
   {
     title: '文档',
-    url: 'https://docs.nadajs.cn',
+    url: 'https://github.com/smuki/nada-designer/tree/main/docs',
   },
   {
     title: '更新日志',
-    url: 'https://github.com/smuki/nada-designer/blob/develop/docs/updateLog.md',
+    url: 'https://github.com/smuki/nada-designer/blob/main/docs/updateLog.md',
   },
 ];
 
@@ -97,7 +97,7 @@ switchUI(selectValue.value);
   <div class="ep-demo-header h-64px flex items-center justify-between px-6">
     <a
       class="decoration-none flex items-center"
-      href="https://docs.nadajs.cn"
+      href="https://github.com/smuki/nada-designer"
       target="_blank"
     >
       <img src="@/assets/logo.png" class="w-22px h-22px" alt="" srcset="" />

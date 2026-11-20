@@ -7,6 +7,8 @@ import type { FieldStates, PageSchema } from '@nada-designer/types';
  * 路由、菜单、播放器页面都会自动识别，不需要改其它代码。
  */
 export interface ScenarioFixture {
+  /** 是否禁用整个表单（EBuilder 的 disabled） */
+  disabled?: boolean;
   /** 表单数据（可选，用于验证数据回显） */
   formData?: Record<string, any>;
   /** 字段状态（可选，用于验证权限/禁用/隐藏） */
@@ -19,8 +21,16 @@ export interface ScenarioFixture {
   key?: string;
   /** 显示名称（菜单标题） */
   name: string;
+  /** 自定义读取数据（多表单等场景用），默认调用 EBuilder.getData() */
+  readData?: (builder: any) => any;
   /** 是否以只读模式渲染 */
   readonly?: boolean;
+  /** 自定义校验（多表单等场景用），默认调用 EBuilder.validate() */
+  runValidate?: (builder: any) => any;
+  /** 渲染前执行的钩子，用于注册本场景需要的演示组件 */
+  setup?: () => void;
+  /** 是否启用表格视图（EBuilder 的 tableView） */
+  tableView?: boolean;
   /** 场景说明 */
   description?: string;
 }

@@ -32,7 +32,7 @@ const { toggleDark } = useTheme()
 toggleDark()
 ```
 
-![](https://examples.nadajs.cn/static/dark.png)
+![](/dark.png)
 
 ## 修改暗黑主题
 

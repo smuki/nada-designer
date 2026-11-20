@@ -10,9 +10,6 @@ export default defineConfig({
     ['link', { href: '/favicon.ico', rel: 'icon', type: 'image/x-icon' }],
   ],
   lang: 'zh-CN',
-  sitemap: {
-    hostname: 'https://docs.nadajs.cn',
-  },
   // 主题配置
   themeConfig: {
     algolia: {
@@ -28,7 +25,7 @@ export default defineConfig({
       copyright: `本文档内容版权为 nadaDesigner 作者所有，保留所有权利。`,
     },
 
-    logo: 'https://examples.nadajs.cn/static/logo.png',
+    logo: '/logo.png',
     nav: [
       {
         activeMatch: '/guide/start/index',
