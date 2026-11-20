@@ -100,9 +100,9 @@ watch(
 </script>
 
 <template>
-  <div class="flex h-full gap-3 p-3">
+  <div class="ep-page-main flex h-full gap-3 p-3">
     <!-- 左：渲染区域 -->
-    <div class="flex-1 overflow-auto rounded bg-white p-4 ep-scoped">
+    <div class="scenario-render flex-1 overflow-auto rounded p-4 ep-scoped">
       <template v-if="fixture">
         <Alert
           class="mb-3"
@@ -126,7 +126,7 @@ watch(
     </div>
 
     <!-- 右：结果面板 -->
-    <div class="w-420px flex shrink-0 flex-col gap-3 overflow-auto rounded bg-white p-3">
+    <div class="scenario-panel w-420px flex shrink-0 flex-col gap-3 overflow-auto rounded p-3">
       <div class="flex items-center gap-2">
         <Tag :color="ready ? 'green' : 'default'">ready: {{ ready }}</Tag>
         <Tag v-if="expectMatched !== null" :color="expectMatched ? 'green' : 'red'">
@@ -150,22 +150,43 @@ watch(
 
       <div>
         <div class="mb-1 font-bold">getData()</div>
-        <pre class="max-h-260px overflow-auto rounded bg-gray-50 p-2 text-12px">{{ data }}</pre>
+        <pre class="scenario-pre max-h-260px overflow-auto rounded p-2 text-12px">{{ data }}</pre>
       </div>
 
       <div>
         <div class="mb-1 font-bold">事件日志</div>
-        <pre class="max-h-200px overflow-auto rounded bg-gray-50 p-2 text-12px">{{
+        <pre class="scenario-pre max-h-200px overflow-auto rounded p-2 text-12px">{{
           events.length ? events.join('\n') : '（暂无事件，试试修改表单）'
         }}</pre>
       </div>
 
       <details>
         <summary class="cursor-pointer font-bold">场景配置（pageSchema / formData）</summary>
-        <pre class="mt-1 max-h-260px overflow-auto rounded bg-gray-50 p-2 text-12px">{{
+        <pre class="scenario-pre mt-1 max-h-260px overflow-auto rounded p-2 text-12px">{{
           JSON.stringify(fixture, null, 2)
         }}</pre>
       </details>
     </div>
   </div>
 </template>
+
+<style scoped>
+/* 跟随亮色/暗色主题：--ep-* 变量在 <html class="dark"> 下会被 base.less 覆盖 */
+.scenario-render,
+.scenario-panel {
+  background: var(--ep-background, #fff);
+  border: 1px solid var(--ep-border, #e5e7eb);
+  color: var(--ep-text-main, #111827);
+}
+
+.scenario-panel {
+  background: var(--ep-sidebar, var(--ep-background, #fff));
+}
+
+.scenario-pre {
+  background: var(--ep-muted, #f3f4f6);
+  color: var(--ep-text-main, #111827);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+</style>
