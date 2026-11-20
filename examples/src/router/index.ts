@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import BaseLayout from '@/layout/baseLayout.vue';
 import BuilderLayout from '@/layout/builderLayout.vue';
 import Layout from '@/layout/index.vue';
+import { scenarioFixtures } from '@/views/builder/scenarios/registry';
 
 // 定义每个 UI 框架的子路由信息
 export const frameworkRoutes = [
@@ -121,6 +122,24 @@ export const frameworkRoutes = [
         },
       },
     ],
+  },
+  {
+    // 场景验证：路由与菜单由 fixtures 目录自动生成
+    component: BaseLayout,
+    meta: {
+      title: '场景验证',
+    },
+    name: 'scenarios',
+    path: '/:ui/scenarios',
+    children: scenarioFixtures.map((fixture) => ({
+      component: () => import('@/views/builder/scenarios/index.vue'),
+      meta: {
+        scenarioKey: fixture.key,
+        title: fixture.name,
+      },
+      name: `scenario-${fixture.key}`,
+      path: fixture.key as string,
+    })),
   },
 ];
 
