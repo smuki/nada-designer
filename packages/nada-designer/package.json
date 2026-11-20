@@ -1,12 +1,12 @@
 {
   "name": "nada-designer",
   "version": "1.1.17",
-  "description": "基于 Vue3 的拖拽式低代码表单设计器 / 生成器（fork of epic-designer v1.1.13, MIT）",
+  "description": "基于 Vue3 的拖拽式可视化表单设计器 / 生成器（fork of epic-designer v1.1.13, MIT）",
   "private": false,
   "keywords": [
     "表单设计",
     "表单设计器",
-    "低代码",
+    "可视化表单设计器",
     "可视化",
     "设计器",
     "页面设计",

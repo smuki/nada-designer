@@ -101,7 +101,7 @@ switchUI(selectValue.value);
       target="_blank"
     >
       <img src="@/assets/logo.png" class="w-22px h-22px" alt="" srcset="" />
-      <span class="text-16px ml-4 font-bold">nadaDesigner低代码设计器</span>
+      <span class="text-16px ml-4 font-bold">nadaDesigner可视化表单设计器</span>
     </a>
 
     <div class="ep-demo-header-right flex items-center">

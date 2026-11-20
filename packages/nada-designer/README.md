@@ -25,7 +25,7 @@
 <h3 align="center" style="background-image:-webkit-linear-gradient(left,#44c0fa,#c26cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">nadaDesigner</h3>
 
 
-<h4 align="center">一个开箱即用的拖拽式的可视化低代码设计器</h4>
+<h4 align="center">一个开箱即用的拖拽式的可视化表单设计器</h4>
 
 <p align="center">
   <a href="https://github.com/vuejs/core">
@@ -58,7 +58,7 @@
 
 ## 简介
 
-可以简称`nada设计器`，是一个功能强大、开箱即用的拖拽式低代码设计器。它基于 Vue3 开发，兼容多套 UI 组件库，除了基础的页面设计功能，nadaDesigner 还提供了强大的扩展功能，可以让开发者根据自己的需求自由扩展和定制组件。此外，nadaDesigner使用 JSON 配置来生成页面，可帮助开发者快速生成页面，提高开发效率。它提供了两个重要组件：`e-designer` 设计器和 `e-builder` 生成器。
+可以简称`nada设计器`，是一个功能强大、开箱即用的拖拽式可视化表单设计器。它基于 Vue3 开发，兼容多套 UI 组件库，除了基础的页面设计功能，nadaDesigner 还提供了强大的扩展功能，可以让开发者根据自己的需求自由扩展和定制组件。此外，nadaDesigner使用 JSON 配置来生成页面，可帮助开发者快速生成页面，提高开发效率。它提供了两个重要组件：`e-designer` 设计器和 `e-builder` 生成器。
 
 
 ## 最新版本

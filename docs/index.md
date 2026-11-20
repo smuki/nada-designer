@@ -2,10 +2,10 @@
 layout: home
 
 title: nadaDesigner设计器
-titleTemplate: 低代码可视化设计器
+titleTemplate: 可视化表单设计器
 hero:
   name: nadaDesigner
-  text: 低代码可视化设计器
+  text: 可视化表单设计器
   tagline: '开源、规范、可视化、可扩展'
   image:
     src: /logo.png
