@@ -109,13 +109,18 @@ jobs:
               echo "::notice::$name@$ver 已存在，跳过"
               return 0
             fi
-            echo "---- 发布 $name@$ver ----"
-            if ( cd "$dir" && pnpm publish --access public --no-git-checks ); then
-              echo "::notice::$name@$ver 发布成功 ✅"
-            else
-              echo "::error::$name@$ver 发布失败 ❌"
-              failed=1
-            fi
+            for attempt in 1 2 3; do
+              echo "---- 发布 $name@$ver（attempt $attempt/3）----"
+              if ( cd "$dir" && pnpm publish --access public --no-git-checks ); then
+                echo "::notice::$name@$ver 发布成功 ✅"
+                return 0
+              fi
+              echo "::warning::$name@$ver 发布失败，15 秒后重试"
+              sleep 15
+            done
+            echo "::error::$name@$ver 发布失败（已重试 3 次）❌"
+            failed=1
+            return 1
           }
 
           publish nada-designer                packages/nada-designer
