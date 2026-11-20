@@ -2,18 +2,15 @@ name: Publish to npm
 
 # ===== 使用方式 =====
 # 1) 在 GitHub 仓库 Settings -> Secrets and variables -> Actions 里新建 secret：NPM_TOKEN
-#    （npmjs.com -> Access Tokens -> Generate New Token，类型选 Automation 或 Granular，
-#      权限 Read and write；包首次发布前 Granular 选不到具体包，只能选 All packages）
-# 2) 本地改好版本号并提交后打 tag 推送：
+#    （npmjs.com -> Access Tokens -> Generate New Token，类型选 Granular，
+#      权限 Read and write，并且必须勾选 "Bypass two-factor authentication (2FA)"）
+# 2) 改好版本号并提交后打 tag 推送：
 #      git tag v1.1.15 && git push origin v1.1.15
 #    或者到 Actions 页面手动 Run workflow
 #
-# 版本号已发布过会自动跳过（可安全重跑）。
-# 该流程不需要 npm 组织/scope，包名均为非 scope 形式。
-#
-# 【可选】想要 npm provenance（可信来源证明）：仓库必须是 public，然后
-#   1) 顶层加：permissions: { contents: read, id-token: write }
-#   2) 发布命令加 --provenance 并设置 NPM_CONFIG_PROVENANCE: true
+# 幂等：已存在的版本自动跳过；某个包失败不会阻塞其它包，最后统一报失败。
+# 若 npm 上有同版本的“暂存版本（staged）”，需先在本地 `npm stage reject <包>@<版本>`
+# 或改用更高的版本号，否则该包会发布失败。
 
 on:
   push:
@@ -75,19 +72,43 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          set -e
+          echo "===== 1) 校验 NPM_TOKEN ====="
+          if ! npm whoami >/dev/null 2>&1; then
+            echo "::error::NPM_TOKEN 无效或已过期，请到 Settings -> Secrets 更新"
+            npm whoami || true
+            exit 1
+          fi
+          echo "当前账号: $(npm whoami)"
+
+          echo "===== 2) 查看是否有待处理的暂存版本 ====="
+          npm stage list || true
+
+          echo "===== 3) 开始发布 ====="
+          failed=0
           publish() {
-            local name="$1" dir="$2"
-            local ver
+            name="$1"; dir="$2"
             ver=$(node -p "require('./$dir/package.json').version")
             if npm view "$name@$ver" version >/dev/null 2>&1; then
-              echo "⏭   $name@$ver 已存在，跳过"
+              echo "::notice::$name@$ver 已存在，跳过"
               return 0
             fi
-            echo "📦  发布 $name@$ver"
-            ( cd "$dir" && pnpm publish --access public --no-git-checks )
+            echo "---- 发布 $name@$ver ----"
+            if ( cd "$dir" && pnpm publish --access public --no-git-checks ); then
+              echo "::notice::$name@$ver 发布成功 ✅"
+            else
+              echo "::error::$name@$ver 发布失败 ❌"
+              failed=1
+            fi
           }
-          publish nada-designer                  packages/nada-designer
-          publish nada-designer-element-plus     packages/ui/elementPlus
-          publish nada-designer-antd             packages/ui/antd
-          publish nada-designer-naive-ui         packages/ui/naiveUi
+
+          publish nada-designer                packages/nada-designer
+          publish nada-designer-element-plus   packages/ui/elementPlus
+          publish nada-designer-antd           packages/ui/antd
+          publish nada-designer-naive-ui       packages/ui/naiveUi
+
+          echo "===== 4) 结果汇总 ====="
+          for p in nada-designer nada-designer-element-plus nada-designer-antd nada-designer-naive-ui; do
+            echo "$p -> $(npm view "$p" version 2>/dev/null || echo '未发布')"
+          done
+
+          exit $failed

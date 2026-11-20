@@ -12,7 +12,7 @@
 | SSH 密钥 | `C:\Users\k\.ssh\id_ed25519`（无 passphrase），指纹 `SHA256:u6oOoec/4e/LWZ8frQB+7uv7rNP1siUk06KyR4Reroc` |
 | SSH 端口映射 | `C:\Users\k\.ssh\config`：`github.com` → `ssh.github.com:443` |
 | 公钥登记 | ❌ **尚未加到 GitHub 账号**（这是唯一卡点） |
-| 包 | `nada-designer@1.1.14` + `nada-designer-element-plus/-antd/-naive-ui@1.1.14`，均已构建验证 |
+| 包 | `nada-designer@1.1.15` + `nada-designer-element-plus/-antd/-naive-ui@1.1.15`，均已构建验证 |
 | 测试 | 15 个文件 / 82 个用例，全绿 |
 
 ## 二、为什么推不上去（实测结论）
@@ -65,8 +65,8 @@ git push --force origin main
    - Value: npmjs.com 生成的 Automation / Granular Token（Read and write）
 2. 打 tag 触发自动发布：
    ```bash
-   git tag v1.1.14
-   git push origin v1.1.14
+   git tag v1.1.15
+   git push origin v1.1.15
    ```
 3. Actions 会自动：校验 tag 与版本一致 → 安装 → 测试 → 构建 4 个包 → 发布到 npm（已存在的版本自动跳过）
 
