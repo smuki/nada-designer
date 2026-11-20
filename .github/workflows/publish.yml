@@ -74,6 +74,17 @@ jobs:
           pnpm --filter nada-designer-antd build
           pnpm --filter nada-designer-naive-ui build
 
+      - name: Verify build output
+        run: |
+          DECL=$(find packages/nada-designer/dist -name '*.d.ts' | wc -l)
+          echo "declaration files: $DECL"
+          if [ "$DECL" -lt 50 ]; then
+            echo "::error::类型声明文件过少（$DECL 个），请检查 packages/nada-designer/tsconfig.json 的 include 是否覆盖全部 packages"
+            exit 1
+          fi
+          for f in dist/index.js dist/index.cjs dist/style.css dist/nada-designer/index.d.ts; do
+            test -f "packages/nada-designer/$f" || { echo "::error::缺少产物 $f"; exit 1; }
+          done
       - name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
