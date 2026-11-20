@@ -1,5 +1,5 @@
 {
-  "name": "@nada-designer/antd",
+  "name": "nada-designer-antd",
   "version": "1.1.14",
   "description": "nada-designer 的 ant-design-vue UI 适配包",
   "private": false,

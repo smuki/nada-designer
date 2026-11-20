@@ -2,11 +2,11 @@
 import { computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { setupAntd } from '@nada-designer/antd';
-import { setupElementPlus } from '@nada-designer/element-plus';
+import { setupAntd } from 'nada-designer-antd';
+import { setupElementPlus } from 'nada-designer-element-plus';
 import { useTheme } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
-import { setupNaiveUi } from '@nada-designer/naive-ui';
+import { setupNaiveUi } from 'nada-designer-naive-ui';
 import { useStorage } from '@vueuse/core';
 import { Divider, Select, Switch } from 'ant-design-vue';
 

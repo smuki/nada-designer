@@ -61,10 +61,21 @@ describe('deepEqual', () => {
     expect(deepEqual(obj1, obj2)).toBe(true);
   });
 
-  it('应当返回 false 当两个对象相等但一个有环形引用时', () => {
+  it('应当返回 true 当两个对象的环形结构等价（都指向同一个自引用节点）', () => {
+    // obj1 是自引用节点，obj2.b 也指向 obj1：
+    // 从 obj1 和 obj2 出发，沿 b 都能得到同一个节点 { a: 1, b: itself }，
+    // 按结构等价（bisimulation）判定两者相等。
     const obj1: any = { a: 1 };
     obj1.b = obj1;
     const obj2 = { a: 1, b: obj1 };
+
+    expect(deepEqual(obj1, obj2)).toBe(true);
+  });
+
+  it('应当返回 false 当一个自引用而另一个不是循环结构', () => {
+    const obj1: any = { a: 1 };
+    obj1.b = obj1;
+    const obj2: any = { a: 1, b: { a: 1 } };
 
     expect(deepEqual(obj1, obj2)).toBe(false);
   });

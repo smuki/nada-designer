@@ -49,9 +49,9 @@
     "vue-draggable-plus": "^0.6.1"
   },
   "optionalDependencies": {
-    "@nada-designer/antd": ">=1.1.14",
-    "@nada-designer/element-plus": ">=1.1.14",
-    "@nada-designer/naive-ui": ">=1.1.14"
+    "nada-designer-antd": ">=1.1.14",
+    "nada-designer-element-plus": ">=1.1.14",
+    "nada-designer-naive-ui": ">=1.1.14"
   },
   "devDependencies": {
     "@types/node": "^22.10.6",

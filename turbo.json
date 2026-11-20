@@ -16,9 +16,9 @@
     },
     "nada-examples#dev": {
       "dependsOn": [
-        "@nada-designer/antd#stub",
-        "@nada-designer/element-plus#stub",
-        "@nada-designer/naive-ui#stub"
+        "nada-designer-antd#stub",
+        "nada-designer-element-plus#stub",
+        "nada-designer-naive-ui#stub"
       ],
       "cache": false,
       "persistent": true

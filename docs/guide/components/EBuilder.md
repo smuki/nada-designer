@@ -282,7 +282,7 @@ import { EBuilder } from "nada-designer";
 import { ref,onMounted } from 'vue'
 import "nada-designer/dist/style.css";
 import { EDesigner, pluginManager } from "nada-designer";
-import { setupElementPlus } from "@nada-designer/element-plus";
+import { setupElementPlus } from "nada-designer-element-plus";
 import 'element-plus/dist/index.css'
 setupElementPlus(pluginManager);
 const ebForm = ref(null)

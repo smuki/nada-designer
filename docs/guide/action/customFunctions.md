@@ -270,7 +270,7 @@ nada.json 数据
 import "nada-designer/dist/style.css";
 import { EDesigner,EBuilder,pluginManager } from "nada-designer";
 import { ref, onMounted } from 'vue';
-import { setupAntd } from "@nada-designer/antd";
+import { setupAntd } from "nada-designer-antd";
 import { ConfigProvider, theme } from 'ant-design-vue'
 import { useTheme } from '@nada-designer/hooks'
 const { isDark } = useTheme()

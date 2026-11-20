@@ -1,6 +1,6 @@
 ## 1.1.12（2026-06-05）
 
-【注意】更新版本请同步更新@nada-designer/element-plus、@nada-designer/antd、@nada-designer/naive-ui依赖
+【注意】更新版本请同步更新nada-designer-element-plus、nada-designer-antd、nada-designer-naive-ui依赖
 
 ### ✨ Feat
 
@@ -19,7 +19,7 @@
 
 ## 1.1.10（2026-05-31）
 
-【注意】更新版本请同步更新@nada-designer/element-plus、@nada-designer/antd、@nada-designer/naive-ui依赖
+【注意】更新版本请同步更新nada-designer-element-plus、nada-designer-antd、nada-designer-naive-ui依赖
 
 ### ✨ Feat
 - 表单组件 disabled 支持向下传递
@@ -37,7 +37,7 @@
 
 ## 1.1.9（2026-05-06）
 
-【注意】更新版本请同步更新@nada-designer/element-plus、@nada-designer/antd、@nada-designer/naive-ui依赖
+【注意】更新版本请同步更新nada-designer-element-plus、nada-designer-antd、nada-designer-naive-ui依赖
 ### ✨ Feat
 - 大纲面板新增组件显示/隐藏、锁定/解锁、复制、删除操作
 - 新增表单readonly只读模式
@@ -50,13 +50,13 @@
 - 修复antdv栅格布局设置栅格间距值为string类型导致警告问题
 - 修复动作配置面板错误显示暂无配置的问题
 ## 1.1.8（2026-03-14）
-【注意】更新版本请同步更新@nada-designer/element-plus、@nada-designer/antd、@nada-designer/naive-ui依赖
+【注意】更新版本请同步更新nada-designer-element-plus、nada-designer-antd、nada-designer-naive-ui依赖
 ### 🐛 Bug Fixes
 - 修复隐藏组件没有mounted事件，导致builder组件一直处于未就绪状态问题
 - 修复builder组件未完成异步组件加载就切换pageSchema数据导致组件一直处于未就绪状态问题
 
 ## 1.1.6（2026-03-13）
-【注意】更新版本请同步更新@nada-designer/element-plus、@nada-designer/antd、@nada-designer/naive-ui依赖
+【注意】更新版本请同步更新nada-designer-element-plus、nada-designer-antd、nada-designer-naive-ui依赖
 ### ✨ Feat
 - 优化异步组件挂载追踪机制，确保 nadaReady 事件触发时机准确
 - 组件动作参数添加公式解析功能
@@ -117,9 +117,9 @@
 ## 1.1.0（2025-11-27）
 【重要】为提供更灵活的按需引入能力，UI 组件包现已独立编译发布：
 ```
-@nada-designer/antd
-@nada-designer/element-plus
-@nada-designer/naive-ui
+nada-designer-antd
+nada-designer-element-plus
+nada-designer-naive-ui
 ```
 >请参考[快速上手文档](/guide/start/quick-start.html#选择-ui-组件库)了解新的组件引入方式
 

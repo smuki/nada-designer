@@ -17,7 +17,7 @@
 
 ```tsx
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
-import { provideGlobalConfig } from "@nada-designer/element-plus";
+import { provideGlobalConfig } from "nada-designer-element-plus";
 provideGlobalConfig({ locale: zhCn });
 ```
 

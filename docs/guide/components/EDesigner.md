@@ -56,7 +56,7 @@ function handleSubmit(e:PageSchema) {
 <script setup>
 import "nada-designer/dist/style.css";
 import { EDesigner, pluginManager } from "nada-designer";
-import { setupAntd } from "@nada-designer/antd";
+import { setupAntd } from "nada-designer-antd";
 import { ConfigProvider, theme } from 'ant-design-vue'
 import { useTheme } from '@nada-designer/hooks'
 const { isDark } = useTheme()
