@@ -85,6 +85,9 @@ function setHoverNode(event: Event) {
 function handleDragAdd(event: any) {
   designer.setSelectedNode(event.clonedData);
   isDragChange.value = false;
+  // 从组件面板拖入画布时 SortableJS 只在源列表触发 end，画布侧 @end 不会执行，
+  // 因此必须在这里记录一次，否则拖入操作无法撤销
+  revoke.push('拖入组件', true);
 }
 
 /**

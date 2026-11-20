@@ -1,18 +1,8 @@
 {
   "name": "nada-designer",
-  "version": "1.1.15",
+  "version": "1.1.16",
   "description": "基于 Vue3 的拖拽式低代码表单设计器 / 生成器（fork of epic-designer v1.1.13, MIT）",
   "private": false,
-  "license": "MIT",
-  "author": "sunriseyuen",
-  "homepage": "https://github.com/smuki/nada-designer#readme",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/smuki/nada-designer"
-  },
-  "bugs": {
-    "url": "https://github.com/smuki/nada-designer/issues"
-  },
   "keywords": [
     "表单设计",
     "表单设计器",
@@ -26,6 +16,16 @@
     "designer",
     "nada-designer"
   ],
+  "homepage": "https://github.com/smuki/nada-designer#readme",
+  "bugs": {
+    "url": "https://github.com/smuki/nada-designer/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smuki/nada-designer"
+  },
+  "license": "MIT",
+  "author": "sunriseyuen",
   "type": "module",
   "scripts": {
     "build": "vite build",

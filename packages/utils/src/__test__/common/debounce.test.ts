@@ -45,3 +45,35 @@ describe('debounce', () => {
     );
   });
 });
+
+describe('debounce cancel / flush', () => {
+  it('cancel 应取消挂起的调用', () => {
+    vi.useFakeTimers();
+    const handler = vi.fn();
+    const debouncedFunction = debounce(handler, 100);
+
+    debouncedFunction();
+    debouncedFunction.cancel();
+    vi.advanceTimersByTime(200);
+
+    expect(handler).not.toHaveBeenCalled();
+    vi.useRealTimers();
+  });
+
+  it('flush 应立即执行挂起的调用，且之后不再重复执行', () => {
+    vi.useFakeTimers();
+    const handler = vi.fn();
+    const debouncedFunction = debounce(handler, 100);
+
+    debouncedFunction('x');
+    expect(handler).not.toHaveBeenCalled();
+
+    debouncedFunction.flush();
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler).toHaveBeenCalledWith('x');
+
+    vi.advanceTimersByTime(200);
+    expect(handler).toHaveBeenCalledTimes(1);
+    vi.useRealTimers();
+  });
+});

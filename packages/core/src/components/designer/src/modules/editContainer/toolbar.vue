@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 
-import { NadaIcon, EpTooltip } from '@nada-designer/base-ui';
+import { EpTooltip, NadaIcon } from '@nada-designer/base-ui';
 import { useDesignerContext, useStore } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
 import {

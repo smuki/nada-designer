@@ -13,7 +13,9 @@
     "docs:serve": "vitepress serve docs",
     "examples:build": "pnpm run build -F nada-examples",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "lint": "eslint packages/ --fix",
+    "lint": "eslint packages/",
+    "lint:fix": "eslint packages/ --fix",
+    "typecheck": "vue-tsc --noEmit -p typecheck.tsconfig.json",
     "postinstall": "pnpm -r run stub --if-present"
   },
   "dependencies": {

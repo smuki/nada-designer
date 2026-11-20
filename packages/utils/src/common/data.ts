@@ -564,7 +564,7 @@ export function getFormSchemas(
     (currentNode) => {
       return (
         currentNode.type === 'form' &&
-        (currentNode.props?.name ?? currentNode.name === formName)
+        (currentNode.props?.name ?? currentNode.name) === formName
       );
     },
     true,

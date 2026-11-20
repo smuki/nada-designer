@@ -70,6 +70,9 @@ export function useRevoke(
       // 使用深度比较和修改算法，高效更新页面架构
       deepCompareAndModify(pageSchema, parsedSchema);
 
+      // 清空 hover 状态，避免撤销后高亮指向已经不存在的节点
+      state.hoverNode = null;
+
       // 恢复历史记录时的选中状态
       const selectedNode = record.selectedId
         ? findSchemaById(pageSchema.schemas, record.selectedId)
@@ -114,6 +117,8 @@ export function useRevoke(
     }
 
     if (isImportant) {
+      // 先取消挂起的防抖提交，避免迟到的提交覆盖掉本次快照
+      debounceCommit.cancel();
       commitCurrentState(type);
       return;
     }
@@ -148,6 +153,8 @@ export function useRevoke(
    * @returns 是否成功撤销（有历史记录时返回true）
    */
   function undo(): boolean {
+    // 取消挂起的防抖提交，避免撤销后又被迟到的提交改回去
+    debounceCommit.cancel();
     if (recordList.value.length === 0) {
       return false;
     }
@@ -172,6 +179,7 @@ export function useRevoke(
    * @returns 是否成功重做（有重做记录时返回true）
    */
   function redo(): boolean {
+    debounceCommit.cancel();
     if (undoList.value.length === 0) {
       return false;
     }
@@ -195,6 +203,7 @@ export function useRevoke(
    * @description 清空所有历史记录和重做记录，恢复到初始状态
    */
   function reset(): void {
+    debounceCommit.cancel();
     recordList.value = [];
     undoList.value = [];
     currentRecord.value = null;

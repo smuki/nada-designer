@@ -112,7 +112,7 @@ function handleDelete(schema) {
           <!-- 组件操作 start -->
           <div
             v-if="
-              !pluginManager.component.getLocked(schema) &&
+              !pluginManager.component.getLocked(schema.type) &&
               schema.id !== designer.pageSchema.schemas[0].id
             "
             class="ep-tree-action"

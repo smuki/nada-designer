@@ -257,7 +257,7 @@ export function useDesigner(props, emit) {
     pageSchema.script = innerDefaultSchema.script;
     // 选中根节点
     setSelectedNode(pageSchema.schemas[0]);
-    revoke.push('重置操作');
+    revoke.push('重置操作', true);
 
     emit('reset', pageSchema);
   }
@@ -270,7 +270,8 @@ export function useDesigner(props, emit) {
     pageSchema.schemas = deepClone(innerDefaultSchema.schemas);
     // 选中根节点
     setSelectedNode(pageSchema.schemas[0]);
-    revoke.push('初始化');
+    // 初始化必须立即入栈：否则 200ms 内的第一次编辑会与之合并，导致首个操作无法撤销
+    revoke.push('初始化', true);
   }
 
   init();

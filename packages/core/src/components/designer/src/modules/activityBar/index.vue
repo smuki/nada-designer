@@ -3,7 +3,7 @@ import type { ActivitybarModel } from '@nada-designer/types';
 
 import { computed, ref, shallowRef } from 'vue';
 
-import { NadaIcon, EpTooltip } from '@nada-designer/base-ui';
+import { EpTooltip, NadaIcon } from '@nada-designer/base-ui';
 import { pluginManager } from '@nada-designer/manager';
 
 defineOptions({

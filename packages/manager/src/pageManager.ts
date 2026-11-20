@@ -2,11 +2,7 @@ import type { ComponentSchema, EpNodeInstance } from '@nada-designer/types';
 
 import { reactive, ref, watchEffect } from 'vue';
 
-import {
-  useHookManager,
-  useMountMonitor,
-  usePageSchema,
-} from '@nada-designer/hooks';
+import { useMountMonitor, usePageSchema } from '@nada-designer/hooks';
 import {
   findSchemas,
   FormulaEngine,
@@ -40,7 +36,9 @@ export function createPageManager() {
 
   // 初始化
   const { pageSchema, setPageSchema } = usePageSchema();
-  const hook = useHookManager();
+  // 与 pluginManager 共用同一个 hook 实例：此前存在两套钩子注册表，
+  // 外部向 pluginManager.hook 注册的 formChange 永远不会被触发
+  const hook = pluginManager.hook;
 
   /**
    * 查找组件的exposed属性

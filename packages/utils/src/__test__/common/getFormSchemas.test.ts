@@ -120,3 +120,53 @@ describe('getFormSchemas 函数测试', () => {
     expect(result).toHaveLength(0);
   });
 });
+
+describe('getFormSchemas 表单匹配（回归）', () => {
+  const twoForms = [
+    {
+      children: [
+        {
+          children: [{ field: 'a', id: 'inputA', input: true, type: 'input' }],
+          id: 'formA',
+          props: { name: 'formA' },
+          type: 'form',
+        },
+        {
+          children: [{ field: 'b', id: 'inputB', input: true, type: 'input' }],
+          id: 'formB',
+          props: { name: 'formB' },
+          type: 'form',
+        },
+      ],
+      id: 'root',
+      label: '页面',
+      type: 'page',
+    },
+  ];
+
+  it('应按 formName 匹配目标表单，而不是只要 props.name 存在就命中', () => {
+    const result = getFormSchemas(twoForms as never, 'formB');
+    expect(result.map((item) => item.id)).toEqual(['inputB']);
+  });
+
+  it('表单没有 props.name 时应回退到节点 name 字段', () => {
+    const schemasWithoutPropsName = [
+      {
+        children: [
+          {
+            children: [{ field: 'x', id: 'inputX', input: true, type: 'input' }],
+            id: 'formX',
+            name: 'formX',
+            type: 'form',
+          },
+        ],
+        id: 'root',
+        label: '页面',
+        type: 'page',
+      },
+    ];
+
+    const result = getFormSchemas(schemasWithoutPropsName as never, 'formX');
+    expect(result.map((item) => item.id)).toEqual(['inputX']);
+  });
+});
