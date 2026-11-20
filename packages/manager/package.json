@@ -1,0 +1,26 @@
+{
+  "name": "@nada-designer/manager",
+  "version": "1.1.13",
+  "description": "Nada Designer 管理器模块，提供页面管理、插件管理、撤销重做等功能",
+  "private": false,
+  "author": "kchengz",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "typings": "src/index.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "vue": "catalog:"
+  },
+  "dependencies": {
+    "@nada-designer/hooks": "workspace:*",
+    "@nada-designer/types": "workspace:*",
+    "@nada-designer/utils": "workspace:*",
+    "rollup-plugin-node-externals": "catalog:"
+  }
+}

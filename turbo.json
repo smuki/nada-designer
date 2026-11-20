@@ -1,0 +1,30 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**"],
+      "cache": false
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "stub": {
+      "cache": false
+    },
+    "nada-examples#dev": {
+      "dependsOn": [
+        "@nada-designer/antd#stub",
+        "@nada-designer/element-plus#stub",
+        "@nada-designer/naive-ui#stub"
+      ],
+      "cache": false,
+      "persistent": true
+    },
+    "nada-examples#build": {
+      "cache": true
+    }
+  }
+}

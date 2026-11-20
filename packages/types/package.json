@@ -1,0 +1,8 @@
+{
+  "name": "@nada-designer/types",
+  "version": "1.1.13",
+  "description": "nada-designer types",
+  "author": "kchengz",
+  "type": "module",
+  "main": "./src/index.ts"
+}

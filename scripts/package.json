@@ -1,0 +1,25 @@
+{
+  "name": "@nada-designer/scripts",
+  "version": "1.1.13",
+  "description": "",
+  "keywords": [],
+  "license": "MIT",
+  "author": "",
+  "scripts": {
+    "stub": "pnpm unbuild --stub"
+  },
+  "bin": {
+    "nada": "./bin/nada.mjs"
+  },
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "devDependencies": {
+    "@manypkg/get-packages": "catalog:",
+    "@types/node": "catalog:",
+    "cac": "catalog:",
+    "find-up": "catalog:",
+    "ts-node": "catalog:",
+    "typescript": "catalog:",
+    "unbuild": "catalog:"
+  }
+}

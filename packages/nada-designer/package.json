@@ -1,0 +1,65 @@
+{
+  "name": "nada-designer",
+  "version": "1.1.14",
+  "description": "基于 Vue3 的拖拽式低代码表单设计器 / 生成器（fork of epic-designer v1.1.13, MIT）",
+  "private": false,
+  "license": "MIT",
+  "author": "sunriseyuen",
+  "homepage": "https://github.com/smuki/nada-designer#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/smuki/nada-designer"
+  },
+  "bugs": {
+    "url": "https://github.com/smuki/nada-designer/issues"
+  },
+  "keywords": [
+    "表单设计",
+    "表单设计器",
+    "低代码",
+    "可视化",
+    "设计器",
+    "页面设计",
+    "设计工具",
+    "工作流",
+    "form",
+    "designer",
+    "nada-designer"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "lint": "eslint . --fix"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "typings": "dist/nada-designer/index.d.ts",
+  "peerDependencies": {
+    "monaco-editor": ">=0.48.0",
+    "vue": ">=3.1.0"
+  },
+  "dependencies": {
+    "@vueuse/core": "^12.2.0",
+    "jsep": "^1.4.0",
+    "vue-draggable-plus": "^0.6.1"
+  },
+  "optionalDependencies": {
+    "@nada-designer/antd": ">=1.1.14",
+    "@nada-designer/element-plus": ">=1.1.14",
+    "@nada-designer/naive-ui": ">=1.1.14"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.6",
+    "@unocss/preset-rem-to-px": "^0.65.3",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-node-externals": "^8.0.0",
+    "unocss": "^0.65.3",
+    "vitest": "^2.1.8",
+    "vue-tsc": "^2.2.0"
+  }
+}

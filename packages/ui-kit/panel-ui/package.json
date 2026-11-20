@@ -1,0 +1,14 @@
+{
+  "name": "@nada-designer/panel-ui",
+  "version": "1.1.13",
+  "description": "nada-designer panel-ui",
+  "author": "kchengz",
+  "type": "module",
+  "main": "./src/index.ts",
+  "dependencies": {
+    "vue-draggable-plus": "catalog:"
+  },
+  "devDependencies": {
+    "monaco-editor": "catalog:"
+  }
+}
