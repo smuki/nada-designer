@@ -1,0 +1,199 @@
+{
+  "businessObject": "expense",
+  "note": "报销单常用字段子集，用于快速验证设计器拖拽/属性面板",
+  "fields": [
+    {
+      "field": "code",
+      "label": "单号",
+      "type": "text",
+      "group": "单据信息"
+    },
+    {
+      "field": "title",
+      "label": "标题",
+      "type": "text",
+      "group": "单据信息"
+    },
+    {
+      "field": "submitterId",
+      "label": "提交人",
+      "type": "ref",
+      "entity": "organization.Staff",
+      "group": "单据信息"
+    },
+    {
+      "field": "submitDate",
+      "label": "提交日期",
+      "type": "date",
+      "group": "单据信息"
+    },
+    {
+      "field": "expenseDepartment",
+      "label": "费用承担部门",
+      "type": "ref",
+      "entity": "organization.Department",
+      "group": "系统字段"
+    },
+    {
+      "field": "expenseMoney",
+      "label": "报销金额",
+      "type": "money",
+      "group": "报销信息"
+    },
+    {
+      "field": "expenseDate",
+      "label": "报销日期",
+      "type": "date",
+      "group": "报销信息"
+    },
+    {
+      "field": "description",
+      "label": "描述",
+      "type": "text",
+      "group": "系统字段"
+    },
+    {
+      "field": "consumptionReasons",
+      "label": "消费事由",
+      "type": "text",
+      "group": "系统字段"
+    },
+    {
+      "field": "payMoney",
+      "label": "支付金额",
+      "type": "money",
+      "group": "支付信息"
+    },
+    {
+      "field": "paymentChannel",
+      "label": "支付方式",
+      "type": "text",
+      "group": "支付信息"
+    },
+    {
+      "field": "paymentAccountId",
+      "label": "企业账户",
+      "type": "ref",
+      "entity": "pay.PaymentAccount",
+      "group": "支付信息"
+    },
+    {
+      "field": "payDate",
+      "label": "支付日期",
+      "type": "date",
+      "group": "支付信息"
+    },
+    {
+      "field": "payerId",
+      "label": "付款人",
+      "type": "ref",
+      "entity": "organization.Staff",
+      "group": "支付信息"
+    },
+    {
+      "field": "payeeId",
+      "label": "收款信息",
+      "type": "ref",
+      "entity": "pay.PayeeInfo",
+      "group": "支付信息"
+    },
+    {
+      "field": "writtenOffMoney",
+      "label": "核销金额",
+      "type": "money",
+      "group": "核销信息"
+    },
+    {
+      "field": "settlementMoney",
+      "label": "结算金额",
+      "type": "money",
+      "group": "结算信息"
+    },
+    {
+      "field": "receiptMoney",
+      "label": "收款金额",
+      "type": "money",
+      "group": "收款信息"
+    },
+    {
+      "field": "reconciliationMoney",
+      "label": "对账金额",
+      "type": "money",
+      "group": "对账信息"
+    },
+    {
+      "field": "taxRate",
+      "label": "税率",
+      "type": "number",
+      "scale": 2,
+      "unit": "%",
+      "group": "系统字段"
+    },
+    {
+      "field": "taxAmount",
+      "label": "税额",
+      "type": "money",
+      "group": "系统字段"
+    },
+    {
+      "field": "noTaxAmount",
+      "label": "不计税金额",
+      "type": "money",
+      "group": "系统字段"
+    },
+    {
+      "field": "法人实体",
+      "label": "法人实体",
+      "type": "ref",
+      "entity": "basedata.Dimension.法人实体",
+      "group": "系统字段"
+    },
+    {
+      "field": "项目",
+      "label": "项目",
+      "type": "ref",
+      "entity": "basedata.Dimension.项目",
+      "group": "系统字段"
+    },
+    {
+      "field": "品类",
+      "label": "品类",
+      "type": "ref",
+      "entity": "basedata.Dimension.固定资产类目",
+      "group": "系统字段"
+    },
+    {
+      "field": "u_合同金额",
+      "label": "合同金额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_合同编号",
+      "label": "合同编号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_总天数",
+      "label": "总天数",
+      "type": "number",
+      "scale": 0,
+      "unit": "天",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否借款",
+      "label": "是否借款",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_申请事由",
+      "label": "申请事由",
+      "type": "text",
+      "group": "自定义字段"
+    }
+  ]
+}

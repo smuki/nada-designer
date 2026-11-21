@@ -5,7 +5,7 @@ import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { EBuilder } from '@nada-designer/core';
-import { Alert, Button, Tag } from 'ant-design-vue';
+import { Alert, Button, message, Tag } from 'ant-design-vue';
 
 import { getScenarioByKey } from './registry';
 
@@ -106,6 +106,19 @@ const expectMatched = computed(() => {
   return JSON.stringify(expect) === JSON.stringify(data.value);
 });
 
+/** 当前表单的 pageSchema JSON */
+const formJson = computed(() => JSON.stringify(pageSchema.value ?? {}, null, 2));
+
+/** 复制表单 JSON */
+async function copyFormJson() {
+  try {
+    await navigator.clipboard.writeText(formJson.value);
+    message.success('表单 JSON 已复制');
+  } catch {
+    message.error('复制失败，请手动选择复制');
+  }
+}
+
 watch(
   () => fixture.value?.key,
   () => {
@@ -187,6 +200,16 @@ watch(
           JSON.stringify(fixture, null, 2)
         }}</pre>
       </details>
+
+      <div>
+        <div class="mb-1 flex items-center justify-between">
+          <span class="font-bold">表单 JSON（pageSchema）</span>
+          <Button size="small" @click="copyFormJson">复制</Button>
+        </div>
+        <pre class="scenario-pre max-h-420px overflow-auto rounded p-2 text-12px">{{
+          formJson
+        }}</pre>
+      </div>
     </div>
   </div>
 </template>

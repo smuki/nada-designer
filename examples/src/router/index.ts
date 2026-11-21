@@ -4,6 +4,7 @@ import BaseLayout from '@/layout/baseLayout.vue';
 import BuilderLayout from '@/layout/builderLayout.vue';
 import Layout from '@/layout/index.vue';
 import { scenarioFixtures } from '@/views/builder/scenarios/registry';
+import { staticFormExamples } from '@/views/examples/staticFieldForm/registry';
 
 // 定义每个 UI 框架的子路由信息
 export const frameworkRoutes = [
@@ -139,6 +140,24 @@ export const frameworkRoutes = [
       },
       name: `scenario-${fixture.key}`,
       path: fixture.key as string,
+    })),
+  },
+  {
+    // 例子：易快报业务模板转换出的静态字段表单（每个模板一个菜单项）
+    component: BaseLayout,
+    meta: {
+      title: '例子',
+    },
+    name: 'examples',
+    path: '/:ui/examples',
+    children: staticFormExamples.map((example) => ({
+      component: () => import('@/views/examples/staticFieldForm/index.vue'),
+      meta: {
+        exampleKey: example.key,
+        title: example.active ? example.name : `${example.name}（停用）`,
+      },
+      name: `example-${example.key}`,
+      path: example.key,
     })),
   },
 ];

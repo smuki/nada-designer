@@ -1,0 +1,2583 @@
+{
+  "businessObject": "expense",
+  "source": "https://app.ekuaibao.com/api/flow/v2/propertySet?corpId=ID01PH4Q5CJboX",
+  "note": "由 build_mock.py 生成；businessObject 为占位值，可替换为真实业务对象标识",
+  "stats": {
+    "total": 406,
+    "supported": 361,
+    "skipped": 45,
+    "byType": {
+      "ref": 142,
+      "text": 108,
+      "money": 51,
+      "date": 29,
+      "number": 18,
+      "boolean": 13
+    }
+  },
+  "fields": [
+    {
+      "field": "detailStatus",
+      "label": "费用明细状态",
+      "type": "text",
+      "group": "费用明细"
+    },
+    {
+      "field": "rejectionNum",
+      "label": "驳回次数",
+      "type": "number",
+      "scale": 0,
+      "group": "单据信息"
+    },
+    {
+      "field": "reimbursementMoney",
+      "label": "报账金额",
+      "type": "money",
+      "group": "报账信息"
+    },
+    {
+      "field": "preApprovedNodeName",
+      "label": "前一审批节点名称",
+      "type": "text",
+      "group": "单据信息"
+    },
+    {
+      "field": "ownerId",
+      "label": "制单人",
+      "type": "ref",
+      "entity": "organization.Staff",
+      "group": "单据信息"
+    },
+    {
+      "field": "detailNo",
+      "label": "明细序号",
+      "type": "number",
+      "group": "费用明细"
+    },
+    {
+      "field": "validApprover",
+      "label": "审批人",
+      "type": "text",
+      "group": "单据信息"
+    },
+    {
+      "field": "outerCode",
+      "label": "外部系统单据编号",
+      "type": "text",
+      "group": "单据信息"
+    },
+    {
+      "field": "moneyInRepay",
+      "label": "还款中金额",
+      "type": "money",
+      "group": "借款信息"
+    },
+    {
+      "field": "E_system_支付计划_legalEntity",
+      "label": "支付计划_法人实体",
+      "type": "ref",
+      "entity": "basedata.Dimension.法人实体",
+      "group": "支付信息"
+    },
+    {
+      "field": "paymentPlanByApportion",
+      "label": "分摊生成支付计划",
+      "type": "boolean",
+      "group": "支付信息"
+    },
+    {
+      "field": "subsidyGeneration",
+      "label": "补助标识",
+      "type": "text",
+      "group": "单据信息"
+    },
+    {
+      "field": "optionalPayeeByZero",
+      "label": "支付为零收款账户非必填",
+      "type": "boolean",
+      "group": "费用明细"
+    },
+    {
+      "field": "u_审批统计",
+      "label": "审批统计",
+      "type": "ref",
+      "entity": "connect.BlockUI.APPROVAL_STATISTICS",
+      "group": "自定义字段"
+    },
+    {
+      "field": "tppBusinessType",
+      "label": "行程业务标识",
+      "type": "text",
+      "group": "申请信息"
+    },
+    {
+      "field": "ownerAndApproverPrintNodeFlag",
+      "label": "允许制单人和审批人打印节点标记",
+      "type": "boolean",
+      "group": "打印信息"
+    },
+    {
+      "field": "isAutoDetail",
+      "label": "是否自动生成的明细",
+      "type": "boolean",
+      "group": "费用明细"
+    },
+    {
+      "field": "onlyOwnerPrint",
+      "label": "仅制单人打印单据",
+      "type": "boolean",
+      "group": "打印信息"
+    },
+    {
+      "field": "flowEndTime",
+      "label": "单据审核通过日期",
+      "type": "date",
+      "group": "单据信息"
+    },
+    {
+      "field": "systemGenerationDetail",
+      "label": "系统生成的明细",
+      "type": "boolean",
+      "group": "费用明细"
+    },
+    {
+      "field": "alterFlag",
+      "label": "变更标识",
+      "type": "text",
+      "group": "申请信息"
+    },
+    {
+      "field": "tripMoney",
+      "label": "差旅行程报价金额",
+      "type": "money",
+      "group": "系统字段"
+    },
+    {
+      "field": "preNodeApprovedTime",
+      "label": "前一节点审批时间",
+      "type": "date",
+      "group": "单据信息"
+    },
+    {
+      "field": "receiptState",
+      "label": "回单状态",
+      "type": "text",
+      "group": "支付信息"
+    },
+    {
+      "field": "system_statement",
+      "label": "账单明细",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.system_账单",
+      "group": "系统字段"
+    },
+    {
+      "field": "systemGenerationSettle",
+      "label": "系统结算单据",
+      "type": "boolean",
+      "group": "单据信息"
+    },
+    {
+      "field": "E_system_rank",
+      "label": "职级预置",
+      "type": "ref",
+      "entity": "basedata.Dimension.职级预置",
+      "group": "预置维度"
+    },
+    {
+      "field": "E_system_post",
+      "label": "岗位预置",
+      "type": "ref",
+      "entity": "basedata.Dimension.岗位预置",
+      "group": "预置维度"
+    },
+    {
+      "field": "E_system_costcenter",
+      "label": "成本中心预置",
+      "type": "ref",
+      "entity": "basedata.Dimension.成本中心预置",
+      "group": "预置维度"
+    },
+    {
+      "field": "fiscalPeriod",
+      "label": "会计期间",
+      "type": "text",
+      "group": "ERP 凭证"
+    },
+    {
+      "field": "receiptDate",
+      "label": "收款日期(系统)",
+      "type": "date",
+      "group": "收款信息"
+    },
+    {
+      "field": "receiptMoney",
+      "label": "收款金额",
+      "type": "money",
+      "group": "收款信息"
+    },
+    {
+      "field": "payableDate",
+      "label": "应付日期(系统)",
+      "type": "date",
+      "group": "系统字段"
+    },
+    {
+      "field": "settlementMoney",
+      "label": "结算金额",
+      "type": "money",
+      "group": "结算信息"
+    },
+    {
+      "field": "reconciliationMoney",
+      "label": "对账金额",
+      "type": "money",
+      "group": "对账信息"
+    },
+    {
+      "field": "systemGeneration",
+      "label": "系统生成的单据",
+      "type": "boolean",
+      "group": "报销信息"
+    },
+    {
+      "field": "timeToEnterPendingPayment",
+      "label": "进入待支付时间",
+      "type": "date",
+      "group": "支付信息"
+    },
+    {
+      "field": "forbidOwnerPrint",
+      "label": "制单人不可打印",
+      "type": "boolean",
+      "group": "打印信息"
+    },
+    {
+      "field": "品类",
+      "label": "品类",
+      "type": "ref",
+      "entity": "basedata.Dimension.固定资产类目",
+      "group": "系统字段"
+    },
+    {
+      "field": "quantity",
+      "label": "数量",
+      "type": "number",
+      "scale": 0,
+      "group": "系统字段"
+    },
+    {
+      "field": "unitPrice",
+      "label": "单价",
+      "type": "money",
+      "group": "系统字段"
+    },
+    {
+      "field": "reviewStatus",
+      "label": "复核状态",
+      "type": "text",
+      "group": "报销信息"
+    },
+    {
+      "field": "invoiceBagCode",
+      "label": "发票袋编码",
+      "type": "text",
+      "group": "报销信息"
+    },
+    {
+      "field": "linkDetailEntityId",
+      "label": "关联的明细实例id",
+      "type": "text",
+      "group": "费用明细"
+    },
+    {
+      "field": "invoice",
+      "label": "发票张数",
+      "type": "number",
+      "scale": 0,
+      "unit": "张",
+      "group": "系统字段"
+    },
+    {
+      "field": "payPlanMode",
+      "label": "按金额支付",
+      "type": "boolean",
+      "group": "支付信息"
+    },
+    {
+      "field": "voucherNo",
+      "label": "凭证号",
+      "type": "text",
+      "group": "ERP 凭证"
+    },
+    {
+      "field": "voucherStatus",
+      "label": "凭证状态",
+      "type": "text",
+      "group": "ERP 凭证"
+    },
+    {
+      "field": "voucherCreateTime",
+      "label": "凭证生成时间",
+      "type": "date",
+      "group": "ERP 凭证"
+    },
+    {
+      "field": "dataLinkTemplateId",
+      "label": "业务对象模板",
+      "type": "ref",
+      "entity": "datalink.DataLinkTemplate",
+      "group": "业务对象"
+    },
+    {
+      "field": "dataLinkId",
+      "label": "业务对象实例",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity",
+      "group": "业务对象"
+    },
+    {
+      "field": "printCount",
+      "label": "打印次数",
+      "type": "number",
+      "scale": 0,
+      "unit": "次",
+      "group": "打印信息"
+    },
+    {
+      "field": "printState",
+      "label": "打印状态",
+      "type": "text",
+      "group": "打印信息"
+    },
+    {
+      "field": "lastPrinter",
+      "label": "最后打印人",
+      "type": "ref",
+      "entity": "organization.Staff",
+      "group": "打印信息"
+    },
+    {
+      "field": "lastPrintTime",
+      "label": "最后打印时间",
+      "type": "date",
+      "group": "打印信息"
+    },
+    {
+      "field": "法人实体",
+      "label": "法人实体",
+      "type": "ref",
+      "entity": "basedata.Dimension.法人实体",
+      "group": "系统字段"
+    },
+    {
+      "field": "linkRequisitionInfo",
+      "label": "补充申请",
+      "type": "ref",
+      "entity": "requisition.RequisitionInfo",
+      "group": "申请信息"
+    },
+    {
+      "field": "invoiceType",
+      "label": "发票类型",
+      "type": "ref",
+      "entity": "basedata.Enum.InvoiceType",
+      "group": "系统字段"
+    },
+    {
+      "field": "noTaxAmount",
+      "label": "不计税金额",
+      "type": "money",
+      "group": "系统字段"
+    },
+    {
+      "field": "taxAmount",
+      "label": "税额",
+      "type": "money",
+      "group": "系统字段"
+    },
+    {
+      "field": "taxRate",
+      "label": "税率",
+      "type": "number",
+      "scale": 2,
+      "unit": "%",
+      "group": "系统字段"
+    },
+    {
+      "field": "tripId",
+      "label": "行程明细ID",
+      "type": "text",
+      "group": "行程信息"
+    },
+    {
+      "field": "tripDate",
+      "label": "行程日期",
+      "type": "date",
+      "group": "行程信息"
+    },
+    {
+      "field": "tripCity",
+      "label": "住宿地",
+      "type": "ref",
+      "entity": "basedata.city",
+      "group": "行程信息"
+    },
+    {
+      "field": "tripFromCity",
+      "label": "出发地",
+      "type": "ref",
+      "entity": "basedata.city",
+      "group": "行程信息"
+    },
+    {
+      "field": "tripToCity",
+      "label": "目的地",
+      "type": "ref",
+      "entity": "basedata.city",
+      "group": "行程信息"
+    },
+    {
+      "field": "tripTypeId",
+      "label": "行程类型",
+      "type": "ref",
+      "entity": "trip.TripType",
+      "group": "行程信息"
+    },
+    {
+      "field": "companyRealPay",
+      "label": "企业已付金额",
+      "type": "money",
+      "group": "系统字段"
+    },
+    {
+      "field": "state",
+      "label": "审批状态",
+      "type": "text",
+      "group": "单据信息"
+    },
+    {
+      "field": "specificationId",
+      "label": "单据模板",
+      "type": "ref",
+      "entity": "form.Specification.Versioned",
+      "group": "单据信息"
+    },
+    {
+      "field": "code",
+      "label": "单号",
+      "type": "text",
+      "group": "单据信息"
+    },
+    {
+      "field": "title",
+      "label": "标题",
+      "type": "text",
+      "group": "单据信息"
+    },
+    {
+      "field": "submitterId",
+      "label": "提交人",
+      "type": "ref",
+      "entity": "organization.Staff",
+      "group": "单据信息"
+    },
+    {
+      "field": "submitDate",
+      "label": "提交日期",
+      "type": "date",
+      "group": "单据信息"
+    },
+    {
+      "field": "writtenOffMoney",
+      "label": "核销金额",
+      "type": "money",
+      "group": "核销信息"
+    },
+    {
+      "field": "loanDepartment",
+      "label": "借款部门",
+      "type": "ref",
+      "entity": "organization.Department",
+      "group": "借款信息"
+    },
+    {
+      "field": "loanMoney",
+      "label": "借款金额",
+      "type": "money",
+      "group": "借款信息"
+    },
+    {
+      "field": "loanDate",
+      "label": "借款日期",
+      "type": "date",
+      "group": "借款信息"
+    },
+    {
+      "field": "repaymentDate",
+      "label": "还款日期",
+      "type": "date",
+      "group": "借款信息"
+    },
+    {
+      "field": "expenseDepartment",
+      "label": "费用承担部门",
+      "type": "ref",
+      "entity": "organization.Department",
+      "group": "系统字段"
+    },
+    {
+      "field": "expenseMoney",
+      "label": "报销金额",
+      "type": "money",
+      "group": "报销信息"
+    },
+    {
+      "field": "expenseDate",
+      "label": "报销日期",
+      "type": "date",
+      "group": "报销信息"
+    },
+    {
+      "field": "payMoney",
+      "label": "支付金额",
+      "type": "money",
+      "group": "支付信息"
+    },
+    {
+      "field": "paymentChannel",
+      "label": "支付方式",
+      "type": "text",
+      "group": "支付信息"
+    },
+    {
+      "field": "paymentAccountId",
+      "label": "企业账户",
+      "type": "ref",
+      "entity": "pay.PaymentAccount",
+      "group": "支付信息"
+    },
+    {
+      "field": "payDate",
+      "label": "支付日期",
+      "type": "date",
+      "group": "支付信息"
+    },
+    {
+      "field": "payerId",
+      "label": "付款人",
+      "type": "ref",
+      "entity": "organization.Staff",
+      "group": "支付信息"
+    },
+    {
+      "field": "payeeId",
+      "label": "收款信息",
+      "type": "ref",
+      "entity": "pay.PayeeInfo",
+      "group": "支付信息"
+    },
+    {
+      "field": "feeTypeId",
+      "label": "费用明细",
+      "type": "ref",
+      "entity": "flow.FeeType",
+      "group": "费用明细"
+    },
+    {
+      "field": "amount",
+      "label": "费用金额",
+      "type": "money",
+      "group": "费用明细"
+    },
+    {
+      "field": "sense",
+      "label": "敏感字段",
+      "type": "text",
+      "group": "系统字段"
+    },
+    {
+      "field": "项目",
+      "label": "项目",
+      "type": "ref",
+      "entity": "basedata.Dimension.项目",
+      "group": "系统字段"
+    },
+    {
+      "field": "feeDate",
+      "label": "消费日期",
+      "type": "date",
+      "group": "系统字段"
+    },
+    {
+      "field": "description",
+      "label": "描述",
+      "type": "text",
+      "group": "系统字段"
+    },
+    {
+      "field": "consumptionReasons",
+      "label": "消费事由",
+      "type": "text",
+      "group": "系统字段"
+    },
+    {
+      "field": "apportionPercent",
+      "label": "分摊比例",
+      "type": "number",
+      "scale": 4,
+      "unit": "%",
+      "group": "分摊信息"
+    },
+    {
+      "field": "apportionMoney",
+      "label": "分摊金额",
+      "type": "money",
+      "group": "分摊信息"
+    },
+    {
+      "field": "requisitionDate",
+      "label": "申请日期",
+      "type": "date",
+      "group": "申请信息"
+    },
+    {
+      "field": "requisitionMoney",
+      "label": "申请金额",
+      "type": "money",
+      "group": "申请信息"
+    },
+    {
+      "field": "expenseLink",
+      "label": "关联申请",
+      "type": "ref",
+      "entity": "requisition.RequisitionInfo",
+      "group": "关联申请"
+    },
+    {
+      "field": "city",
+      "label": "消费城市",
+      "type": "ref",
+      "entity": "basedata.city",
+      "group": "系统字段"
+    },
+    {
+      "field": "fromCity",
+      "label": "出发地",
+      "type": "ref",
+      "entity": "basedata.city",
+      "group": "系统字段"
+    },
+    {
+      "field": "toCity",
+      "label": "目的地",
+      "type": "ref",
+      "entity": "basedata.city",
+      "group": "系统字段"
+    },
+    {
+      "field": "detailId",
+      "label": "明细id",
+      "type": "text",
+      "group": "费用明细"
+    },
+    {
+      "field": "apportionId",
+      "label": "分摊id",
+      "type": "text",
+      "group": "分摊信息"
+    },
+    {
+      "field": "feeDetailPayeeId",
+      "label": "收款信息(明细)",
+      "type": "ref",
+      "entity": "pay.PayeeInfo",
+      "group": "费用明细"
+    },
+    {
+      "field": "multiplePayeesMode",
+      "label": "多收款人模式",
+      "type": "boolean",
+      "group": "费用明细"
+    },
+    {
+      "field": "loanBalance",
+      "label": "借款余额",
+      "type": "money",
+      "group": "借款信息"
+    },
+    {
+      "field": "payeePayPlan",
+      "label": "按收款人汇总支付",
+      "type": "boolean",
+      "group": "支付信息"
+    },
+    {
+      "field": "requisitionBalance",
+      "label": "申请余额",
+      "type": "money",
+      "group": "申请信息"
+    },
+    {
+      "field": "contractCode",
+      "label": "合同编码标识(系统默认)",
+      "type": "text",
+      "group": "合同结算"
+    },
+    {
+      "field": "contractEffectiveDate",
+      "label": "合同生效日期(系统默认)",
+      "type": "date",
+      "group": "合同结算"
+    },
+    {
+      "field": "contractTerminationDate",
+      "label": "合同终止日期(系统默认)",
+      "type": "date",
+      "group": "合同结算"
+    },
+    {
+      "field": "contractAmount",
+      "label": "合同金额(系统默认)",
+      "type": "money",
+      "group": "合同结算"
+    },
+    {
+      "field": "E_system_supplier",
+      "label": "供应商(系统)",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.b9155d04bebe47e73fc0",
+      "group": "预置维度"
+    },
+    {
+      "field": "amortizeMoney",
+      "label": "摊销金额(系统默认)",
+      "type": "money",
+      "group": "摊销信息"
+    },
+    {
+      "field": "amortizePercent",
+      "label": "摊销比例(系统默认)",
+      "type": "number",
+      "scale": 2,
+      "unit": "%",
+      "group": "摊销信息"
+    },
+    {
+      "field": "amortizeId",
+      "label": "摊销ID(系统默认)",
+      "type": "text",
+      "group": "摊销信息"
+    },
+    {
+      "field": "amortizeMonth",
+      "label": "摊销月份(系统默认)",
+      "type": "date",
+      "group": "摊销信息"
+    },
+    {
+      "field": "amortizeDays",
+      "label": "每期天数(系统默认)",
+      "type": "number",
+      "scale": 0,
+      "group": "摊销信息"
+    },
+    {
+      "field": "amortizeAmount",
+      "label": "报账单摊销金额(系统默认)",
+      "type": "money",
+      "group": "摊销信息"
+    },
+    {
+      "field": "executeId",
+      "label": "执行摊销批次号(系统默认)",
+      "type": "text",
+      "group": "摊销信息"
+    },
+    {
+      "field": "amortizePlanId",
+      "label": "摊销台账ID(系统默认)",
+      "type": "text",
+      "group": "摊销信息"
+    },
+    {
+      "field": "E_system_relate_contract",
+      "label": "付款合同(系统默认)",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.eb155d049a175a1bfbc0",
+      "group": "合同结算"
+    },
+    {
+      "field": "E_system_payment_plan_read",
+      "label": "付款计划(系统默认)",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.f9155d048aa316a80fc0",
+      "group": "合同结算"
+    },
+    {
+      "field": "partialPayState",
+      "label": "部分支付状态",
+      "type": "ref",
+      "entity": "basedata.Enum.PartialPayState",
+      "group": "支付信息"
+    },
+    {
+      "field": "actuallyPaidMoney",
+      "label": "实付金额",
+      "type": "money",
+      "group": "支付信息"
+    },
+    {
+      "field": "flowInvoiceTotalAmount",
+      "label": "单据发票总金额",
+      "type": "money",
+      "group": "发票信息"
+    },
+    {
+      "field": "detailInvoiceTotalAmount",
+      "label": "明细发票总金额",
+      "type": "money",
+      "group": "发票信息"
+    },
+    {
+      "field": "settlement",
+      "label": "结算方式",
+      "type": "ref",
+      "entity": "basedata.Settlement",
+      "group": "系统字段"
+    },
+    {
+      "field": "receivingCurrency",
+      "label": "收款币种",
+      "type": "text",
+      "group": "单据信息"
+    },
+    {
+      "field": "receivingAmount",
+      "label": "费用收款金额",
+      "type": "money",
+      "group": "单据信息"
+    },
+    {
+      "field": "u_订票人",
+      "label": "订票人",
+      "type": "ref",
+      "entity": "organization.Staff",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_行程订单",
+      "label": "行程订单",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.d1155d04b68a8ff8abc0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_用车制度",
+      "label": "用车制度",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.d9155d046942aaf10fc0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_关联合同流程",
+      "label": "关联合同流程",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.af15be9234f71a3703c0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_银行账号申请类型",
+      "label": "银行账号申请类型",
+      "type": "ref",
+      "entity": "basedata.Dimension.银行账号申请类型",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开户主体",
+      "label": "开户主体",
+      "type": "ref",
+      "entity": "basedata.Dimension.法人实体",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_银行账号开户类型",
+      "label": "银行账号开户类型",
+      "type": "ref",
+      "entity": "basedata.Dimension.银行账号开户类型",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_注销主体",
+      "label": "注销主体",
+      "type": "ref",
+      "entity": "basedata.Dimension.法人实体",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_注销账户",
+      "label": "注销账户",
+      "type": "ref",
+      "entity": "basedata.Dimension.调出银行账号",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开户名称",
+      "label": "开户名称",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_联行号",
+      "label": "联行号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_账号简述",
+      "label": "账号简述",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开户币种",
+      "label": "开户币种",
+      "type": "ref",
+      "entity": "basedata.Dimension.开户币种",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开户银行科目",
+      "label": "开户银行科目",
+      "type": "ref",
+      "entity": "basedata.Dimension.开户银行科目",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开户银行账号",
+      "label": "开户银行账号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开户类型",
+      "label": "开户类型",
+      "type": "ref",
+      "entity": "basedata.Dimension.银行账号开户类型",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_银行账号",
+      "label": "银行账号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_银行账号币种",
+      "label": "银行账号币种",
+      "type": "ref",
+      "entity": "basedata.Dimension.开户币种",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_银行科目",
+      "label": "银行科目",
+      "type": "ref",
+      "entity": "basedata.Dimension.开户银行科目",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_支出事由",
+      "label": "支出事由",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_内部备注",
+      "label": "内部备注",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_成本中心",
+      "label": "成本中心",
+      "type": "ref",
+      "entity": "basedata.Dimension.成本中心",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_申请人成本中心",
+      "label": "申请人成本中心",
+      "type": "ref",
+      "entity": "basedata.Dimension.成本中心",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_申请人归属公司",
+      "label": "申请人归属公司",
+      "type": "ref",
+      "entity": "basedata.Dimension.法人实体",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否借款",
+      "label": "是否借款",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_借款类型",
+      "label": "借款类型",
+      "type": "ref",
+      "entity": "basedata.Dimension.借款类型",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_申请人部门",
+      "label": "申请人部门",
+      "type": "ref",
+      "entity": "organization.Department",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_直接上级",
+      "label": "直接上级",
+      "type": "ref",
+      "entity": "organization.Staff",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_二级上级",
+      "label": "二级上级加错",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_二级领导",
+      "label": "二级上级",
+      "type": "ref",
+      "entity": "organization.Staff",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否代报销",
+      "label": "是否代报销",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_实际报销人",
+      "label": "实际报销人",
+      "type": "ref",
+      "entity": "organization.Staff",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否境外付款",
+      "label": "是否境外付款",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_付款金额",
+      "label": "付款金额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_发票金额",
+      "label": "发票金额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_实际报销人成本中心",
+      "label": "实际报销人成本中心",
+      "type": "ref",
+      "entity": "basedata.Dimension.成本中心",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_常驻地",
+      "label": "常驻地",
+      "type": "ref",
+      "entity": "basedata.city",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_预计付款日期",
+      "label": "预计付款日期",
+      "type": "date",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否签署合同",
+      "label": "是否签署合同",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_供应商编码",
+      "label": "供应商编码",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_关联供应商",
+      "label": "关联供应商",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.fc15be911db53f66d3c0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_供应商名称",
+      "label": "供应商名称",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否付款",
+      "label": "是否付款",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_系统来源",
+      "label": "系统来源",
+      "type": "ref",
+      "entity": "basedata.Dimension.系统来源",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_资金属性",
+      "label": "资金属性",
+      "type": "ref",
+      "entity": "basedata.Dimension.资金属性",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_外部单据编号",
+      "label": "外部单据编号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_合思提单判断",
+      "label": "合思提单判断",
+      "type": "boolean",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_资金用途",
+      "label": "资金用途",
+      "type": "ref",
+      "entity": "basedata.Dimension.资金用途",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_摘要",
+      "label": "摘要",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_资金调出公司",
+      "label": "资金调出公司",
+      "type": "ref",
+      "entity": "basedata.Dimension.法人实体",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_调出银行账号",
+      "label": "调出银行账号",
+      "type": "ref",
+      "entity": "basedata.Dimension.调出银行账号",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_上游系统来源",
+      "label": "上游系统来源",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_上游系统审批状态",
+      "label": "上游系统审批状态",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_办结时间",
+      "label": "办结时间",
+      "type": "date",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_发起时间",
+      "label": "发起时间",
+      "type": "date",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_跳转链接",
+      "label": "跳转链接",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_预算新建或调整",
+      "label": "预算新建或调整",
+      "type": "ref",
+      "entity": "basedata.Dimension.预算新建或调整",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_预算部门",
+      "label": "预算部门",
+      "type": "ref",
+      "entity": "basedata.Dimension.预算部门",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_预算管报科目",
+      "label": "预算管报科目",
+      "type": "ref",
+      "entity": "basedata.Dimension.预算管报科目",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_预算范围",
+      "label": "预算范围",
+      "type": "ref",
+      "entity": "basedata.Dimension.预算范围",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_关联历史发票",
+      "label": "关联历史发票",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.ad15c69070bf02a9efc0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_关联先款流程",
+      "label": "关联先款流程",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.f115c692626825e38bc0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_关联项目预算",
+      "label": "关联项目预算",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.c015c695f0dd406e0fc0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_出差申请",
+      "label": "出差申请",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.f715be8fb0918c9303c0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_进项税转出",
+      "label": "进项税转出",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_发票号",
+      "label": "发票号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_办公地点",
+      "label": "办公地点",
+      "type": "ref",
+      "entity": "basedata.Dimension.办公地点",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_招待对象",
+      "label": "招待对象",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_对方参与人数",
+      "label": "对方参与人数",
+      "type": "number",
+      "scale": 0,
+      "unit": "人",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_我方参与人数",
+      "label": "我方参与人数",
+      "type": "number",
+      "scale": 0,
+      "unit": "人",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_总人数",
+      "label": "总人数",
+      "type": "number",
+      "scale": 0,
+      "unit": "人",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_关联采购订单",
+      "label": "关联采购订单",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.ca15c68f4f68453cb3c0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_关联资产入库申请",
+      "label": "关联资产入库申请",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.df15bea54b6bc3b383c0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_金蝶卡片编码",
+      "label": "金蝶卡片编码",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_核销发票金额",
+      "label": "核销发票金额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_支付账号名称",
+      "label": "支付账号名称",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_支付账号ID",
+      "label": "支付账号ID",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开票类型",
+      "label": "开票类型",
+      "type": "ref",
+      "entity": "basedata.Dimension.发票类型",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开票公司名称",
+      "label": "开票公司名称",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_纳税人识别号",
+      "label": "纳税人识别号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_地址和电话",
+      "label": "地址和电话",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开户行及账号",
+      "label": "开户行及账号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_货物或应税劳务服务名称",
+      "label": "货物或应税劳务、服务名称",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否有规格型号及其他要求",
+      "label": "是否有规格型号及其他要求",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_对方要求",
+      "label": "对方要求",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_资金调入公司",
+      "label": "资金调入公司",
+      "type": "ref",
+      "entity": "basedata.Dimension.法人实体",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_财务资料",
+      "label": "财务资料",
+      "type": "ref",
+      "entity": "basedata.Dimension.申请资料类型",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_预提归属日期",
+      "label": "预提归属日期",
+      "type": "date",
+      "group": "自定义字段"
+    },
+    {
+      "field": "beforeAdjustAmount",
+      "label": "调整前总金额",
+      "type": "money",
+      "group": "预算信息"
+    },
+    {
+      "field": "afterAdjustAmount",
+      "label": "调整后总金额",
+      "type": "money",
+      "group": "预算信息"
+    },
+    {
+      "field": "u_航班舱型",
+      "label": "航班舱型",
+      "type": "ref",
+      "entity": "basedata.Enum.CabinType",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_火车席别",
+      "label": "火车席别",
+      "type": "ref",
+      "entity": "basedata.Enum.TrainSeatType",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_轮船舱型",
+      "label": "轮船舱型",
+      "type": "ref",
+      "entity": "basedata.Enum.CruiseCabinType",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_住宿人数",
+      "label": "住宿人数",
+      "type": "ref",
+      "entity": "basedata.Dimension.住宿人数",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_token费",
+      "label": "token费",
+      "type": "ref",
+      "entity": "basedata.Dimension.AI软件费",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_预付费用类型",
+      "label": "预付费用类型",
+      "type": "ref",
+      "entity": "basedata.Dimension.预付费用类型",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_特殊标签",
+      "label": "特殊标签",
+      "type": "ref",
+      "entity": "basedata.Dimension.特殊标签",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否视同销售",
+      "label": "是否视同销售",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否含纸质票据",
+      "label": "是否含纸质票据",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_OA文本",
+      "label": "OA文本",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否质检指定的成本中心",
+      "label": "是否质检指定的成本中心",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_行车记录",
+      "label": "行车记录",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.c715d63c7fcfdb3967c0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_票和款差额",
+      "label": "票和款差额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_凭证摘要",
+      "label": "凭证摘要",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_人均",
+      "label": "人均",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_招待费超标",
+      "label": "招待费超标",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_住宿标准",
+      "label": "住宿标准",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_住宿限额",
+      "label": "住宿限额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_打车限额",
+      "label": "打车限额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否必须有票",
+      "label": "是否必须有票",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_门店的成本中心",
+      "label": "门店的成本中心",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_预付序号",
+      "label": "预付序号",
+      "type": "number",
+      "scale": 0,
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_预付费用类型个数",
+      "label": "预付费用类型个数",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_人名搜索成本中心",
+      "label": "人名搜索成本中心",
+      "type": "ref",
+      "entity": "organization.Staff",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_关联项目预算流程",
+      "label": "关联项目预算流程",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.fa160ae743a7605bbbc0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_合同编号",
+      "label": "合同编号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_合同类别",
+      "label": "合同类别",
+      "type": "ref",
+      "entity": "basedata.Dimension.合同类别",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_合同金额",
+      "label": "合同金额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开始时间",
+      "label": "开始时间",
+      "type": "date",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_结束时间",
+      "label": "结束时间",
+      "type": "date",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_总天数",
+      "label": "总天数",
+      "type": "number",
+      "scale": 0,
+      "unit": "天",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_付款方式",
+      "label": "付款方式",
+      "type": "ref",
+      "entity": "basedata.Dimension.付款方式",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_摊销费用名称",
+      "label": "摊销费用名称",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_摊销费用类型",
+      "label": "摊销费用类型",
+      "type": "ref",
+      "entity": "basedata.Dimension.摊销费用类型",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_当期租金开始日期",
+      "label": "当期租金开始日期",
+      "type": "date",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_当期租金结束日期",
+      "label": "当期租金结束日期",
+      "type": "date",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_当期天数",
+      "label": "当期天数",
+      "type": "number",
+      "scale": 0,
+      "unit": "天",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_摊销方式",
+      "label": "摊销方式",
+      "type": "ref",
+      "entity": "basedata.Dimension.摊销方式",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_摊销计算方式",
+      "label": "摊销计算方式",
+      "type": "ref",
+      "entity": "basedata.Dimension.摊销计算方式",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_折现率",
+      "label": "折现率",
+      "type": "number",
+      "scale": 2,
+      "unit": "%",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_北森申请单号",
+      "label": "北森申请单号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_资金调拨原始单号",
+      "label": "资金调拨原始单号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_调整后金额",
+      "label": "调整后金额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_调整金额",
+      "label": "调整金额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_提醒",
+      "label": "提醒",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_关联资产申请金额",
+      "label": "关联资产申请金额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_使用权摊销明细",
+      "label": "使用权摊销明细",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.e816139ba5e1cd4ae3c0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_利息",
+      "label": "利息",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_当月摊销费用金额",
+      "label": "当月摊销费用金额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_实际报销人部门",
+      "label": "实际报销人部门",
+      "type": "ref",
+      "entity": "organization.Department",
+      "group": "自定义字段"
+    },
+    {
+      "field": "legalEntityMultiCurrency",
+      "label": "法人实体多币种",
+      "type": "ref",
+      "entity": "basedata.Dimension.法人实体",
+      "group": "系统字段"
+    },
+    {
+      "field": "u_预算部门编码",
+      "label": "预算部门编码",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_项目预算编码",
+      "label": "项目预算编码",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.fa160ae743a7605bbbc0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_关联直线摊销",
+      "label": "关联直线摊销",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.e416248e37f157934fc0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_调整前金额",
+      "label": "调整前金额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_项目预算申请金额",
+      "label": "项目预算申请金额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_项目预算预编码",
+      "label": "项目预算预编码",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_按人员搜索成本中心",
+      "label": "按人员搜索成本中心",
+      "type": "ref",
+      "entity": "organization.Staff",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_搜索成本中心",
+      "label": "搜索成本中心",
+      "type": "ref",
+      "entity": "basedata.Dimension.成本中心",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_流水号",
+      "label": "流水号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_SRM发票类型",
+      "label": "SRM发票类型",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_付款条件",
+      "label": "付款条件",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "AI_Sampling",
+      "label": "智能审批_人工抽检",
+      "type": "text",
+      "group": "单据信息"
+    },
+    {
+      "field": "AI_Approval_Result",
+      "label": "智能审批_AI审核结果",
+      "type": "text",
+      "group": "单据信息"
+    },
+    {
+      "field": "u_合同名称",
+      "label": "合同名称",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_激励码开始日期",
+      "label": "激励码开始日期",
+      "type": "date",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_激励码截止日期",
+      "label": "激励码截止日期",
+      "type": "date",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_激励码",
+      "label": "激励码",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_支付比例",
+      "label": "支付比例",
+      "type": "number",
+      "scale": 2,
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_易商卡海外版连连消费",
+      "label": "易商卡海外版连连消费",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.d61677efa7f5c5aea3c0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_申请事由",
+      "label": "申请事由",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_预算余额",
+      "label": "预算余额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_项目名称",
+      "label": "项目名称",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否红冲",
+      "label": "是否红冲",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_红冲类型",
+      "label": "红冲类型",
+      "type": "ref",
+      "entity": "basedata.Dimension.红冲类型",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_红冲原因",
+      "label": "红冲原因",
+      "type": "ref",
+      "entity": "basedata.Dimension.红冲原因",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开票方税号",
+      "label": "开票方税号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_地址",
+      "label": "地址",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_电话",
+      "label": "电话",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开户行",
+      "label": "开户行",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_账号",
+      "label": "账号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否涉及集团内部公司",
+      "label": "是否涉及集团内部公司",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_收票方主体名称",
+      "label": "收票方主体名称",
+      "type": "ref",
+      "entity": "basedata.Dimension.法人实体",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_收票方名称",
+      "label": "收票方名称",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_收票方税号",
+      "label": "收票方税号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_收票方银行账号",
+      "label": "收票方银行账号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_收票方开户行",
+      "label": "收票方开户行",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_收票方地址",
+      "label": "收票方地址",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_收票方电话",
+      "label": "收票方电话",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_原开票申请流程号",
+      "label": "原开票申请流程号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_收票邮箱",
+      "label": "收票邮箱",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开票人",
+      "label": "开票人",
+      "type": "ref",
+      "entity": "organization.Staff",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开票公司主体名称",
+      "label": "开票公司主体名称",
+      "type": "ref",
+      "entity": "basedata.Dimension.法人实体",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开票项目名称",
+      "label": "开票项目名称",
+      "type": "ref",
+      "entity": "basedata.Dimension.开票项目名称",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_税编",
+      "label": "税编",
+      "type": "ref",
+      "entity": "basedata.Dimension.税编",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开票税率",
+      "label": "开票税率",
+      "type": "ref",
+      "entity": "basedata.Dimension.开票税率",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_规格型号",
+      "label": "规格型号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_单位",
+      "label": "单位",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_车辆类型",
+      "label": "车辆类型",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_车牌照号",
+      "label": "车牌照号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_登记证号",
+      "label": "登记证号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_厂牌型号",
+      "label": "厂牌型号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_车辆识别代号车架号码",
+      "label": "车辆识别代号/车架号码",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_转入地车辆管理所名称",
+      "label": "转入地车辆管理所名称",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_新开后回写发票",
+      "label": "新开后回写发票",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.b916a54e6f55a6f3c3c0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开票台账",
+      "label": "开票台账",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.b916a54e6f55a6f3c3c0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_原始发票号",
+      "label": "原始发票号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_收票方公司名称",
+      "label": "收票方公司名称",
+      "type": "ref",
+      "entity": "basedata.Dimension.法人实体",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_发票开具类型",
+      "label": "发票开具类型",
+      "type": "ref",
+      "entity": "basedata.Dimension.开票类型",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_可修改开票金额",
+      "label": "可修改开票金额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_折让比例",
+      "label": "折让比例",
+      "type": "number",
+      "scale": 4,
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_折让金额",
+      "label": "折让金额",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开票方向",
+      "label": "开票方向",
+      "type": "ref",
+      "entity": "basedata.Dimension.开票方向",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_购买方类型",
+      "label": "购买方类型",
+      "type": "ref",
+      "entity": "basedata.Dimension.购买方类型",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_购买方证件号码",
+      "label": "购买方证件号码",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_购买方国籍",
+      "label": "购买方国籍",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_购买方地址",
+      "label": "购买方地址",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_购买方电话",
+      "label": "购买方电话",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_购买方证件类型",
+      "label": "购买方证件类型",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_模板类型",
+      "label": "模板类型",
+      "type": "ref",
+      "entity": "basedata.Dimension.模板类型",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_不计税金额公式",
+      "label": "不计税金额公式",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_发票备注栏",
+      "label": "发票备注栏",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_上门的成本中心",
+      "label": "上门的成本中心",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_车价合计",
+      "label": "车价合计",
+      "type": "money",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_购买人名称",
+      "label": "购买人名称",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_车辆类型档案",
+      "label": "车辆类型档案",
+      "type": "ref",
+      "entity": "basedata.Dimension.车辆类型",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_退票日期",
+      "label": "退票日期",
+      "type": "date",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_原付款单号",
+      "label": "原付款单号",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否采货侠",
+      "label": "是否采货侠",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_增值税特殊管理",
+      "label": "增值税特殊管理",
+      "type": "ref",
+      "entity": "basedata.Dimension.增值税特殊管理",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_零税率标识",
+      "label": "零税率标识",
+      "type": "ref",
+      "entity": "basedata.Dimension.零税率标识",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否使用优惠政策",
+      "label": "是否使用优惠政策",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否使用优惠政策",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_最终税率",
+      "label": "最终税率",
+      "type": "ref",
+      "entity": "basedata.Dimension.开票税率",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_合同编码",
+      "label": "合同编码",
+      "type": "text",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_易商卡海外版万里汇消费",
+      "label": "易商卡海外版万里汇消费",
+      "type": "ref",
+      "entity": "datalink.DataLinkEntity.a716e2f2cb81d8d21fc0",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_是否线下开票",
+      "label": "是否线下开票",
+      "type": "ref",
+      "entity": "basedata.Dimension.是否",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_开票单据模板",
+      "label": "开票单据模板",
+      "type": "ref",
+      "entity": "basedata.Dimension.单据模板",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_减按征税标识",
+      "label": "减按征税标识",
+      "type": "ref",
+      "entity": "basedata.Dimension.减按征税标识",
+      "group": "自定义字段"
+    },
+    {
+      "field": "u_退票收款账号",
+      "label": "退票收款账号",
+      "type": "text",
+      "group": "自定义字段"
+    }
+  ],
+  "skipped": [
+    {
+      "name": "corporateExpenseCardForm",
+      "label": "申请易商卡线下消费",
+      "reason": "unsupported dataType: corporateExpenseCard"
+    },
+    {
+      "name": "flowLinks",
+      "label": "单据查询",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "checkingBillInfo",
+      "label": "账单信息",
+      "reason": "unsupported dataType: checkingBillInfo"
+    },
+    {
+      "name": "checkingBillForm",
+      "label": "对账单",
+      "reason": "unsupported dataType: supplier"
+    },
+    {
+      "name": "u_借款统计(系统)",
+      "label": "借款统计(系统)",
+      "reason": "invalid charset (特殊字符/中划线等)"
+    },
+    {
+      "name": "splitCalculation",
+      "label": "拆分计算",
+      "reason": "unsupported dataType: splitCalculation"
+    },
+    {
+      "name": "profitAndLossSummary",
+      "label": "损益小结",
+      "reason": "unsupported dataType: profitAndLossSummary"
+    },
+    {
+      "name": "expenseMoneySumByCurrency",
+      "label": "报销金额按币种",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "writtenOffSumByCurrency",
+      "label": "核销金额按币种",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "companyRealPaySumByCurrency",
+      "label": "企业已付金额按币种",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "payMoneySumByCurrency",
+      "label": "支付金额按币种",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "writtenOffByDetails",
+      "label": "按明细核销",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "payMoneyByDetails",
+      "label": "按明细支付",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "expenseLinks",
+      "label": "关联申请(按明细)",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "linkDetailEntities",
+      "label": "关联明细(多)",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "payPlan",
+      "label": "支付计划",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "dataLinkForm",
+      "label": "业务对象明细",
+      "reason": "unsupported dataType: dynamic"
+    },
+    {
+      "name": "travelers",
+      "label": "出行人",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "invoiceForm",
+      "label": "发票",
+      "reason": "unsupported dataType: invoice"
+    },
+    {
+      "name": "order",
+      "label": "订单详情",
+      "reason": "unsupported dataType: permitOrder"
+    },
+    {
+      "name": "tripDatePeriod",
+      "label": "住宿日期",
+      "reason": "unsupported dataType: dateRange"
+    },
+    {
+      "name": "tripForm",
+      "label": "行程明细",
+      "reason": "unsupported dataType: dynamic"
+    },
+    {
+      "name": "trips",
+      "label": "差旅行程",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "details",
+      "label": "费用明细",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "feeTypeForm",
+      "label": "费用明细",
+      "reason": "unsupported dataType: dynamic"
+    },
+    {
+      "name": "attachments",
+      "label": "附件",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "orders",
+      "label": "第三方信息",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "feeDatePeriod",
+      "label": "消费起止日期",
+      "reason": "unsupported dataType: dateRange"
+    },
+    {
+      "name": "apportions",
+      "label": "分摊明细",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "apportionForm",
+      "label": "分摊明细",
+      "reason": "unsupported dataType: dynamic"
+    },
+    {
+      "name": "reconcileResultForm",
+      "label": "对账结果",
+      "reason": "unsupported dataType: reconcileResult"
+    },
+    {
+      "name": "amortizeForm",
+      "label": "摊销明细(系统默认)",
+      "reason": "unsupported dataType: dynamic"
+    },
+    {
+      "name": "amortizes",
+      "label": "摊销组件(系统默认)",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "amortizeDateRange",
+      "label": "摊销日期范围(系统默认)",
+      "reason": "unsupported dataType: dateRange"
+    },
+    {
+      "name": "E_system_payment_plan_write",
+      "label": "付款计划写入(系统默认)",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "u_行程规划",
+      "label": "行程规划",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "u_银行回单",
+      "label": "银行回单",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "u_申请资料类型",
+      "label": "申请资料类型",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "budgetAdjustDetails",
+      "label": "预算调整详情",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "u_受益期间",
+      "label": "受益期间",
+      "reason": "unsupported dataType: dateRange"
+    },
+    {
+      "name": "u_出差起止日期",
+      "label": "出差起止日期",
+      "reason": "unsupported dataType: dateRange"
+    },
+    {
+      "name": "u_关联资产入库",
+      "label": "关联资产入库",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "u_资料申请主体",
+      "label": "资料申请主体",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "u_关联出差申请",
+      "label": "关联出差申请",
+      "reason": "unsupported dataType: list"
+    },
+    {
+      "name": "u_退票回单",
+      "label": "退票回单",
+      "reason": "unsupported dataType: list"
+    }
+  ]
+}

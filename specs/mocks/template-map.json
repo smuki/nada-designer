@@ -1,0 +1,88 @@
+{
+  "controlMap": {
+    "text": {
+      "nadaComponent": "input",
+      "note": "单行文本"
+    },
+    "textarea": {
+      "nadaComponent": "textarea",
+      "note": "多行文本"
+    },
+    "number": {
+      "nadaComponent": "number",
+      "note": "数字"
+    },
+    "money": {
+      "nadaComponent": "number",
+      "note": "金额（需预设金额 props）"
+    },
+    "date": {
+      "nadaComponent": "date",
+      "note": "日期"
+    },
+    "select": {
+      "nadaComponent": "select",
+      "note": "下拉；选项需数据源"
+    },
+    "switcher": {
+      "nadaComponent": "switch",
+      "note": "开关"
+    },
+    "attachments": {
+      "nadaComponent": "upload-file/upload-image",
+      "note": "附件上传"
+    },
+    "group": {
+      "nadaComponent": null,
+      "note": "版式：分组标题（需布局组件）"
+    },
+    "annotation": {
+      "nadaComponent": null,
+      "note": "版式：说明文字（需布局组件）"
+    },
+    "separator": {
+      "nadaComponent": null,
+      "note": "版式：分隔线（需布局组件）"
+    },
+    "dateRange": {
+      "nadaComponent": null,
+      "note": "日期区间：无对应组件"
+    },
+    "city": {
+      "nadaComponent": null,
+      "note": "城市选择：无对应组件"
+    },
+    "dataLink": {
+      "nadaComponent": null,
+      "note": "业务对象选择器：无对应组件"
+    },
+    "payeeInfo": {
+      "nadaComponent": null,
+      "note": "收款信息组合组件：无对应组件"
+    },
+    "details": {
+      "nadaComponent": null,
+      "note": "费用明细表格：不支持明细"
+    },
+    "requisitionDetails": {
+      "nadaComponent": null,
+      "note": "费用明细表格（申请单）：不支持明细"
+    },
+    "corporateExpenseCard": {
+      "nadaComponent": null,
+      "note": "易商卡组件：无对应组件"
+    }
+  },
+  "unsupportedInstances": {
+    "dataLink": 24,
+    "dateRange": 7,
+    "details": 14,
+    "annotation": 19,
+    "requisitionDetails": 11,
+    "group": 19,
+    "separator": 13,
+    "payeeInfo": 17,
+    "city": 6,
+    "corporateExpenseCard": 1
+  }
+}
