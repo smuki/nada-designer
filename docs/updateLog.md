@@ -4,6 +4,7 @@
 
 - 新增受控字段模式：`designMode` / `businessObject` / `businessFieldLoader`，字段来自业务对象元数据，字段名只读、同表单唯一、复制/剪切静默禁止
 - 受控模式左侧组件面板改为工具栏「添加」弹层（业务字段 / 布局两页签，点击插入），活动栏默认收起，画布空间最大化
+- 受控模式弹层支持多选批量插入（合并为一条撤销记录）
 - 新增 `setDataAsync`；`PageSchema` 增加 `businessObject`，随页面保存且撤销/历史恢复不丢归属
 - 受控模式导入校验：id/field 字符集、id 唯一、作用域内 field 唯一，冲突时拒绝导入
 
