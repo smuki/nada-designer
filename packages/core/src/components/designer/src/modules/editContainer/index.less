@@ -235,6 +235,8 @@
     padding: 6px 8px;
     cursor: pointer;
     border-radius: var(--ep-radius);
+    content-visibility: auto;
+    contain-intrinsic-size: 32px;
 
     &:hover {
       color: var(--ep-primary);
@@ -260,6 +262,55 @@
   .ep-field-picker-check {
     width: 14px;
     flex-shrink: 0;
+    text-align: center;
+  }
+
+  .ep-field-picker-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    margin-top: 2px;
+    font-weight: 500;
+    color: var(--ep-text-main);
+    cursor: pointer;
+    border-radius: var(--ep-radius);
+
+    &:hover {
+      background: var(--ep-primary-faded);
+    }
+  }
+
+  .ep-field-picker-arrow {
+    width: 12px;
+    flex-shrink: 0;
+    color: var(--ep-text-helper);
+    transition: transform 0.15s;
+
+    &.expanded {
+      transform: rotate(90deg);
+    }
+  }
+
+  .ep-field-picker-count {
+    min-width: 20px;
+    padding: 0 4px;
+    font-size: 12px;
+    color: var(--ep-text-helper);
+    text-align: right;
+    background: var(--ep-secondary);
+    border-radius: 8px;
+  }
+
+  .ep-field-picker-select-all {
+    font-size: 12px;
+    color: var(--ep-primary);
+  }
+
+  .ep-field-picker-hint {
+    padding: 8px;
+    font-size: 12px;
+    color: var(--ep-text-helper);
     text-align: center;
   }
 

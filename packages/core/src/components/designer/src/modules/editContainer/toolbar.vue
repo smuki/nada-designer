@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentSchema, FieldMeta } from '@nada-designer/types';
 
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 
 import { EpTooltip, NadaIcon } from '@nada-designer/base-ui';
 import { useDesignerContext, useStore } from '@nada-designer/hooks';
@@ -40,13 +40,95 @@ const selectedFields = ref<string[]>([]);
 /** 受控模式允许插入的布局组件白名单 */
 const LAYOUT_WHITELIST = new Set(['card', 'form', 'row', 'tabs']);
 
-/** 可插入的业务字段（按 label 搜索） */
-const pickerFields = computed(() => {
-  const fields = businessFields.fields.value;
-  const keyword = pickerKeyword.value.trim();
-  return keyword
-    ? fields.filter((item) => item.label.includes(keyword))
-    : fields;
+/** 字段类型 → 展示分组名（元数据未给 group 时按类型兜底分类） */
+const FIELD_TYPE_LABELS: Record<FieldMeta['type'], string> = {
+  boolean: '开关',
+  date: '日期',
+  money: '金额',
+  number: '数值',
+  ref: '引用',
+  text: '文本',
+  list: '列表',
+};
+
+/** 搜索时最多渲染的条数，避免上千字段卡顿 */
+const PICKER_RESULT_LIMIT = 100;
+
+/** 展开的分类 key（默认全部收起） */
+const expandedGroups = ref<string[]>([]);
+
+/** 当前业务对象的最近使用字段 */
+const recentFields = ref<string[]>([]);
+
+const pickerKeywordTrimmed = computed(() => pickerKeyword.value.trim());
+
+/** 搜索命中的字段 */
+const pickerSearchFields = computed(() => {
+  const keyword = pickerKeywordTrimmed.value;
+  if (!keyword) return [];
+  return businessFields.fields.value.filter((item) =>
+    item.label.includes(keyword),
+  );
+});
+
+/** 受控字段分类：优先用元数据 group，否则按数据类型 */
+const pickerFieldGroups = computed(() => {
+  const groups = new Map<string, FieldMeta[]>();
+
+  businessFields.fields.value.forEach((meta) => {
+    const groupKey =
+      meta.group?.trim() || FIELD_TYPE_LABELS[meta.type] || '其他';
+    const list = groups.get(groupKey) ?? [];
+    list.push(meta);
+    groups.set(groupKey, list);
+  });
+
+  return [...groups.entries()].map(([key, fieldList]) => ({
+    fields: fieldList,
+    key,
+  }));
+});
+
+/** 最近使用的字段（按记录顺序） */
+const recentFieldItems = computed(() => {
+  const fieldMap = new Map(
+    businessFields.fields.value.map((item) => [item.field, item]),
+  );
+  return recentFields.value
+    .map((field) => fieldMap.get(field))
+    .filter(Boolean) as FieldMeta[];
+});
+
+/** 弹层字段行：分组头 + 字段项（搜索时扁平输出，避免渲染上千行） */
+const pickerRows = computed<any[]>(() => {
+  const rows: any[] = [];
+
+  if (pickerKeywordTrimmed.value) {
+    pickerSearchFields.value
+      .slice(0, PICKER_RESULT_LIMIT)
+      .forEach((meta) =>
+        rows.push({ id: `s:${meta.field}`, kind: 'field', meta }),
+      );
+    return rows;
+  }
+
+  const pushGroup = (key: string, label: string, fields: FieldMeta[]) => {
+    const expanded = isGroupExpanded(key);
+    rows.push({ expanded, fields, id: `g:${key}`, key, kind: 'group', label });
+    if (!expanded) return;
+    fields.forEach((meta) =>
+      rows.push({ id: `g:${key}:${meta.field}`, kind: 'field', meta }),
+    );
+  };
+
+  if (recentFieldItems.value.length > 0) {
+    pushGroup('__recent__', '最近使用', recentFieldItems.value);
+  }
+  pickerFieldGroups.value.forEach((group) =>
+    pushGroup(group.key, group.key, group.fields),
+  );
+
+  return rows;
 });
 
 /** 当前作用域内已放置字段（置灰不可选） */
@@ -88,6 +170,8 @@ function togglePicker() {
     pickerTab.value = 'fields';
     pickerKeyword.value = '';
     selectedFields.value = [];
+    expandedGroups.value = [];
+    loadRecentFields();
   }
 }
 
@@ -95,12 +179,109 @@ function switchPickerTab(tab: 'fields' | 'layouts') {
   pickerTab.value = tab;
   pickerKeyword.value = '';
   selectedFields.value = [];
+  expandedGroups.value = [];
 }
 
 function closePicker() {
   pickerOpen.value = false;
   selectedFields.value = [];
 }
+
+/**
+ * 展开/收起字段分类
+ * @param key 分类 key
+ */
+function toggleGroup(key: string) {
+  expandedGroups.value = expandedGroups.value.includes(key)
+    ? expandedGroups.value.filter((item) => item !== key)
+    : [...expandedGroups.value, key];
+}
+
+/**
+ * 分类是否展开（搜索时始终展开）
+ * @param key 分类 key
+ */
+function isGroupExpanded(key: string): boolean {
+  return (
+    Boolean(pickerKeywordTrimmed.value) || expandedGroups.value.includes(key)
+  );
+}
+
+/**
+ * 分类内全选/取消全选（跳过已放置字段）
+ * @param groupFields 分类内字段
+ */
+function toggleGroupSelection(groupFields: FieldMeta[]) {
+  const selectable = groupFields.filter(
+    (meta) => !placedFields.value.has(meta.field),
+  );
+  if (selectable.length === 0) return;
+
+  const allSelected = selectable.every((meta) =>
+    selectedFields.value.includes(meta.field),
+  );
+  const selectableSet = new Set(selectable.map((meta) => meta.field));
+
+  selectedFields.value = allSelected
+    ? selectedFields.value.filter((field) => !selectableSet.has(field))
+    : [
+        ...selectedFields.value,
+        ...selectable
+          .filter((meta) => !selectedFields.value.includes(meta.field))
+          .map((meta) => meta.field),
+      ];
+}
+
+/**
+ * 读取当前业务对象的最近使用字段
+ */
+function loadRecentFields() {
+  const businessObject = businessFields.businessObject.value;
+  if (!businessObject) {
+    recentFields.value = [];
+    return;
+  }
+
+  try {
+    const raw = localStorage.getItem(
+      `ep-controlled-recent-fields:${businessObject}`,
+    );
+    recentFields.value = raw ? (JSON.parse(raw) as string[]) : [];
+  } catch {
+    recentFields.value = [];
+  }
+}
+
+/**
+ * 记录最近插入的字段（最多 8 个）
+ * @param fields 本次插入的字段
+ */
+function rememberRecent(fields: FieldMeta[]) {
+  const businessObject = businessFields.businessObject.value;
+  if (!businessObject || fields.length === 0) return;
+
+  const merged = [...fields.map((item) => item.field), ...recentFields.value];
+  const unique: string[] = [];
+  merged.forEach((field) => {
+    if (!unique.includes(field)) unique.push(field);
+  });
+  recentFields.value = unique.slice(0, 8);
+
+  try {
+    localStorage.setItem(
+      `ep-controlled-recent-fields:${businessObject}`,
+      JSON.stringify(recentFields.value),
+    );
+  } catch {
+    // 忽略存储异常（隐私模式等）
+  }
+}
+
+// 业务对象切换后刷新最近使用
+watch(
+  () => businessFields.businessObject.value,
+  () => loadRecentFields(),
+);
 
 /**
  * 在选中节点之后（或容器末尾）插入节点
@@ -157,6 +338,7 @@ function handleInsertSelectedFields() {
   );
 
   const failures: string[] = [];
+  const insertedMetas: FieldMeta[] = [];
   let insertedCount = 0;
   let targetId = designer.state.selectedNode?.id ?? pageSchema.schemas[0]?.id;
 
@@ -171,12 +353,14 @@ function handleInsertSelectedFields() {
 
     if (result.ok) {
       insertedCount += 1;
+      insertedMetas.push(meta);
     } else {
       failures.push(result.message ?? meta.label);
     }
   });
 
   if (insertedCount > 0) {
+    rememberRecent(insertedMetas);
     const lastNode = targetId
       ? findSchemaById(pageSchema.schemas, targetId)
       : undefined;
@@ -523,28 +707,69 @@ function handleSetCanvas(type: string) {
           </div>
           <div class="ep-field-picker-list">
             <template v-if="pickerTab === 'fields'">
+              <template v-for="row in pickerRows" :key="row.id">
+                <!-- 分类头 -->
+                <div
+                  v-if="row.kind === 'group'"
+                  class="ep-field-picker-group"
+                  @click="toggleGroup(row.key)"
+                >
+                  <span
+                    class="ep-field-picker-arrow"
+                    :class="{ expanded: row.expanded }"
+                  >
+                    ▸
+                  </span>
+                  <span class="flex-1 truncate">{{ row.label }}</span>
+                  <span class="ep-field-picker-count">
+                    {{ row.fields.length }}
+                  </span>
+                  <span
+                    class="ep-field-picker-select-all"
+                    @click.stop="toggleGroupSelection(row.fields)"
+                  >
+                    全选
+                  </span>
+                </div>
+                <!-- 字段项 -->
+                <div
+                  v-else
+                  class="ep-field-picker-item"
+                  :class="{
+                    disabled: placedFields.has(row.meta.field),
+                    selected: selectedFields.includes(row.meta.field),
+                  }"
+                  :title="row.meta.field"
+                  @click="toggleField(row.meta)"
+                >
+                  <span class="ep-field-picker-check">
+                    {{ selectedFields.includes(row.meta.field) ? '✓' : '' }}
+                  </span>
+                  <span class="flex-1 truncate">{{ row.meta.label }}</span>
+                  <span class="ep-field-picker-type">{{ row.meta.type }}</span>
+                </div>
+              </template>
               <div
-                v-for="meta in pickerFields"
-                :key="meta.field"
-                class="ep-field-picker-item"
-                :class="{
-                  disabled: placedFields.has(meta.field),
-                  selected: selectedFields.includes(meta.field),
-                }"
-                :title="meta.field"
-                @click="toggleField(meta)"
-              >
-                <span class="ep-field-picker-check">
-                  {{ selectedFields.includes(meta.field) ? '✓' : '' }}
-                </span>
-                <span class="flex-1 truncate">{{ meta.label }}</span>
-                <span class="ep-field-picker-type">{{ meta.type }}</span>
-              </div>
-              <div
-                v-if="pickerFields.length === 0"
+                v-if="pickerKeywordTrimmed && pickerSearchFields.length === 0"
                 class="ep-field-picker-empty"
               >
                 没有匹配的字段
+              </div>
+              <div
+                v-else-if="
+                  pickerKeywordTrimmed &&
+                  pickerSearchFields.length > PICKER_RESULT_LIMIT
+                "
+                class="ep-field-picker-hint"
+              >
+                共 {{ pickerSearchFields.length }} 条，仅显示前
+                {{ PICKER_RESULT_LIMIT }} 条，请继续输入缩小范围
+              </div>
+              <div
+                v-else-if="!pickerKeywordTrimmed && pickerRows.length === 0"
+                class="ep-field-picker-empty"
+              >
+                当前业务对象没有可用字段
               </div>
             </template>
             <template v-else>
