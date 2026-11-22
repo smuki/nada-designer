@@ -65,6 +65,8 @@ export interface DesignerState {
 }
 
 export interface PageSchema {
+  /** 业务对象 code（租户内唯一，受控模式随页面保存） */
+  businessObject?: string;
   canvas?: {
     height?: string;
     mode?: 'desktop' | 'mobile' | 'pad' | 'pc' | 'tablet'; // 支持新旧模式  'pad' | 'pc' 为旧数据
