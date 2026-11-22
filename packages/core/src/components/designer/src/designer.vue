@@ -61,9 +61,6 @@ const EActivityBar = loadAsyncComponent(
 const EEditContainer = loadAsyncComponent(
   () => import('./modules/editContainer/index.vue'),
 );
-const ERightSidebar = loadAsyncComponent(
-  () => import('./modules/rightSidebar/index.vue'),
-);
 const epBuilderSlot = pluginManager.component.get('epBuilderSlot');
 
 const previewRef = ref<InstanceType<typeof NadaPreview> | null>(null);
@@ -466,7 +463,7 @@ defineExpose({
         >
           <EActivityBar />
           <EEditContainer />
-          <ERightSidebar />
+          <!-- 属性 / 样式 / 事件 已移到左侧活动栏，右侧栏不再渲染 -->
         </div>
         <NadaPreview
           ref="previewRef"

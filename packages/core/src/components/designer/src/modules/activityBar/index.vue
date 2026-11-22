@@ -23,8 +23,8 @@ const activityBars = computed(() => {
     });
 });
 
-// 受控模式默认收起侧栏，把空间留给画布（字段从工具栏选择器插入）
-const activityBarCheckedIndex = ref<null | number>(isControlled ? null : 0);
+// 默认展开第一个可用面板（受控模式下为「属性」）
+const activityBarCheckedIndex = ref<null | number>(0);
 
 const sidebarComponent = shallowRef<any>(
   activityBars.value[0]?.component ?? null,
