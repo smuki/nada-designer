@@ -6,7 +6,12 @@ import { VueDraggable } from 'vue-draggable-plus';
 
 import { useDesignerContext, usePageManager } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
-import { getMatchedById } from '@nada-designer/utils';
+import {
+  findSchemaById,
+  findSchemas,
+  getMatchedById,
+  rewriteComponentRefs,
+} from '@nada-designer/utils';
 
 import NadaNodeItem from './nodeItem.vue';
 
@@ -106,6 +111,107 @@ function getTargetScopeId(): string | undefined {
 }
 
 /**
+ * 通过节点 id 解析作用域 id：最近 form 祖先，找不到回退页面根节点
+ * @param ownerId 父节点 id
+ */
+function resolveScopeIdByOwnerId(ownerId?: string): string | undefined {
+  const rootId = pageSchema.schemas[0]?.id;
+  if (!ownerId) return rootId;
+
+  const path = getMatchedById(pageSchema.schemas, ownerId);
+  for (let index = path.length - 1; index >= 0; index -= 1) {
+    if (path[index]?.type === 'form') {
+      return path[index]?.id;
+    }
+  }
+  return rootId;
+}
+
+/**
+ * 从拖拽容器 DOM 反查作用域 id
+ * @description 列表容器最近的 `.ep-node-item` 即其父节点；根列表回退页面根节点
+ * @param container 列表容器 DOM
+ */
+function scopeIdFromContainer(container: any): string | undefined {
+  const ownerEl = container?.closest?.('.ep-node-item');
+  return resolveScopeIdByOwnerId(ownerEl?.dataset?.nadaId);
+}
+
+/**
+ * 是否为「已有业务字段节点」的跨列表移动
+ * @description 面板拖入时 data 是 FieldMeta（无 id），这里用 id + 元数据存在性区分
+ */
+function isBusinessFieldMove(event: any): boolean {
+  const data = event?.data;
+  return Boolean(
+    data?.id &&
+      data?.field &&
+      designer.businessFields.fieldMap.value.has(data.field),
+  );
+}
+
+/**
+ * 跨 form 拖拽预判：目标作用域已存在同字段时拒绝（规格 §7.4）
+ * @param event Sortable move 事件
+ */
+function handleDragMove(event: any): boolean {
+  if (designer.designMode !== 'controlled') return true;
+  if (!isBusinessFieldMove(event)) return true;
+
+  const draggedId = event?.dragged?.dataset?.nadaId;
+  const sourceScopeId = scopeIdFromContainer(event?.from);
+  const targetScopeId = scopeIdFromContainer(event?.to);
+  if (!draggedId || !targetScopeId || sourceScopeId === targetScopeId) {
+    return true;
+  }
+
+  const draggedNode = findSchemaById(pageSchema.schemas, draggedId);
+  if (!draggedNode?.field) return true;
+
+  const targetScope = findSchemaById(pageSchema.schemas, targetScopeId);
+  const duplicated = findSchemas(
+    targetScope?.children ?? [],
+    (node) =>
+      node.input === true &&
+      node.field === draggedNode.field &&
+      node.id !== draggedId,
+    true,
+  );
+  if (duplicated) {
+    pluginManager.global.$message.warning(
+      `字段「${draggedNode.label ?? draggedNode.field}」在目标表单中已存在`,
+    );
+    return false;
+  }
+  return true;
+}
+
+/**
+ * 业务字段跨 form 移动：重算 id 并改写动作引用（规格 §7.4）
+ * @param event Sortable add 事件
+ */
+function handleBusinessFieldMove(event: any) {
+  const moved = event?.clonedData as ComponentSchema | undefined;
+  const scopeId = getTargetScopeId();
+  if (!moved?.id || !scopeId || !moved.field) return;
+
+  isDragChange.value = false;
+  const oldId = moved.id;
+  const newId = `${scopeId}_${moved.field}`;
+  if (oldId === newId) {
+    // 同作用域内移动：只记录撤销
+    designer.setSelectedNode(moved);
+    revoke.push('移动业务字段', true);
+    return;
+  }
+
+  moved.id = newId;
+  rewriteComponentRefs(pageSchema.schemas, oldId, newId);
+  designer.setSelectedNode(moved);
+  revoke.push('移动业务字段', true);
+}
+
+/**
  * 业务字段拖入：占位节点已由库插入目标列表，这里就地重建或摘除（规格 D33）
  * @param event Sortable add 事件
  */
@@ -145,6 +251,15 @@ function handleBusinessFieldDrop(event: any) {
  * 拖入也会导致 change 被触发，Add 应该设置 isDrageChange 标识为 false
  */
 function handleDragAdd(event: any) {
+  if (
+    designer.designMode === 'controlled' &&
+    !event.clonedData?.__businessField &&
+    isBusinessFieldMove(event)
+  ) {
+    handleBusinessFieldMove(event);
+    return;
+  }
+
   if (
     designer.designMode === 'controlled' &&
     event.clonedData?.__businessField
@@ -190,6 +305,7 @@ function isInline(schema: ComponentSchema) {
     :animation="200"
     group="edit-draggable"
     ghost-class="ep-moveing"
+    :on-move="handleDragMove"
     @mouseover.stop="setHoverNode"
     @change="handleDragChange"
     @add="handleDragAdd"
