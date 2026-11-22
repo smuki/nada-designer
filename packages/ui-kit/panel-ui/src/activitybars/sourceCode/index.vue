@@ -9,6 +9,7 @@ const MonacoEditor = pluginManager.component.get('monacoEditor');
 const monacoEditorRef = ref<any>(null);
 const designer = useDesignerContext();
 const designerProps = designer.props;
+const isControlled = designer.designMode === 'controlled';
 
 let oldVal: any = {};
 watch(
@@ -43,7 +44,7 @@ function setSchemas(e: string) {
       ref="monacoEditorRef"
       auto-toggle-theme
       class="ep-editor"
-      :read-only="designerProps.sourceCodeReadOnly"
+      :read-only="designerProps.sourceCodeReadOnly || isControlled"
       :model-value="initModelValue"
       line-numbers="off"
       @update:model-value="setSchemas"

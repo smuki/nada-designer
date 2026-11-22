@@ -81,7 +81,7 @@ function handleDelete(schema) {
   <div class="ep-outline">
     <NadaTree
       :options="pageSchema.schemas"
-      draggable
+      :draggable="!isControlled"
       :selected-keys="selectedKeys"
       :hover-key="designer.state.hoverNode?.id ?? ''"
       @node-click="handleNodeClick"
