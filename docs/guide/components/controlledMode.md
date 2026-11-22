@@ -68,7 +68,7 @@ function handleSave(pageSchema: any) {
 
 | 行为 | 自由模式 | 受控模式 |
 | --- | --- | --- |
-| 组件面板 | 全部组件 + 布局 | 业务字段 + `card`/`row`/`tabs`/`form` |
+| 组件面板 | 全部组件 + 布局 | 工具栏「添加」弹层（业务字段 + `card`/`row`/`tabs`/`form`），左侧活动栏默认收起 |
 | 根节点 | `page` | `form`（`id: root`、`name: default`） |
 | 字段名 field | 可编辑 | 只读 |
 | 同表单内同字段 | 允许 | 面板置灰 + 落点校验拒绝（失败自动回滚） |
