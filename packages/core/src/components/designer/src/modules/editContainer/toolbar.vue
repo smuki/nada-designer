@@ -4,11 +4,7 @@ import { computed, ref } from 'vue';
 import { EpTooltip, NadaIcon } from '@nada-designer/base-ui';
 import { useDesignerContext, useStore } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
-import {
-  convertKFormData,
-  deepCompareAndModify,
-  migrateComponentProps,
-} from '@nada-designer/utils';
+import { convertKFormData, migrateComponentProps } from '@nada-designer/utils';
 
 import NadaPreviewJson from './previewJson.vue';
 
@@ -228,13 +224,23 @@ function handleFileSelected(e) {
 /**
  * 导入数据
  */
-function handleImportData(content?: string) {
+async function handleImportData(content?: string) {
   // 导入JSON
   try {
     let schema = JSON.parse(content ?? '');
+
+    // k-form 旧数据转换会丢 businessObject，先取出再透传
+    const businessObject =
+      typeof schema?.businessObject === 'string'
+        ? schema.businessObject
+        : undefined;
+
     if (!schema.schemas) {
       // 兼容 处理kform表单数据
       schema = convertKFormData(schema);
+    }
+    if (businessObject && !schema.businessObject) {
+      schema.businessObject = businessObject;
     }
 
     // 迁移旧的 canvas mode 数据
@@ -246,17 +252,14 @@ function handleImportData(content?: string) {
       }
     }
 
-    // 调用 deepCompareAndModify 函数比较 pageSchema 和传入的 schema，进行修改
     // 迁移旧的 componentProps 数据
     migrateComponentProps(schema);
-    deepCompareAndModify(pageSchema, schema);
 
-    designer.handleImported(schema);
-
-    // 选中根节点
-    designer.setSelectedNode(pageSchema.schemas[0]);
+    // 受控模式会先校验并加载元数据，失败不应用（规格 §11.3）
+    await designer.importSchema(schema);
   } catch (error) {
     console.error(error);
+    pluginManager.global.$message.error('导入失败：数据格式异常');
   }
 }
 

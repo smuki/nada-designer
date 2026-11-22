@@ -6,6 +6,7 @@ import type {
 } from '@nada-designer/types';
 
 import { deepClone, findSchemas, getMatchedById } from './data';
+import { isValidSchemaName } from './string';
 
 /** 预设属性白名单的固定例外：宿主协议字段，不参与白名单过滤 */
 const PRESET_WHITELIST_EXCEPTIONS = new Set(['entity']);
@@ -212,4 +213,72 @@ export function collectComponentRefIds(schemas: ComponentSchema[]): string[] {
   });
 
   return [...ids];
+}
+
+/** 页面校验问题 */
+export interface PageValidationIssue {
+  message: string;
+  type: 'duplicateField' | 'duplicateId' | 'invalidName';
+}
+
+/**
+ * 受控模式导入校验：id / field 字符集、id 唯一、作用域内 field 唯一
+ * @param schemas 页面节点
+ */
+export function validateControlledPage(
+  schemas: ComponentSchema[],
+): PageValidationIssue[] {
+  const issues: PageValidationIssue[] = [];
+  const rootId = schemas[0]?.id ?? '';
+  const idCounts = new Map<string, number>();
+  const fieldKeys = new Set<string>();
+
+  const walk = (nodes: ComponentSchema[], scopeId: string) => {
+    nodes.forEach((node) => {
+      if (node.id) {
+        if (!isValidSchemaName(node.id)) {
+          issues.push({
+            message: `节点 id 字符集非法：${node.id}`,
+            type: 'invalidName',
+          });
+        }
+        idCounts.set(node.id, (idCounts.get(node.id) ?? 0) + 1);
+      }
+
+      const nextScope = node.type === 'form' && node.id ? node.id : scopeId;
+
+      if (node.input === true && node.field) {
+        if (!isValidSchemaName(node.field)) {
+          issues.push({
+            message: `字段名字符集非法：${node.field}`,
+            type: 'invalidName',
+          });
+        }
+        const key = `${nextScope}:${node.field}`;
+        if (fieldKeys.has(key)) {
+          issues.push({
+            message: `表单 ${nextScope} 内字段重复：${node.field}`,
+            type: 'duplicateField',
+          });
+        } else {
+          fieldKeys.add(key);
+        }
+      }
+
+      if (node.children) walk(node.children, nextScope);
+      Object.values(node.slots ?? {}).forEach((children) =>
+        walk(children, nextScope),
+      );
+    });
+  };
+
+  walk(schemas, rootId);
+
+  idCounts.forEach((count, id) => {
+    if (count > 1) {
+      issues.push({ message: `节点 id 重复：${id}`, type: 'duplicateId' });
+    }
+  });
+
+  return issues;
 }

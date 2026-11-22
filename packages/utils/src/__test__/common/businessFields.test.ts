@@ -8,6 +8,7 @@ import {
   mapFieldDataType,
   resolveScopeNode,
   rewriteComponentRefs,
+  validateControlledPage,
 } from '../../';
 
 function makeNumberBase() {
@@ -65,7 +66,9 @@ describe('resolveScopeNode 函数测试', () => {
         {
           children: [
             {
-              children: [{ field: 'a', id: 'in_1', input: true, type: 'input' }],
+              children: [
+                { field: 'a', id: 'in_1', input: true, type: 'input' },
+              ],
               id: 'row_1',
               type: 'row',
             },
@@ -180,7 +183,9 @@ describe('rewriteComponentRefs / collectComponentRefIds 函数测试', () => {
           {
             id: 'child',
             on: {
-              click: [{ componentId: 'a', methodName: 'focus', type: 'component' }],
+              click: [
+                { componentId: 'a', methodName: 'focus', type: 'component' },
+              ],
             },
             type: 'input',
           },
@@ -209,5 +214,46 @@ describe('rewriteComponentRefs / collectComponentRefIds 函数测试', () => {
     const schemas = makeSchemas();
     expect(rewriteComponentRefs(schemas, 'a', 'a')).toBe(0);
     expect(collectComponentRefIds(schemas).sort()).toEqual(['a', 'c']);
+  });
+});
+
+describe('validateControlledPage 函数测试', () => {
+  function makePage(children: any[]): any[] {
+    return [{ children, id: 'root', type: 'form' }];
+  }
+
+  it('合法页面没有问题', () => {
+    expect(
+      validateControlledPage(
+        makePage([
+          { field: 'a', id: 'root_a', input: true, type: 'input' },
+          { field: 'b', id: 'root_b', input: true, type: 'input' },
+        ]),
+      ),
+    ).toEqual([]);
+  });
+
+  it('同作用域字段重复与非法字符集会被报告', () => {
+    const issues = validateControlledPage(
+      makePage([
+        { field: 'a', id: 'root_a', input: true, type: 'input' },
+        { field: 'a', id: 'root_a2', input: true, type: 'input' },
+        { field: 'bad-name', id: 'root_b', input: true, type: 'input' },
+      ]),
+    );
+
+    expect(issues.some((item) => item.type === 'duplicateField')).toBe(true);
+    expect(issues.some((item) => item.type === 'invalidName')).toBe(true);
+  });
+
+  it('重复 id 会被报告', () => {
+    const issues = validateControlledPage(
+      makePage([
+        { field: 'a', id: 'root_a', input: true, type: 'input' },
+        { field: 'b', id: 'root_a', input: true, type: 'input' },
+      ]),
+    );
+
+    expect(issues.some((item) => item.type === 'duplicateId')).toBe(true);
   });
 });

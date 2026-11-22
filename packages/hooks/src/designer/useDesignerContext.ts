@@ -16,6 +16,8 @@ export interface DesignerContext {
   handleDuplicate: () => void;
   handleImported: (data: PageSchema) => void;
   handleToggleDeviceMode: (mode: string) => void;
+  /** 导入页面数据：受控模式先校验并加载元数据，失败不应用 */
+  importSchema: (data: PageSchema) => Promise<boolean>;
   pageSchema: PageSchema;
   preview: () => void;
   props: DesignerProps;

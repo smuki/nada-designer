@@ -25,6 +25,7 @@ import {
   deepClone,
   loadAsyncComponent,
   migrateComponentProps,
+  validateControlledPage,
 } from '@nada-designer/utils';
 
 import { useDesigner } from '../hooks/useDesigner';
@@ -183,6 +184,7 @@ provide(DESIGNER_CONTEXT_KEY, {
   handleDuplicate,
   handleImported,
   handleToggleDeviceMode,
+  importSchema,
   pageSchema,
   preview: handlePreview,
   props,
@@ -232,6 +234,42 @@ function applyPageSchemaData(schema: PageSchema) {
   applyBusinessObject(schema.businessObject);
   setSelectedNode();
   revoke.push('加载数据');
+}
+
+/**
+ * 导入页面数据
+ * @description 受控模式先做页面校验并加载目标业务对象元数据，失败不应用（规格 §11.3）
+ * @param data 页面数据
+ */
+async function importSchema(data: PageSchema): Promise<boolean> {
+  const nextBusinessObject = data.businessObject ?? props.businessObject;
+
+  if (designMode === 'controlled') {
+    const issues = validateControlledPage(data.schemas);
+    if (issues.length > 0) {
+      pluginManager.global.$message.error(
+        `导入校验未通过：${issues[0]?.message ?? ''}`,
+      );
+      return false;
+    }
+
+    if (
+      nextBusinessObject &&
+      nextBusinessObject !== businessFields.businessObject.value
+    ) {
+      const ok = await switchBusinessObject(nextBusinessObject);
+      if (!ok) {
+        pluginManager.global.$message.error(
+          '业务字段元数据加载失败，未应用本次导入',
+        );
+        return false;
+      }
+    }
+  }
+
+  applyPageSchemaData(data);
+  handleImported(getData());
+  return true;
 }
 
 /**
