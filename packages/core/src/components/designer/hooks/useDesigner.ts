@@ -22,18 +22,8 @@ import {
   getMatchedById,
 } from '@nada-designer/utils';
 
-// 内部默认页面数据
-let innerDefaultSchema: PageSchema = {
-  schemas: [
-    {
-      id: 'root',
-      label: '页面',
-      props: {},
-      type: 'page',
-      children: [],
-    },
-  ],
-  script: `const { defineExpose, find } = nada;
+/** 默认页面脚本 */
+const DEFAULT_SCRIPT = `const { defineExpose, find } = nada;
 
 function test (){
     console.log('test')
@@ -42,13 +32,60 @@ function test (){
 // 通过defineExpose暴露的函数或者属性
 defineExpose({
  test
-})`,
-};
+})`;
 
-export function useDesigner(props, emit) {
+/**
+ * 创建自由模式的 page 根节点
+ */
+function createPageRoot(): ComponentSchema {
+  return {
+    id: 'root',
+    label: '页面',
+    props: {},
+    type: 'page',
+    children: [],
+  };
+}
+
+/**
+ * 创建受控模式的 form 根节点
+ * @description 深拷贝当前 UI 库 form 的 defaultSchema，覆盖 id / name / children（规格 D38）
+ */
+function createControlledFormRoot(): ComponentSchema {
+  const formConfig = pluginManager.component.getComponentConfigByType('form');
+  const base = formConfig?.defaultSchema
+    ? deepClone(formConfig.defaultSchema)
+    : createPageRoot();
+
+  return {
+    ...base,
+    id: 'root',
+    label: base.label ?? '表单',
+    props: { ...base.props, name: 'default' },
+    type: 'form',
+    children: [],
+  };
+}
+
+export function useDesigner(
+  props,
+  emit,
+  designMode: 'controlled' | 'free' = 'free',
+) {
   const ready = ref<boolean>(false);
   const pageManager = createPageManager();
   const pageSchema = pageManager.pageSchema;
+
+  /** 默认页面数据（实例级，避免多实例互相污染） */
+  let innerDefaultSchema: PageSchema =
+    props.defaultSchema ??
+    (designMode === 'controlled'
+      ? {
+          businessObject: props.businessObject,
+          schemas: [createControlledFormRoot()],
+          script: DEFAULT_SCRIPT,
+        }
+      : { schemas: [createPageRoot()], script: DEFAULT_SCRIPT });
 
   const state = reactive<DesignerState>({
     disabledHover: false,
@@ -77,16 +114,18 @@ export function useDesigner(props, emit) {
 
   // 更新初始化数据
   watchEffect(() => {
-    // 如果props.defaultSchema有值，则优先使用props.defaultSchema
-    if (props.defaultSchema) {
-      innerDefaultSchema = props.defaultSchema;
-    } else if (props.formMode) {
-      // 切换表单模式默认schema数据
-      innerDefaultSchema.schemas = pluginManager.designer.formSchema;
-      pluginManager.component.hide('form');
-    }
-    if (!props.formMode) {
-      pluginManager.component.show('form');
+    if (designMode !== 'controlled') {
+      // 如果props.defaultSchema有值，则优先使用props.defaultSchema
+      if (props.defaultSchema) {
+        innerDefaultSchema = props.defaultSchema;
+      } else if (props.formMode) {
+        // 切换表单模式默认schema数据
+        innerDefaultSchema.schemas = pluginManager.designer.formSchema;
+        pluginManager.component.hide('form');
+      }
+      if (!props.formMode) {
+        pluginManager.component.show('form');
+      }
     }
     const canvasMode = props.canvasMode ?? 'desktop';
     // 根据canvasMode设置对应的画布属性
@@ -241,6 +280,30 @@ export function useDesigner(props, emit) {
   }
 
   /**
+   * 解析当前业务对象：schema 优先 → defaultSchema → prop
+   * @param schemaBusinessObject 页面 schema 中的业务对象
+   */
+  function resolveBusinessObject(
+    schemaBusinessObject?: string,
+  ): string | undefined {
+    return (
+      schemaBusinessObject ??
+      props.defaultSchema?.businessObject ??
+      props.businessObject ??
+      undefined
+    );
+  }
+
+  /**
+   * 回填 businessObject
+   * @description setData / 导入走 deepCompareAndModify（默认删除缺失键），之后必须回填（规格 §11.1）
+   * @param schemaBusinessObject 页面 schema 中的业务对象
+   */
+  function applyBusinessObject(schemaBusinessObject?: string) {
+    pageSchema.businessObject = resolveBusinessObject(schemaBusinessObject);
+  }
+
+  /**
    * 重置页面数据为默认数据
    */
   function reset() {
@@ -268,6 +331,8 @@ export function useDesigner(props, emit) {
   function init() {
     // 初始化默认节点
     pageSchema.schemas = deepClone(innerDefaultSchema.schemas);
+    // 记录业务对象归属
+    pageSchema.businessObject = resolveBusinessObject();
     // 选中根节点
     setSelectedNode(pageSchema.schemas[0]);
     // 初始化必须立即入栈：否则 200ms 内的第一次编辑会与之合并，导致首个操作无法撤销
@@ -277,6 +342,7 @@ export function useDesigner(props, emit) {
   init();
 
   return {
+    applyBusinessObject,
     handleDelete,
     handleDuplicate,
     pageManager,

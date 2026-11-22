@@ -8,10 +8,10 @@ import type { BusinessFieldsContext } from './useBusinessFields';
 import { inject } from 'vue';
 
 export interface DesignerContext {
-  /** 业务字段元数据状态（受控模式；T4 接线后由 designer 必填提供） */
-  businessFields?: BusinessFieldsContext;
+  /** 业务字段元数据状态（受控模式） */
+  businessFields: BusinessFieldsContext;
   /** 冻结的设计模式快照（受控模式禁止切换） */
-  designMode?: 'controlled' | 'free';
+  designMode: 'controlled' | 'free';
   handleDelete: () => void;
   handleDuplicate: () => void;
   handleImported: (data: PageSchema) => void;

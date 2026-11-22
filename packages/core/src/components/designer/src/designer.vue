@@ -1,13 +1,22 @@
 <script lang="ts" setup>
 import type { DesignerProps, PageSchema } from '@nada-designer/types';
 
-import { nextTick, onUnmounted, provide, ref, watchEffect } from 'vue';
+import {
+  computed,
+  nextTick,
+  onUnmounted,
+  provide,
+  ref,
+  watch,
+  watchEffect,
+} from 'vue';
 
 import { EpDesignerLoader } from '@nada-designer/base-ui';
 import {
   createEventBus,
   DESIGNER_CONTEXT_KEY,
   providePageManager,
+  useBusinessFields,
   useStore,
 } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
@@ -25,6 +34,7 @@ import NadaPreview from './modules/preview/index.vue';
 const props = withDefaults(defineProps<DesignerProps>(), {
   canvasMode: 'desktop',
   canvasPadding: 16,
+  designMode: 'free',
   disabledZoom: false,
   draggable: true,
   formMode: false,
@@ -56,7 +66,26 @@ const epBuilderSlot = pluginManager.component.get('epBuilderSlot');
 
 const previewRef = ref<InstanceType<typeof NadaPreview> | null>(null);
 
+/**
+ * 冻结的设计模式：初始化读一次，之后 prop 变化仅告警（规格 §5.2）
+ */
+const designMode: 'controlled' | 'free' =
+  props.designMode === 'controlled' ? 'controlled' : 'free';
+
+watch(
+  () => props.designMode,
+  (next) => {
+    const nextMode = next === 'controlled' ? 'controlled' : 'free';
+    if (nextMode !== designMode) {
+      console.warn(
+        `[受控字段] designMode 初始化后不可切换，已忽略 ${String(next)}`,
+      );
+    }
+  },
+);
+
 const {
+  applyBusinessObject,
   handleDelete,
   handleDuplicate,
   pageManager,
@@ -67,7 +96,56 @@ const {
   setHoverNode,
   setSelectedNode,
   state,
-} = useDesigner(props, emit);
+} = useDesigner(props, emit, designMode);
+
+/**
+ * 业务字段元数据（受控模式）
+ */
+const businessFields = useBusinessFields(pageSchema, {
+  getComponentConfig: (type) =>
+    pluginManager.component.getComponentConfigByType(type),
+  loader: (businessObject) => {
+    const loader = props.businessFieldLoader;
+    if (!loader) {
+      return Promise.reject(new Error('未提供 businessFieldLoader'));
+    }
+    return loader(businessObject);
+  },
+});
+const {
+  error: metaError,
+  isLoading: metaLoading,
+  retry: retryBusinessFields,
+  status: metaStatus,
+  switchTo: switchBusinessObject,
+} = businessFields;
+
+if (designMode === 'controlled') {
+  const initialBusinessObject =
+    props.defaultSchema?.businessObject ?? props.businessObject;
+  void businessFields.load(initialBusinessObject ?? '');
+}
+
+/** 首屏门控：UI 初始化中，或受控元数据首次加载中 */
+const initLoading = computed(
+  () =>
+    !pluginManager.designer.initialized.value ||
+    (!ready.value && metaLoading.value),
+);
+
+/** 首屏被元数据阻塞（error / empty），显示提示 + 重试 */
+const metaBlocked = computed(
+  () =>
+    designMode === 'controlled' &&
+    !ready.value &&
+    metaStatus.value !== 'loading' &&
+    metaStatus.value !== 'ready',
+);
+
+/** 阻塞态提示文案 */
+const metaBlockedMessage = computed(
+  () => metaError.value || '业务字段元数据未就绪',
+);
 
 const { setTarget } = useHotkeys({
   emit,
@@ -88,6 +166,8 @@ watchEffect(() => {
 createEventBus();
 
 provide(DESIGNER_CONTEXT_KEY, {
+  businessFields,
+  designMode,
   handleDelete,
   handleDuplicate,
   handleImported,
@@ -136,6 +216,11 @@ function setData(schema: PageSchema) {
   // 迁移 componentProps 到 props
   migrateComponentProps(schema);
   pageManager.setPageSchema(schema);
+  // deepCompareAndModify 会删除缺失键，必须回填业务对象归属（规格 §11.1）
+  applyBusinessObject(schema.businessObject);
+  if (designMode === 'controlled') {
+    void switchBusinessObject(pageSchema.businessObject);
+  }
   setSelectedNode();
   revoke.push('加载数据');
 }
@@ -197,8 +282,19 @@ defineExpose({
 });
 </script>
 <template>
-  <div v-if="!pluginManager.designer.initialized.value" class="ep-loading-box">
+  <div v-if="initLoading" class="ep-loading-box">
     <EpDesignerLoader />
+  </div>
+  <div v-else-if="metaBlocked" class="ep-loading-box ep-meta-blocked">
+    <div class="text-center">
+      <div class="mb-3">{{ metaBlockedMessage }}</div>
+      <div
+        class="ep-meta-retry inline-flex cursor-pointer items-center rounded border px-3 py-1"
+        @click="retryBusinessFields()"
+      >
+        重试
+      </div>
+    </div>
   </div>
   <Suspense v-else @resolve="handleReady">
     <template #default>
