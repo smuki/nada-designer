@@ -650,7 +650,7 @@ interface PageSchema {
 
 - 门槛：hooks 45 / manager 75 / utils 50（statements）；新代码集中在 hooks/utils，必须同步补测；
 - `clipboard.ts` 当前 statements 100%，新增受控分支后必须补用例；
-- 现 22 个测试文件 / 155 个用例（154 `it` + 1 `test`），作为回归基线；新增预计 45–55 个用例；
+- 现 22 个测试文件 / 154 个用例（2026-11-22 实测），作为回归基线；新增预计 45–55 个用例；
 - 现有测试全为纯 TS（无 `.vue` 测试）：新增用例优先抽纯函数（utils / hooks）；属性面板过滤、大纲禁用、label 回退等组件逻辑用 `@vue/test-utils` 少量覆盖并在评审中说明；
 - `useClipboard` 新增 `canMutate` 必须默认 `true`，否则现有 3 参调用会全部变成"禁止"。
 
