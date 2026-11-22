@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import type { ComponentSchema } from '@nada-designer/types';
+import type { ComponentSchema, FieldMeta } from '@nada-designer/types';
 
 import { computed, ref } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 
 import { useDesignerContext, usePageManager } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
+import { getMatchedById } from '@nada-designer/utils';
 
 import NadaNodeItem from './nodeItem.vue';
 
@@ -13,11 +14,14 @@ defineOptions({
   name: 'EditNodeItem',
 });
 const props = defineProps<{
+  /** 落点所在列表的父节点；根列表为 undefined */
+  parentSchema?: ComponentSchema;
   schemas: ComponentSchema[];
 }>();
 const emit = defineEmits(['update:schemas']);
 const designer = useDesignerContext();
 const revoke = designer.revoke;
+const pageSchema = designer.pageSchema;
 const pageManager = usePageManager();
 
 const modelSchemas = computed({
@@ -79,10 +83,76 @@ function setHoverNode(event: Event) {
 }
 
 /**
+ * 落点所在的目标列表
+ */
+function getTargetList(): ComponentSchema[] {
+  return props.parentSchema?.children ?? pageSchema.schemas;
+}
+
+/**
+ * 落点作用域：父节点的最近 form 祖先，找不到回退页面根节点
+ */
+function getTargetScopeId(): string | undefined {
+  const rootId = pageSchema.schemas[0]?.id;
+  if (!props.parentSchema?.id) return rootId;
+
+  const path = getMatchedById(pageSchema.schemas, props.parentSchema.id);
+  for (let index = path.length - 1; index >= 0; index -= 1) {
+    if (path[index]?.type === 'form') {
+      return path[index]?.id;
+    }
+  }
+  return rootId;
+}
+
+/**
+ * 业务字段拖入：占位节点已由库插入目标列表，这里就地重建或摘除（规格 D33）
+ * @param event Sortable add 事件
+ */
+function handleBusinessFieldDrop(event: any) {
+  const meta = event.clonedData?.__businessField as FieldMeta | undefined;
+  const list = getTargetList();
+  const index = list.findIndex(
+    (item: any) =>
+      item?.__businessField?.field === meta?.field &&
+      Boolean(item?.__businessField),
+  );
+  if (!meta || index === -1) return;
+
+  isDragChange.value = false;
+  const scopeId = getTargetScopeId();
+  const result: { message?: string; node?: ComponentSchema; ok: boolean } =
+    scopeId
+      ? designer.businessFields.checkField(meta, scopeId)
+      : { message: '未找到业务对象作用域', ok: false };
+
+  if (!result.ok || !result.node) {
+    // 落点校验失败：摘除占位节点，不写撤销记录
+    list.splice(index, 1);
+    if (result.message) {
+      pluginManager.global.$message.warning(result.message);
+    }
+    return;
+  }
+
+  list.splice(index, 1, result.node);
+  designer.setSelectedNode(result.node);
+  revoke.push('插入业务字段', true);
+}
+
+/**
  * 从侧边栏拖入编辑区域，直接记录
  * 拖入也会导致 change 被触发，Add 应该设置 isDrageChange 标识为 false
  */
 function handleDragAdd(event: any) {
+  if (
+    designer.designMode === 'controlled' &&
+    event.clonedData?.__businessField
+  ) {
+    handleBusinessFieldDrop(event);
+    return;
+  }
+
   designer.setSelectedNode(event.clonedData);
   isDragChange.value = false;
   // 从组件面板拖入画布时 SortableJS 只在源列表触发 end，画布侧 @end 不会执行，

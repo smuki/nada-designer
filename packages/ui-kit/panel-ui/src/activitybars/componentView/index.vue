@@ -45,6 +45,25 @@ const businessFieldList = computed(() => {
   return fields.filter((item) => item.label.includes(keyword.value));
 });
 
+/** 业务字段拖拽列表（本地 ref 承接，clone 只产出占位节点） */
+const fieldDragItems = ref<FieldMeta[]>([]);
+watchEffect(() => {
+  fieldDragItems.value = businessFieldList.value;
+});
+
+/**
+ * 业务字段拖拽占位节点：落点处再按作用域构造真实节点（规格 D33）
+ * @param meta 业务字段元数据
+ */
+function createBusinessPlaceholder(meta: FieldMeta): ComponentSchema {
+  return {
+    __businessField: meta,
+    id: `__pending_${meta.field}`,
+    label: meta.label,
+    type: '__pending',
+  };
+}
+
 /** 受控模式：布局白名单（用本地 ref 承接拖拽组件，避免直接改注册表数据） */
 const layoutItems = ref<ComponentSchema[]>([]);
 
@@ -188,9 +207,18 @@ function handleClick(schema: ComponentSchema) {
           v-model="activeKeys"
         >
           <EpCollapsePanel name="业务字段" title="业务字段">
-            <div class="grid grid-cols-[auto_auto] gap-2 px-2 pb-2 pt-1">
+            <VueDraggable
+              v-model="fieldDragItems"
+              :group="{ name: 'edit-draggable', pull: 'clone', put: false }"
+              :sort="false"
+              :animation="180"
+              ghost-class="moving"
+              :clone="createBusinessPlaceholder"
+              item-key="field"
+              class="grid grid-cols-[auto_auto] gap-2 px-2 pb-2 pt-1"
+            >
               <div
-                v-for="item in businessFieldList"
+                v-for="item in fieldDragItems"
                 :key="item.field"
                 class="ep-component-item flex cursor-pointer items-center truncate"
                 :title="item.field"
@@ -201,7 +229,7 @@ function handleClick(schema: ComponentSchema) {
                   {{ item.label }}
                 </div>
               </div>
-            </div>
+            </VueDraggable>
             <div
               v-if="businessFieldList.length === 0"
               class="pt-4 text-center text-gray-400"
