@@ -1,3 +1,15 @@
+## 1.1.18（2026-11-22）
+
+### ✨ Feat
+
+- 新增受控字段模式：`designMode` / `businessObject` / `businessFieldLoader`，字段来自业务对象元数据，字段名只读、同表单唯一、复制/剪切静默禁止
+- 新增 `setDataAsync`；`PageSchema` 增加 `businessObject`，随页面保存且撤销/历史恢复不丢归属
+- 受控模式导入校验：id/field 字符集、id 唯一、作用域内 field 唯一，冲突时拒绝导入
+
+### 📖 Docs
+
+- 新增「受控字段模式」文档页；补充 EDesigner props/函数与快捷键说明
+
 ## 1.1.12（2026-06-05）
 
 【注意】更新版本请同步更新nada-designer-element-plus、nada-designer-antd、nada-designer-naive-ui依赖

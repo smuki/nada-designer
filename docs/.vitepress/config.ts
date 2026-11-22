@@ -100,6 +100,10 @@ export default defineConfig({
               text: 'Designer 设计器',
             },
             {
+              link: '/guide/components/controlledMode',
+              text: '受控字段模式',
+            },
+            {
               link: '/guide/components/EBuilder',
               text: 'Builder 生成器',
             },
