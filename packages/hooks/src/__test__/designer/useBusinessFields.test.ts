@@ -189,6 +189,7 @@ describe('useBusinessFields 函数测试', () => {
     expect(bf.resolveScope('in_1')?.id).toBe('root');
     expect(bf.isFieldPlaced('placed', 'in_1')).toBe(true);
     expect(bf.isFieldPlaced('other', 'in_1')).toBe(false);
+    expect(bf.getPlacedFields('in_1')).toEqual(['placed']);
   });
 
   it('checkField：重复字段与不支持的类型返回失败原因', () => {

@@ -9,6 +9,7 @@ import { computed, ref } from 'vue';
 import {
   buildFieldSchema,
   findSchemaById,
+  findSchemas,
   hasFieldInScope,
   isValidSchemaName,
   mapFieldDataType,
@@ -334,6 +335,23 @@ export function useBusinessFields(
     return { node, ok: true };
   }
 
+  /**
+   * 获取当前作用域内已放置的字段名
+   * @description 用于面板置灰（规格 §10.2）；跨作用域是否重复由落点校验兜底
+   * @param nodeId 用于解析作用域的节点 id
+   */
+  function getPlacedFields(nodeId?: string): string[] {
+    const scope = resolveScope(nodeId);
+    if (!scope) return [];
+
+    return (
+      findSchemas(
+        scope.children ?? [],
+        (node) => node.input === true && Boolean(node.field),
+      ) as ComponentSchema[]
+    ).map((node) => node.field as string);
+  }
+
   return {
     buildNode,
     businessObject,
@@ -341,6 +359,7 @@ export function useBusinessFields(
     error,
     fieldMap,
     fields,
+    getPlacedFields,
     isFieldPlaced,
     isLoading,
     isReady,

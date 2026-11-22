@@ -51,6 +51,21 @@ watchEffect(() => {
   fieldDragItems.value = businessFieldList.value;
 });
 
+/** 当前作用域内已放置的字段（用于面板置灰，规格 §10.2） */
+const placedFields = computed(() => {
+  return new Set(
+    businessFields.getPlacedFields(designer.state.selectedNode?.id),
+  );
+});
+
+/**
+ * 字段是否已在当前作用域放置
+ * @param field 业务字段标识
+ */
+function isFieldPlaced(field: string): boolean {
+  return placedFields.value.has(field);
+}
+
 /**
  * 业务字段拖拽占位节点：落点处再按作用域构造真实节点（规格 D33）
  * @param meta 业务字段元数据
@@ -113,6 +128,11 @@ function getFieldIcon(type: FieldMeta['type']): string {
  * @param meta 业务字段元数据
  */
 function handleFieldClick(meta: FieldMeta) {
+  if (isFieldPlaced(meta.field)) {
+    pluginManager.global.$message.info(`字段「${meta.label}」已放置`);
+    return false;
+  }
+
   const targetId = designer.state.selectedNode?.id ?? pageSchema.schemas[0]?.id;
   if (!targetId) return false;
 
@@ -214,14 +234,16 @@ function handleClick(schema: ComponentSchema) {
               :animation="180"
               ghost-class="moving"
               :clone="createBusinessPlaceholder"
+              filter=".is-placed"
               item-key="field"
               class="grid grid-cols-[auto_auto] gap-2 px-2 pb-2 pt-1"
             >
               <div
                 v-for="item in fieldDragItems"
                 :key="item.field"
-                class="ep-component-item flex cursor-pointer items-center truncate"
-                :title="item.field"
+                class="ep-component-item flex items-center truncate"
+                :class="{ 'is-placed': isFieldPlaced(item.field) }"
+                :title="isFieldPlaced(item.field) ? '已放置' : item.field"
                 @click="handleFieldClick(item)"
               >
                 <NadaIcon :name="getFieldIcon(item.type)" />
