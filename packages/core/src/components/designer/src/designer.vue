@@ -221,19 +221,75 @@ async function setDisabledHover(disabledHover = false) {
 }
 
 /**
- * 接受一个PageSchema对象作为参数。根据传入的schemas和script属性，更新页面对应的数据
+ * 应用 PageSchema 数据（迁移 + 写回 + 选中 + 撤销）
+ * @param schema 页面数据
  */
-function setData(schema: PageSchema) {
+function applyPageSchemaData(schema: PageSchema) {
   // 迁移 componentProps 到 props
   migrateComponentProps(schema);
   pageManager.setPageSchema(schema);
   // deepCompareAndModify 会删除缺失键，必须回填业务对象归属（规格 §11.1）
   applyBusinessObject(schema.businessObject);
-  if (designMode === 'controlled') {
-    void switchBusinessObject(pageSchema.businessObject);
-  }
   setSelectedNode();
   revoke.push('加载数据');
+}
+
+/**
+ * 接受一个PageSchema对象作为参数。根据传入的schemas和script属性，更新页面对应的数据
+ * @description 受控模式下若业务对象与当前不同：乐观应用，元数据加载失败则回滚（规格 D39）
+ * @param schema 页面数据
+ */
+function setData(schema: PageSchema) {
+  // 自由模式或业务对象未变化：同步应用
+  const nextBusinessObject = schema.businessObject ?? props.businessObject;
+  if (
+    designMode !== 'controlled' ||
+    !nextBusinessObject ||
+    nextBusinessObject === businessFields.businessObject.value
+  ) {
+    applyPageSchemaData(schema);
+    return;
+  }
+
+  // 受控 + 切换对象：先应用（乐观），失败再回滚
+  const previous = getData();
+  applyPageSchemaData(schema);
+  void switchBusinessObject(nextBusinessObject).then((ok) => {
+    if (ok) return;
+
+    pageManager.setPageSchema(previous);
+    applyBusinessObject(previous.businessObject);
+    setSelectedNode();
+    pluginManager.global.$message.error(
+      '业务字段元数据加载失败，已回滚本次数据',
+    );
+  });
+}
+
+/**
+ * 异步应用 PageSchema 数据
+ * @description 受控模式先加载目标业务对象元数据，失败不应用本次数据（规格 D39）
+ * @param schema 页面数据
+ */
+async function setDataAsync(schema: PageSchema): Promise<boolean> {
+  const nextBusinessObject = schema.businessObject ?? props.businessObject;
+
+  if (
+    designMode === 'controlled' &&
+    nextBusinessObject &&
+    nextBusinessObject !== businessFields.businessObject.value
+  ) {
+    const ok = await switchBusinessObject(nextBusinessObject);
+    if (!ok) {
+      pluginManager.global.$message.error(
+        '业务字段元数据加载失败，未应用本次数据',
+      );
+      return false;
+    }
+  }
+
+  applyPageSchemaData(schema);
+  return true;
 }
 
 /**
@@ -290,6 +346,7 @@ defineExpose({
   revoke,
   save: handleSave,
   setData,
+  setDataAsync,
 });
 </script>
 <template>
