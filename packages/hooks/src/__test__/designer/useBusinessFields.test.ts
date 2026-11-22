@@ -178,9 +178,9 @@ describe('useBusinessFields 函数测试', () => {
     expect(node?.field).toBe('金额');
     expect(node?.props).toEqual({ placeholder: '请输入', precision: 2 });
 
-    expect(
-      bf.buildNode({ field: 'x', label: 'X', type: 'list' }, 'root'),
-    ).toBe(null);
+    expect(bf.buildNode({ field: 'x', label: 'X', type: 'list' }, 'root')).toBe(
+      null,
+    );
   });
 
   it('作用域解析与字段已放置判断', () => {
@@ -189,5 +189,34 @@ describe('useBusinessFields 函数测试', () => {
     expect(bf.resolveScope('in_1')?.id).toBe('root');
     expect(bf.isFieldPlaced('placed', 'in_1')).toBe(true);
     expect(bf.isFieldPlaced('other', 'in_1')).toBe(false);
+  });
+
+  it('checkField：重复字段与不支持的类型返回失败原因', () => {
+    const bf = useBusinessFields(makePageSchema(), { getComponentConfig });
+
+    const duplicated = bf.checkField(
+      { field: 'placed', label: '已存在', type: 'text' },
+      'root',
+    );
+    expect(duplicated.ok).toBe(false);
+    expect(duplicated.message).toContain('已存在');
+
+    const unsupported = bf.checkField(
+      { field: 'listField', label: '列表', type: 'list' },
+      'root',
+    );
+    expect(unsupported.ok).toBe(false);
+  });
+
+  it('checkField：通过时返回按作用域构造的节点', () => {
+    const bf = useBusinessFields(makePageSchema(), { getComponentConfig });
+
+    const result = bf.checkField(
+      { field: '新字段', label: '新字段', type: 'text' },
+      'root',
+    );
+    expect(result.ok).toBe(true);
+    expect(result.node?.id).toBe('root_新字段');
+    expect(result.node?.field).toBe('新字段');
   });
 });

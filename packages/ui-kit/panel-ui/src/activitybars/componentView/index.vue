@@ -90,6 +90,45 @@ function getFieldIcon(type: FieldMeta['type']): string {
 }
 
 /**
+ * 点击插入业务字段
+ * @param meta 业务字段元数据
+ */
+function handleFieldClick(meta: FieldMeta) {
+  const targetId = designer.state.selectedNode?.id ?? pageSchema.schemas[0]?.id;
+  if (!targetId) return false;
+
+  const scope = businessFields.resolveScope(targetId);
+  if (!scope?.id) return false;
+
+  const result = businessFields.checkField(meta, scope.id);
+  if (!result.ok || !result.node) {
+    if (result.message) {
+      pluginManager.global.$message.warning(result.message);
+    }
+    return false;
+  }
+
+  const data = findSchemaInfoById(pageSchema.schemas, targetId);
+  if (!data) return false;
+
+  let { index, schema: checkedSchema, list } = data;
+  // 选中容器时插入到其 children 末尾（与布局组件插入规则一致）
+  if (
+    checkedSchema.children &&
+    !pluginManager.component.getConfigByType(checkedSchema.type)
+      ?.editConstraints?.childImmovable
+  ) {
+    list = checkedSchema.children;
+    index = list.length - 1;
+  }
+
+  list.splice(index + 1, 0, result.node);
+  designer.setSelectedNode(result.node);
+  revoke.push('插入业务字段', true);
+  return true;
+}
+
+/**
  * 点击添加节点（布局组件走注册表 defaultSchema）
  */
 function handleClick(schema: ComponentSchema) {
@@ -153,8 +192,9 @@ function handleClick(schema: ComponentSchema) {
               <div
                 v-for="item in businessFieldList"
                 :key="item.field"
-                class="ep-component-item flex items-center truncate"
+                class="ep-component-item flex cursor-pointer items-center truncate"
                 :title="item.field"
+                @click="handleFieldClick(item)"
               >
                 <NadaIcon :name="getFieldIcon(item.type)" />
                 <div class="ep-component-label w-0 flex-1 truncate">

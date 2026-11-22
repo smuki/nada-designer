@@ -8,6 +8,7 @@ import { computed, ref } from 'vue';
 
 import {
   buildFieldSchema,
+  findSchemaById,
   hasFieldInScope,
   isValidSchemaName,
   mapFieldDataType,
@@ -304,9 +305,39 @@ export function useBusinessFields(
     });
   }
 
+  /**
+   * 校验业务字段能否放入指定作用域
+   * @description 返回构造好的节点或失败原因（重复、id 冲突、不支持的类型）
+   * @param meta 业务字段元数据
+   * @param scopeId 作用域节点 id
+   */
+  function checkField(
+    meta: FieldMeta,
+    scopeId: string,
+  ): { message?: string; node?: ComponentSchema; ok: boolean } {
+    const node = buildNode(meta, scopeId);
+    if (!node) {
+      return { message: `不支持的数据类型：${meta.type}`, ok: false };
+    }
+
+    const scope = findSchemaById(pageSchema.schemas, scopeId);
+    if (hasFieldInScope(scope, meta.field)) {
+      return {
+        message: `字段「${meta.label}」已存在，不能重复放置`,
+        ok: false,
+      };
+    }
+    if (node.id && findSchemaById(pageSchema.schemas, node.id)) {
+      return { message: `节点 id「${node.id}」已存在`, ok: false };
+    }
+
+    return { node, ok: true };
+  }
+
   return {
     buildNode,
     businessObject,
+    checkField,
     error,
     fieldMap,
     fields,
