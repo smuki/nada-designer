@@ -9,6 +9,7 @@ import { computed, ref } from 'vue';
 import {
   buildFieldSchema,
   findSchemaById,
+  findSchemaInfoById,
   findSchemas,
   hasFieldInScope,
   isValidSchemaName,
@@ -29,6 +30,15 @@ export interface BusinessFieldIssue {
 export interface ComponentConfigLike {
   attribute?: { field?: string }[];
   defaultSchema?: ComponentSchema;
+  editConstraints?: { childImmovable?: boolean };
+}
+
+/** 插入业务字段的选项 */
+export interface InsertFieldOptions {
+  /** 插入成功后的回调（选中节点 / 撤销记录由调用方负责） */
+  onInserted?: (node: ComponentSchema) => void;
+  /** 插入目标节点 id；不传时插入根作用域 */
+  targetId?: string;
 }
 
 export interface UseBusinessFieldsOptions {
@@ -352,6 +362,47 @@ export function useBusinessFields(
     ).map((node) => node.field as string);
   }
 
+  /**
+   * 插入业务字段节点
+   * @description 校验 → 构造 → 按选中节点位置插入（容器插到末尾，叶子插到其后）；回调负责选中与撤销
+   * @param meta 业务字段元数据
+   * @param insertOptions 插入选项
+   */
+  function insertField(
+    meta: FieldMeta,
+    insertOptions: InsertFieldOptions = {},
+  ): { message?: string; node?: ComponentSchema; ok: boolean } {
+    const targetId = insertOptions.targetId ?? pageSchema.schemas[0]?.id;
+    if (!targetId) {
+      return { message: '页面为空，无法插入字段', ok: false };
+    }
+
+    const scope = resolveScope(targetId);
+    if (!scope?.id) {
+      return { message: '未找到业务字段作用域', ok: false };
+    }
+
+    const result = checkField(meta, scope.id);
+    if (!result.ok || !result.node) return result;
+
+    const data = findSchemaInfoById(pageSchema.schemas, targetId);
+    if (!data) {
+      return { message: '未找到插入位置', ok: false };
+    }
+
+    let { index, schema: checkedSchema, list } = data;
+    const childImmovable = options.getComponentConfig?.(checkedSchema.type)
+      ?.editConstraints?.childImmovable;
+    if (checkedSchema.children && !childImmovable) {
+      list = checkedSchema.children;
+      index = list.length - 1;
+    }
+
+    list.splice(index + 1, 0, result.node);
+    insertOptions.onInserted?.(result.node);
+    return result;
+  }
+
   return {
     buildNode,
     businessObject,
@@ -360,6 +411,7 @@ export function useBusinessFields(
     fieldMap,
     fields,
     getPlacedFields,
+    insertField,
     isFieldPlaced,
     isLoading,
     isReady,

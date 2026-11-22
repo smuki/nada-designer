@@ -104,8 +104,16 @@ const {
  * 业务字段元数据（受控模式）
  */
 const businessFields = useBusinessFields(pageSchema, {
-  getComponentConfig: (type) =>
-    pluginManager.component.getComponentConfigByType(type),
+  getComponentConfig: (type) => {
+    const config = pluginManager.component.getComponentConfigByType(type);
+    if (!config) return undefined;
+    // 适配成 hook 需要的精简结构（attribute 在 config 下，editConstraints 在顶层）
+    return {
+      attribute: config.config?.attribute,
+      defaultSchema: config.defaultSchema,
+      editConstraints: config.editConstraints,
+    };
+  },
   loader: (businessObject) => {
     const loader = props.businessFieldLoader;
     if (!loader) {

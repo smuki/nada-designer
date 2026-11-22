@@ -4,23 +4,31 @@ import type { ActivitybarModel } from '@nada-designer/types';
 import { computed, ref, shallowRef } from 'vue';
 
 import { EpTooltip, NadaIcon } from '@nada-designer/base-ui';
+import { useDesignerContext } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
 
 defineOptions({
   name: 'EActivityBar',
 });
+const designer = useDesignerContext();
+const isControlled = designer.designMode === 'controlled';
+
 const activityBars = computed(() => {
   return pluginManager.panel.activityBars.value
-    .filter((item) => item.visible)
+    .filter(
+      (item) => item.visible && !(isControlled && item.id === 'component_view'),
+    )
     .sort((a, b) => {
       return a.sort! - b.sort!;
     });
 });
 
-const activityBarCheckedIndex = ref<null | number>(0);
+// 受控模式默认收起侧栏，把空间留给画布（字段从工具栏选择器插入）
+const activityBarCheckedIndex = ref<null | number>(isControlled ? null : 0);
 
-const sidebarComponent = shallowRef<any>(null);
-sidebarComponent.value = activityBars.value[0].component;
+const sidebarComponent = shallowRef<any>(
+  activityBars.value[0]?.component ?? null,
+);
 
 function handleClick(item: ActivitybarModel, index: number) {
   if (activityBarCheckedIndex.value === index) {

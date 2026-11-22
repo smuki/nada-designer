@@ -230,4 +230,27 @@ describe('useBusinessFields 函数测试', () => {
     expect(result.node?.id).toBe('root_新字段');
     expect(result.node?.field).toBe('新字段');
   });
+
+  it('insertField：插入到作用域并回调，重复时拒绝', () => {
+    const pageSchema: any = makePageSchema();
+    const bf = useBusinessFields(pageSchema, { getComponentConfig });
+    const inserted: any[] = [];
+
+    const first = bf.insertField(
+      { field: 'u_销售单号', label: '销售单号', type: 'text' },
+      { onInserted: (node) => inserted.push(node), targetId: 'root' },
+    );
+    expect(first.ok).toBe(true);
+    expect(pageSchema.schemas[0].children).toHaveLength(2);
+    expect(pageSchema.schemas[0].children[1].id).toBe('root_u_销售单号');
+    expect(inserted).toHaveLength(1);
+
+    const second = bf.insertField(
+      { field: 'u_销售单号', label: '销售单号', type: 'text' },
+      { targetId: 'root' },
+    );
+    expect(second.ok).toBe(false);
+    expect(second.message).toContain('已存在');
+    expect(pageSchema.schemas[0].children).toHaveLength(2);
+  });
 });

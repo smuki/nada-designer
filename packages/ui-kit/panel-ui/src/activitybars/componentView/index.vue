@@ -133,38 +133,17 @@ function handleFieldClick(meta: FieldMeta) {
     return false;
   }
 
-  const targetId = designer.state.selectedNode?.id ?? pageSchema.schemas[0]?.id;
-  if (!targetId) return false;
-
-  const scope = businessFields.resolveScope(targetId);
-  if (!scope?.id) return false;
-
-  const result = businessFields.checkField(meta, scope.id);
-  if (!result.ok || !result.node) {
-    if (result.message) {
-      pluginManager.global.$message.warning(result.message);
-    }
-    return false;
+  const result = businessFields.insertField(meta, {
+    onInserted: (node) => {
+      designer.setSelectedNode(node);
+      revoke.push('插入业务字段', true);
+    },
+    targetId: designer.state.selectedNode?.id ?? pageSchema.schemas[0]?.id,
+  });
+  if (!result.ok && result.message) {
+    pluginManager.global.$message.warning(result.message);
   }
-
-  const data = findSchemaInfoById(pageSchema.schemas, targetId);
-  if (!data) return false;
-
-  let { index, schema: checkedSchema, list } = data;
-  // 选中容器时插入到其 children 末尾（与布局组件插入规则一致）
-  if (
-    checkedSchema.children &&
-    !pluginManager.component.getConfigByType(checkedSchema.type)
-      ?.editConstraints?.childImmovable
-  ) {
-    list = checkedSchema.children;
-    index = list.length - 1;
-  }
-
-  list.splice(index + 1, 0, result.node);
-  designer.setSelectedNode(result.node);
-  revoke.push('插入业务字段', true);
-  return true;
+  return result.ok;
 }
 
 /**
