@@ -63,7 +63,13 @@ const componentAttributes = computed(() => {
 
   // 受控模式下 field 只读：统一过滤各组件配置里的「数据字段」项（不改 40+ 处配置）
   if (isControlled) {
-    return allAttributes.filter((item) => item.field !== 'field');
+    const isRoot = selectedNode.value.id === pageSchema.schemas[0]?.id;
+    return allAttributes.filter((item) => {
+      if (item.field === 'field') return false;
+      // 根表单名称固定 default，不允许修改
+      if (isRoot && item.field === 'props.name') return false;
+      return true;
+    });
   }
 
   return allAttributes;
