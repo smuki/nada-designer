@@ -148,6 +148,7 @@ const metaBlockedMessage = computed(
 );
 
 const { setTarget } = useHotkeys({
+  designMode,
   emit,
   handleDelete,
   pageSchema,

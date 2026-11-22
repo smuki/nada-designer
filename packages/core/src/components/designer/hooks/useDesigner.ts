@@ -95,9 +95,12 @@ export function useDesigner(
   });
   const revoke = useRevoke(pageSchema, state, setSelectedNode);
 
-  // 使用封装的clipboard hook
-  const { duplicate } = useClipboard(pageSchema, setSelectedNode, (message) =>
-    revoke.push(message),
+  // 使用封装的clipboard hook（受控模式整体禁止复制/剪切/粘贴）
+  const { duplicate } = useClipboard(
+    pageSchema,
+    setSelectedNode,
+    (message) => revoke.push(message),
+    { canMutate: () => designMode === 'free' },
   );
 
   const canvasConfigs = {

@@ -8,6 +8,7 @@ import { findSchemaInfoById, generateNewSchema } from '@nada-designer/utils';
 
 const designer = useDesignerContext();
 const pageSchema = designer.pageSchema;
+const isControlled = designer.designMode === 'controlled';
 
 // 计算选中节点值
 const selectedKeys = computed(() => {
@@ -44,7 +45,8 @@ function handleLock(schema) {
  * 复制选中节点元素
  */
 function handleCopy(schema) {
-  if (!schema) return;
+  // 受控模式整体禁止节点复制（静默无反应）
+  if (isControlled || !schema) return;
   const data = findSchemaInfoById(pageSchema.schemas, schema.id);
   if (!data) {
     return false;
@@ -143,7 +145,9 @@ function handleDelete(schema) {
               @click="handleShow(schema)"
             />
             <NadaIcon
-              v-if="!schema.status?.lock && !schema.props?.hidden"
+              v-if="
+                !isControlled && !schema.status?.lock && !schema.props?.hidden
+              "
               class="mr-2"
               name="icon--nada--copy-all-outline-rounded"
               @click="handleCopy(schema)"
