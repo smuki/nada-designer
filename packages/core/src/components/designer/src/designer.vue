@@ -23,6 +23,7 @@ import { pluginManager } from '@nada-designer/manager';
 import { setupPanel } from '@nada-designer/panel-ui';
 import {
   deepClone,
+  findSchemas,
   loadAsyncComponent,
   migrateComponentProps,
   validateControlledPage,
@@ -342,6 +343,23 @@ function getData(): PageSchema {
  * 保存数据
  */
 function handleSave() {
+  // 受控模式：节点字段不在元数据中仅警告，不阻止保存（规格 §11.3 / D27）
+  if (designMode === 'controlled') {
+    const knownFields = businessFields.fieldMap.value;
+    const unknownFields = new Set<string>();
+    findSchemas(getData().schemas, (node) => {
+      if (node.input === true && node.field && !knownFields.has(node.field)) {
+        unknownFields.add(node.field);
+      }
+      return false;
+    });
+    if (unknownFields.size > 0) {
+      console.warn(
+        `[受控字段] 以下字段不在当前业务对象元数据中：${[...unknownFields].join('、')}`,
+      );
+    }
+  }
+
   emit('save', getData());
 }
 

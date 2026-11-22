@@ -364,6 +364,7 @@ defineExpose({
       <div class="ep-widget-action-item whitespace-nowrap">
         <!-- {{ designer.state.selectedNode?.type }} -->
         {{
+          designer.state.selectedNode?.label ??
           pluginManager.component.getConfigByType(
             designer.state.selectedNode?.type ?? '',
           )?.defaultSchema.label

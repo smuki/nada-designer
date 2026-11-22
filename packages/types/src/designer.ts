@@ -48,8 +48,10 @@ export interface FieldMeta {
 }
 
 export interface DesignerProps {
-  /** 业务字段元数据 loader（受控模式使用） */
-  businessFieldLoader?: (businessObject: string) => Promise<FieldMeta[]>;
+  /** 业务字段元数据 loader（受控模式使用；可直接返回静态数组，便于测试/离线） */
+  businessFieldLoader?: (
+    businessObject: string,
+  ) => FieldMeta[] | Promise<FieldMeta[]>;
   /** 业务对象 code（租户内唯一），受控模式必填 */
   businessObject?: string;
   canvasMode?: 'desktop' | 'mobile' | 'tablet';

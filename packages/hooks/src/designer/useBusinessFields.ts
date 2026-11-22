@@ -34,8 +34,8 @@ export interface ComponentConfigLike {
 export interface UseBusinessFieldsOptions {
   /** 取当前 UI 库的组件配置；由调用方注入（hooks 不运行时依赖 manager） */
   getComponentConfig?: (type: string) => ComponentConfigLike | undefined;
-  /** 业务字段元数据加载器 */
-  loader?: (businessObject: string) => Promise<FieldMeta[]>;
+  /** 业务字段元数据加载器（可直接返回静态数组，便于测试/离线） */
+  loader?: (businessObject: string) => FieldMeta[] | Promise<FieldMeta[]>;
 }
 
 /** 支持的数据类型（规格 §6.3.1） */

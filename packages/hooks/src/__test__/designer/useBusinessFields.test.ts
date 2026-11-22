@@ -167,6 +167,16 @@ describe('useBusinessFields 函数测试', () => {
     expect(bf.error.value).toContain('businessFieldLoader');
   });
 
+  it('loader 直接返回静态数组也支持（测试/离线）', async () => {
+    const bf = useBusinessFields(makePageSchema(), {
+      getComponentConfig,
+      loader: () => [{ field: 'static', label: '静态', type: 'text' }],
+    });
+
+    expect(await bf.load('单据H')).toBe(true);
+    expect(bf.fields.value.map((item) => item.field)).toEqual(['static']);
+  });
+
   it('buildNode：按映射类型构造节点并过滤预设 props', () => {
     const bf = useBusinessFields(makePageSchema(), { getComponentConfig });
 
