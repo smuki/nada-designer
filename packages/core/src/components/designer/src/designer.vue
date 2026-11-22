@@ -120,6 +120,16 @@ const {
   switchTo: switchBusinessObject,
 } = businessFields;
 
+/** businessObject 变化（撤销/历史恢复等）时同步元数据 */
+watch(
+  () => pageSchema.businessObject,
+  (next) => {
+    if (designMode !== 'controlled' || !next) return;
+    if (next === businessFields.businessObject.value) return;
+    void switchBusinessObject(next);
+  },
+);
+
 if (designMode === 'controlled') {
   const initialBusinessObject =
     props.defaultSchema?.businessObject ?? props.businessObject;

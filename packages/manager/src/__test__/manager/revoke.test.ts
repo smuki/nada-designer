@@ -248,4 +248,53 @@ describe('useRevoke', () => {
     expect(revoke.undoList.value).toHaveLength(0);
     expect(revoke.currentRecord.value).toBeNull();
   });
+
+  it('旧快照没有 businessObject 时保留当前归属', () => {
+    const pageSchema: any = {
+      businessObject: '销售单据',
+      schemas: [{ children: [], id: 'root', type: 'page' }],
+      script: '',
+    };
+    const revoke = useRevoke(pageSchema, mockState, vi.fn());
+
+    revoke.importHistory({
+      currentRecord: {
+        pageSchema: JSON.stringify({
+          schemas: [{ children: [], id: 'root', type: 'page' }],
+          script: '',
+        }),
+        timestamp: Date.now(),
+        type: '旧记录',
+      },
+      recordList: [],
+      undoList: [],
+    });
+
+    expect(pageSchema.businessObject).toBe('销售单据');
+  });
+
+  it('快照带 businessObject 时以快照为准', () => {
+    const pageSchema: any = {
+      businessObject: 'A',
+      schemas: [{ children: [], id: 'root', type: 'page' }],
+      script: '',
+    };
+    const revoke = useRevoke(pageSchema, mockState, vi.fn());
+
+    revoke.importHistory({
+      currentRecord: {
+        pageSchema: JSON.stringify({
+          businessObject: 'B',
+          schemas: [{ children: [], id: 'root', type: 'page' }],
+          script: '',
+        }),
+        timestamp: Date.now(),
+        type: '切换对象',
+      },
+      recordList: [],
+      undoList: [],
+    });
+
+    expect(pageSchema.businessObject).toBe('B');
+  });
 });
