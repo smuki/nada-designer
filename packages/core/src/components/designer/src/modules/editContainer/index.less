@@ -241,6 +241,11 @@
       background: var(--ep-primary-faded);
     }
 
+    &.selected {
+      color: var(--ep-primary);
+      background: var(--ep-primary-faded);
+    }
+
     &.disabled {
       cursor: not-allowed;
       opacity: 0.45;
@@ -250,6 +255,27 @@
         background: transparent;
       }
     }
+  }
+
+  .ep-field-picker-check {
+    width: 14px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .ep-field-picker-footer {
+    padding-top: 8px;
+    margin-top: 8px;
+    border-top: 1px solid var(--ep-border);
+  }
+
+  .ep-field-picker-apply {
+    padding: 6px 0;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+    background: var(--ep-primary);
+    border-radius: var(--ep-radius);
   }
 
   .ep-field-picker-type {

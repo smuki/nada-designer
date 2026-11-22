@@ -8,6 +8,7 @@ import { useDesignerContext, useStore } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
 import {
   convertKFormData,
+  findSchemaById,
   findSchemaInfoById,
   generateNewSchema,
   migrateComponentProps,
@@ -33,6 +34,8 @@ const pickerTab = ref<'fields' | 'layouts'>('fields');
 const pickerKeyword = ref('');
 const pickerRef = ref<HTMLElement | null>(null);
 const pickerTriggerRef = ref<HTMLElement | null>(null);
+/** 多选中的业务字段（按 field 记录，支持批量插入） */
+const selectedFields = ref<string[]>([]);
 
 /** 受控模式允许插入的布局组件白名单 */
 const LAYOUT_WHITELIST = new Set(['card', 'form', 'row', 'tabs']);
@@ -84,16 +87,19 @@ function togglePicker() {
   if (pickerOpen.value) {
     pickerTab.value = 'fields';
     pickerKeyword.value = '';
+    selectedFields.value = [];
   }
 }
 
 function switchPickerTab(tab: 'fields' | 'layouts') {
   pickerTab.value = tab;
   pickerKeyword.value = '';
+  selectedFields.value = [];
 }
 
 function closePicker() {
   pickerOpen.value = false;
+  selectedFields.value = [];
 }
 
 /**
@@ -123,29 +129,69 @@ function insertNode(node: ComponentSchema): boolean {
 }
 
 /**
- * 插入业务字段
+ * 切换字段选中状态
  * @param meta 业务字段元数据
  */
-function handleInsertField(meta: FieldMeta) {
+function toggleField(meta: FieldMeta) {
   if (placedFields.value.has(meta.field)) {
     pluginManager.global.$message.info(`字段「${meta.label}」已放置`);
     return;
   }
 
-  const result = businessFields.insertField(meta, {
-    onInserted: (node) => {
-      designer.setSelectedNode(node);
-      revoke.push('插入业务字段', true);
-    },
-    targetId: designer.state.selectedNode?.id ?? pageSchema.schemas[0]?.id,
+  const index = selectedFields.value.indexOf(meta.field);
+  selectedFields.value =
+    index === -1
+      ? [...selectedFields.value, meta.field]
+      : selectedFields.value.filter((field) => field !== meta.field);
+}
+
+/**
+ * 批量插入选中的业务字段（保持面板顺序，合并为一条撤销记录）
+ */
+function handleInsertSelectedFields() {
+  if (selectedFields.value.length === 0) return;
+
+  // 按元数据顺序插入，保证与面板顺序一致
+  const metas = businessFields.fields.value.filter((meta) =>
+    selectedFields.value.includes(meta.field),
+  );
+
+  const failures: string[] = [];
+  let insertedCount = 0;
+  let targetId = designer.state.selectedNode?.id ?? pageSchema.schemas[0]?.id;
+
+  metas.forEach((meta) => {
+    const result = businessFields.insertField(meta, {
+      onInserted: (node) => {
+        // 连续插入：下一个字段插到上一个之后，保持顺序
+        targetId = node.id;
+      },
+      targetId,
+    });
+
+    if (result.ok) {
+      insertedCount += 1;
+    } else {
+      failures.push(result.message ?? meta.label);
+    }
   });
 
-  if (!result.ok) {
-    if (result.message) {
-      pluginManager.global.$message.warning(result.message);
+  if (insertedCount > 0) {
+    const lastNode = targetId
+      ? findSchemaById(pageSchema.schemas, targetId)
+      : undefined;
+    if (lastNode) {
+      designer.setSelectedNode(lastNode);
     }
-    return;
+    revoke.push('插入业务字段', true);
   }
+
+  if (failures.length > 0) {
+    pluginManager.global.$message.warning(
+      `部分字段未插入：${failures[0]}${failures.length > 1 ? ` 等 ${failures.length} 项` : ''}`,
+    );
+  }
+
   closePicker();
 }
 
@@ -481,11 +527,17 @@ function handleSetCanvas(type: string) {
                 v-for="meta in pickerFields"
                 :key="meta.field"
                 class="ep-field-picker-item"
-                :class="{ disabled: placedFields.has(meta.field) }"
+                :class="{
+                  disabled: placedFields.has(meta.field),
+                  selected: selectedFields.includes(meta.field),
+                }"
                 :title="meta.field"
-                @click="handleInsertField(meta)"
+                @click="toggleField(meta)"
               >
-                <span class="truncate">{{ meta.label }}</span>
+                <span class="ep-field-picker-check">
+                  {{ selectedFields.includes(meta.field) ? '✓' : '' }}
+                </span>
+                <span class="flex-1 truncate">{{ meta.label }}</span>
                 <span class="ep-field-picker-type">{{ meta.type }}</span>
               </div>
               <div
@@ -511,6 +563,17 @@ function handleSetCanvas(type: string) {
                 没有匹配的组件
               </div>
             </template>
+          </div>
+          <div
+            v-if="pickerTab === 'fields' && selectedFields.length > 0"
+            class="ep-field-picker-footer"
+          >
+            <div
+              class="ep-field-picker-apply"
+              @click="handleInsertSelectedFields"
+            >
+              插入 {{ selectedFields.length }} 个字段
+            </div>
           </div>
         </div>
       </div>
