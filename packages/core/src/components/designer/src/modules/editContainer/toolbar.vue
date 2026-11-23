@@ -6,7 +6,6 @@ import { useDesignerContext, useStore } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
 import { convertKFormData, migrateComponentProps } from '@nada-designer/utils';
 
-import BusinessFieldPicker from './businessFieldPicker.vue';
 import NadaPreviewJson from './previewJson.vue';
 
 const Select = pluginManager.component.get('select');
@@ -17,9 +16,6 @@ const pageSchema = designer.pageSchema;
 const revoke = designer.revoke;
 const previewJson = ref<InstanceType<typeof NadaPreviewJson> | null>(null);
 
-/** 受控模式：添加字段/组件弹层 */
-const isControlled = designer.designMode === 'controlled';
-const pickerOpen = ref(false);
 const deviceOptions = [
   {
     icon: 'icon--nada--computer-outline-rounded',
@@ -281,16 +277,6 @@ function handleSetCanvas(type: string) {
   <div class="ep-edit-toolbar flex items-center justify-between px-2">
     <!-- 操作按钮 start  -->
     <div class="flex h-full flex-1 items-center">
-      <!-- 受控模式：添加字段/组件 -->
-      <EpTooltip v-if="isControlled" content="添加字段/组件">
-        <div
-          class="ep-action-item h-90% px-10px flex cursor-pointer items-center text-base"
-          @click="pickerOpen = true"
-        >
-          <NadaIcon name="icon--nada--extension-outline" />
-        </div>
-      </EpTooltip>
-      <BusinessFieldPicker v-if="pickerOpen" @close="pickerOpen = false" />
       <template v-for="(action, index) in actionOptions" :key="index">
         <div
           v-if="action.divider && isShow(action.show)"

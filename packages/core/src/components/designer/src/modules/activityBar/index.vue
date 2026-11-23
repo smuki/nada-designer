@@ -7,6 +7,7 @@ import { EpTooltip, NadaIcon } from '@nada-designer/base-ui';
 import { useDesignerContext } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
 
+import BusinessFieldPicker from '../editContainer/businessFieldPicker.vue';
 import ComponentPicker from '../editContainer/componentPicker.vue';
 
 defineOptions({
@@ -15,15 +16,29 @@ defineOptions({
 const designer = useDesignerContext();
 const isControlled = designer.designMode === 'controlled';
 
-/** 侧栏图标项（隐藏 visible=false 的属性面板） */
+/** 侧栏图标项（受控模式用「添加字段」替换「组件」） */
 const activityBars = computed(() => {
-  return pluginManager.panel.activityBars.value
-    .filter(
-      (item) => item.visible && !(isControlled && item.id === 'component_view'),
-    )
+  const items = pluginManager.panel.activityBars.value
+    .filter((item) => item.visible)
+    .filter((item) => (isControlled ? item.id !== 'component_view' : true))
     .sort((a, b) => {
       return a.sort! - b.sort!;
     });
+
+  if (isControlled) {
+    items.push({
+      component: null,
+      icon: 'icon--nada--extension-outline',
+      id: 'business_field_view',
+      sort: 100,
+      title: '添加字段',
+      visible: true,
+    } as unknown as ActivitybarModel);
+    items.sort((a, b) => {
+      return a.sort! - b.sort!;
+    });
+  }
+  return items;
 });
 
 /** 属性面板（无图标，选中组件后自动切换展示） */
@@ -44,6 +59,9 @@ const showInspector = ref(true);
 /** 自由模式：组件选择弹出框 */
 const pickerOpen = ref(false);
 
+/** 受控模式：添加字段面板 */
+const fieldPickerOpen = ref(false);
+
 // 选中动作后展示属性面板；同时关闭组件弹出框
 watch(
   () => designer.selectionVersion.value,
@@ -63,6 +81,12 @@ const renderedComponent = computed(() => {
 });
 
 function handleClick(item: ActivitybarModel, index: number) {
+  // 受控模式：添加字段（与自由模式「组件」同位置）
+  if (item.id === 'business_field_view') {
+    fieldPickerOpen.value = !fieldPickerOpen.value;
+    return;
+  }
+
   // 自由模式：组件面板改为弹出框，不占用左侧栏
   if (item.id === 'component_view') {
     pickerOpen.value = !pickerOpen.value;
@@ -70,6 +94,7 @@ function handleClick(item: ActivitybarModel, index: number) {
   }
 
   pickerOpen.value = false;
+  fieldPickerOpen.value = false;
 
   // 从属性面板切回图标面板（不触发收起逻辑）
   if (showInspector.value) {
@@ -125,9 +150,11 @@ onUnmounted(() => {
             class="ep-action-item flex-center h-8 w-8 text-[16px]"
             :class="{
               checked:
-                !showInspector &&
-                !pickerOpen &&
-                activityBarCheckedIndex === index,
+                item.id === 'business_field_view'
+                  ? fieldPickerOpen
+                  : !showInspector &&
+                    !pickerOpen &&
+                    activityBarCheckedIndex === index,
             }"
             :data-activity-id="item.id"
             @click="handleClick(item, index)"
@@ -146,5 +173,9 @@ onUnmounted(() => {
       </div>
     </div>
     <ComponentPicker v-if="pickerOpen" @close="pickerOpen = false" />
+    <BusinessFieldPicker
+      v-if="fieldPickerOpen"
+      @close="fieldPickerOpen = false"
+    />
   </div>
 </template>
