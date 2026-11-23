@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { ComponentSchema } from '@nada-designer/types';
 
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, watchEffect } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 
 import { EpCollapse, EpCollapsePanel, NadaIcon } from '@nada-designer/base-ui';
@@ -49,6 +49,14 @@ const getSchemaTypeList = computed(() => {
       }),
     }))
     .filter((item) => item.list.length > 0);
+});
+
+/** 布局模式：平铺展示（数量少，不需要分组） */
+const layoutFlatItems = ref<ComponentSchema[]>([]);
+watchEffect(() => {
+  layoutFlatItems.value = getSchemaTypeList.value.flatMap(
+    (group) => group.list,
+  );
 });
 
 /** 按面板顺序排列的已选组件类型 */
@@ -147,7 +155,42 @@ watch(
       />
     </div>
     <div class="ep-component-picker-body">
-      <EpCollapse :default-expand-all="!activeKeys.length" v-model="activeKeys">
+      <!-- 布局组件：数量少，平铺不分组 -->
+      <VueDraggable
+        v-if="props.mode === 'layout'"
+        v-model="layoutFlatItems"
+        :group="{ name: 'edit-draggable', pull: 'clone', put: false }"
+        :sort="false"
+        :animation="180"
+        ghost-class="moving"
+        :clone="generateNewSchema"
+        item-key="type"
+        class="ep-component-picker-grid"
+      >
+        <div
+          v-for="item in layoutFlatItems"
+          :key="item.type"
+          class="ep-component-picker-item"
+          :class="{ selected: isSelected(item.type) }"
+          @click="toggleSelect(item)"
+        >
+          <span class="ep-component-picker-check">
+            {{ isSelected(item.type) ? '✓' : '' }}
+          </span>
+          <NadaIcon
+            :name="
+              pluginManager.component.getConfigByType(item.type).icon ?? ''
+            "
+          />
+          <span class="ep-component-picker-label">{{ item.label }}</span>
+        </div>
+      </VueDraggable>
+      <!-- 输入组件：按注册表分组 -->
+      <EpCollapse
+        v-else
+        :default-expand-all="!activeKeys.length"
+        v-model="activeKeys"
+      >
         <EpCollapsePanel
           v-for="group in getSchemaTypeList"
           :name="group.title"
