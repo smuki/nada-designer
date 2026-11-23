@@ -285,7 +285,7 @@ function handleSetCanvas(type: string) {
         <EpTooltip :content="action.title">
           <div
             v-if="isShow(action.show)"
-            class="ep-action-item h-90% px-10px flex cursor-pointer items-center text-[24px]"
+            class="ep-action-item h-90% px-10px flex cursor-pointer items-center text-[20px]"
             :class="{ disabled: action.disabled }"
             @click="action.on"
           >
@@ -319,12 +319,12 @@ function handleSetCanvas(type: string) {
       <!-- 缩放操作 end  -->
       <!-- 画布类型切换 start -->
       <div
-        class="ep-device h-32px p-2px flex items-center gap-1 rounded-md border"
+        class="ep-device h-28px p-2px flex items-center gap-1 rounded-md border"
       >
         <template v-for="item in deviceOptions" :key="item.key">
           <div
             :title="item.title"
-            class="ep-device-item rounded-$ep-radius flex h-full cursor-pointer items-center px-1 text-[24px] transition-colors"
+            class="ep-device-item rounded-$ep-radius flex h-full cursor-pointer items-center px-1 text-[20px] transition-colors"
             :class="{ checked: item.key === selectedKey }"
             @click="handleSetCanvas(item.key)"
           >

@@ -189,7 +189,7 @@ onUnmounted(() => {
           :key="item.id"
         >
           <li
-            class="ep-action-item flex-center h-11 w-11 text-[24px]"
+            class="ep-action-item flex-center h-10 w-10 text-[20px]"
             :class="{ checked: isItemActive(item, index) }"
             :data-activity-id="item.id"
             @click="handleClick(item, index)"
