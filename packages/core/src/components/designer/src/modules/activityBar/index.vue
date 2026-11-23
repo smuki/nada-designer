@@ -16,7 +16,17 @@ defineOptions({
 const designer = useDesignerContext();
 const isControlled = designer.designMode === 'controlled';
 
-/** 侧栏图标项（受控模式用「添加字段」替换「组件」） */
+/** 布局组件入口（受控 / 自由模式通用，合成图标项） */
+const LAYOUT_ENTRY = {
+  component: null,
+  icon: 'icon--nada--layout-tabs',
+  id: 'layout_view',
+  sort: 90,
+  title: '布局',
+  visible: true,
+} as unknown as ActivitybarModel;
+
+/** 侧栏图标项：布局 + 输入/字段 + 源码 + 大纲 */
 const activityBars = computed(() => {
   const items = pluginManager.panel.activityBars.value
     .filter((item) => item.visible)
@@ -24,6 +34,8 @@ const activityBars = computed(() => {
     .sort((a, b) => {
       return a.sort! - b.sort!;
     });
+
+  items.push(LAYOUT_ENTRY);
 
   if (isControlled) {
     items.push({
@@ -34,14 +46,14 @@ const activityBars = computed(() => {
       title: '添加字段',
       visible: true,
     } as unknown as ActivitybarModel);
-    items.sort((a, b) => {
-      return a.sort! - b.sort!;
-    });
   }
-  return items;
+
+  return items.sort((a, b) => {
+    return a.sort! - b.sort!;
+  });
 });
 
-/** 属性面板（无图标，选中组件后自动切换展示） */
+/** 属性面板（无图标，常驻展示） */
 const inspectorPanel = computed(() => {
   return pluginManager.panel.activityBars.value.find(
     (item) => item.id === 'attribute_view',
@@ -56,8 +68,8 @@ const sidebarComponent = shallowRef<any>(
 /** 是否展示属性面板（常驻：默认显示页面属性；选中组件后显示该组件属性） */
 const showInspector = ref(true);
 
-/** 自由模式：组件选择弹出框 */
-const pickerOpen = ref(false);
+/** 组件选择弹出框：input 输入类 / layout 布局类 */
+const pickerMode = ref<'input' | 'layout' | null>(null);
 
 /** 受控模式：添加字段面板 */
 const fieldPickerOpen = ref(false);
@@ -67,7 +79,7 @@ watch(
   () => designer.selectionVersion.value,
   () => {
     showInspector.value = true;
-    pickerOpen.value = false;
+    pickerMode.value = null;
   },
   { immediate: true },
 );
@@ -80,20 +92,43 @@ const renderedComponent = computed(() => {
   return sidebarComponent.value;
 });
 
+/**
+ * 图标是否处于激活态
+ * @param item 图标项
+ * @param index 索引
+ */
+function isItemActive(item: ActivitybarModel, index: number): boolean {
+  if (item.id === 'layout_view') return pickerMode.value === 'layout';
+  if (item.id === 'component_view') return pickerMode.value === 'input';
+  if (item.id === 'business_field_view') return fieldPickerOpen.value;
+  return (
+    !showInspector.value &&
+    pickerMode.value === null &&
+    !fieldPickerOpen.value &&
+    activityBarCheckedIndex.value === index
+  );
+}
+
 function handleClick(item: ActivitybarModel, index: number) {
-  // 受控模式：添加字段（与自由模式「组件」同位置）
+  // 布局组件入口
+  if (item.id === 'layout_view') {
+    pickerMode.value = pickerMode.value === 'layout' ? null : 'layout';
+    return;
+  }
+
+  // 自由模式：输入类组件入口
+  if (item.id === 'component_view') {
+    pickerMode.value = pickerMode.value === 'input' ? null : 'input';
+    return;
+  }
+
+  // 受控模式：添加字段入口
   if (item.id === 'business_field_view') {
     fieldPickerOpen.value = !fieldPickerOpen.value;
     return;
   }
 
-  // 自由模式：组件面板改为弹出框，不占用左侧栏
-  if (item.id === 'component_view') {
-    pickerOpen.value = !pickerOpen.value;
-    return;
-  }
-
-  pickerOpen.value = false;
+  pickerMode.value = null;
   fieldPickerOpen.value = false;
 
   // 从属性面板切回图标面板（不触发收起逻辑）
@@ -113,20 +148,21 @@ function handleClick(item: ActivitybarModel, index: number) {
 }
 
 /**
- * 点击组件弹出框外部时收起
+ * 点击弹出框外部时收起
  * @param event 鼠标事件
  */
 function handleDocumentMousedown(event: MouseEvent) {
-  if (!pickerOpen.value) return;
+  if (!pickerMode.value) return;
   const target = event.target as HTMLElement | null;
   if (!target) return;
   if (
     target.closest('.ep-component-picker') ||
+    target.closest('[data-activity-id="layout_view"]') ||
     target.closest('[data-activity-id="component_view"]')
   ) {
     return;
   }
-  pickerOpen.value = false;
+  pickerMode.value = null;
 }
 
 onMounted(() => {
@@ -144,18 +180,11 @@ onUnmounted(() => {
           placement="right"
           :content="item.title"
           v-for="(item, index) in activityBars"
-          :key="index"
+          :key="item.id"
         >
           <li
             class="ep-action-item flex-center h-8 w-8 text-[16px]"
-            :class="{
-              checked:
-                item.id === 'business_field_view'
-                  ? fieldPickerOpen
-                  : !showInspector &&
-                    !pickerOpen &&
-                    activityBarCheckedIndex === index,
-            }"
+            :class="{ checked: isItemActive(item, index) }"
             :data-activity-id="item.id"
             @click="handleClick(item, index)"
           >
@@ -172,7 +201,11 @@ onUnmounted(() => {
         <component :is="renderedComponent" />
       </div>
     </div>
-    <ComponentPicker v-if="pickerOpen" @close="pickerOpen = false" />
+    <ComponentPicker
+      v-if="pickerMode"
+      :mode="pickerMode"
+      @close="pickerMode = null"
+    />
     <BusinessFieldPicker
       v-if="fieldPickerOpen"
       @close="fieldPickerOpen = false"

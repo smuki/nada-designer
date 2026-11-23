@@ -10,6 +10,14 @@ import { pluginManager } from '@nada-designer/manager';
 import { findSchemaInfoById, generateNewSchema } from '@nada-designer/utils';
 import { useStorage } from '@vueuse/core';
 
+const props = withDefaults(
+  defineProps<{
+    /** 选择器类型：input 输入类组件 / layout 布局类组件 */
+    mode?: 'input' | 'layout';
+  }>(),
+  { mode: 'input' },
+);
+
 const emit = defineEmits(['close']);
 
 const Input = pluginManager.component.get('input');
@@ -17,6 +25,14 @@ const designer = useDesignerContext();
 const revoke = designer.revoke;
 const pageSchema = designer.pageSchema;
 const groups = pluginManager.component.getComponentSchemaGroups();
+
+/** 布局类组件（其余归为输入类） */
+const LAYOUT_TYPES = new Set(['card', 'form', 'row', 'tabs']);
+
+/** 弹框标题 */
+const pickerTitle = computed(() =>
+  props.mode === 'layout' ? '添加布局组件' : '添加输入组件',
+);
 
 const keyword = ref('');
 const activeKeys = useStorage('ep-component-view-keys', []);
@@ -26,7 +42,11 @@ const getSchemaTypeList = computed(() => {
   return groups.value
     .map((item) => ({
       ...item,
-      list: item.list.filter((item) => item.label?.includes(keyword.value)),
+      list: item.list.filter((item) => {
+        if (!item.label?.includes(keyword.value)) return false;
+        const isLayout = LAYOUT_TYPES.has(item.type);
+        return props.mode === 'layout' ? isLayout : !isLayout;
+      }),
     }))
     .filter((item) => item.list.length > 0);
 });
@@ -113,7 +133,7 @@ watch(
 <template>
   <div class="ep-component-picker" @mousedown.stop>
     <div class="ep-component-picker-header">
-      <span class="ep-component-picker-title">添加组件</span>
+      <span class="ep-component-picker-title">{{ pickerTitle }}</span>
       <span class="ep-component-picker-close" @click="emit('close')">×</span>
     </div>
     <div class="ep-component-picker-search">
