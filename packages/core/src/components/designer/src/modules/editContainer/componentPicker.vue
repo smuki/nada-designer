@@ -193,9 +193,9 @@ watch(
   z-index: 2000;
   display: flex;
   flex-direction: column;
-  width: 560px;
-  max-height: 70vh;
-  padding: 12px;
+  width: 420px;
+  max-height: 60vh;
+  padding: 10px 12px;
   background: var(--ep-canvas-container-background, #fff);
   border: 1px solid var(--ep-border);
   border-radius: 8px;
@@ -237,9 +237,9 @@ watch(
 
 .ep-component-picker-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  padding: 4px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  padding: 2px;
 }
 
 .ep-component-picker-item {
