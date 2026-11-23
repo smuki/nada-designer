@@ -405,9 +405,6 @@ watch(
           </span>
           <NadaIcon :name="item.icon" />
           <span class="ep-component-picker-label">{{ item.label }}</span>
-          <span v-if="item.field" class="ep-component-picker-type">
-            {{ item.field.type }}
-          </span>
         </div>
       </VueDraggable>
       <!-- 输入组件：按分组展示 -->
@@ -448,9 +445,6 @@ watch(
               </span>
               <NadaIcon :name="item.icon" />
               <span class="ep-component-picker-label">{{ item.label }}</span>
-              <span v-if="item.field" class="ep-component-picker-type">
-                {{ item.field.type }}
-              </span>
             </div>
           </VueDraggable>
         </EpCollapsePanel>
@@ -618,12 +612,6 @@ watch(
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.ep-component-picker-type {
-  flex-shrink: 0;
-  color: var(--ep-text-helper);
-  font-size: 12px;
 }
 
 .ep-component-picker-empty {
