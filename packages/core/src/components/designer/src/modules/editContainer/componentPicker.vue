@@ -479,13 +479,13 @@ watch(
 .ep-component-picker {
   position: absolute;
   top: 8px;
-  left: 56px;
+  left: 46px;
   /* 低于各 UI 库下拉浮层（antd 1050 / element、naive 2000+），避免类型下拉被面板盖住 */
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  width: 360px;
-  max-height: 60vh;
+  width: 340px;
+  max-height: 70vh;
   padding: 10px 12px;
   background: var(--ep-canvas-container-background, #fff);
   border: 1px solid var(--ep-border);
