@@ -485,8 +485,8 @@ watch(
   display: flex;
   flex-direction: column;
   width: 360px;
-  max-height: 56vh;
-  padding: 8px 10px;
+  max-height: 60vh;
+  padding: 10px 12px;
   background: var(--ep-canvas-container-background, #fff);
   border: 1px solid var(--ep-border);
   border-radius: 8px;
@@ -547,7 +547,7 @@ watch(
 .ep-component-picker-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 4px;
+  gap: 6px;
   padding: 2px;
 }
 
