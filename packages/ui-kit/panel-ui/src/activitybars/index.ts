@@ -15,13 +15,14 @@ export function setupActivitybar(pluginManager: PluginManager): void {
     title: '组件',
   });
 
-  // 属性 / 样式 / 事件：合并为一个左侧面板，底部页签切换
+  // 属性面板：不显示图标，选中组件后由活动栏自动切换展示（合并样式/事件底部页签）
   pluginManager.panel.registerActivitybar({
     component: async () => await import('../rightSidebars/inspector.vue'),
     icon: 'icon--nada--list-alt-outline-rounded',
     id: 'attribute_view',
     sort: 150,
     title: '属性',
+    visible: false,
   });
 
   pluginManager.panel.registerActivitybar({
