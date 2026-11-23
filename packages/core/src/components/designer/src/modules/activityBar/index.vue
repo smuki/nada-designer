@@ -39,9 +39,9 @@ const sidebarComponent = shallowRef<any>(
 /** 是否展示属性面板（常驻：默认显示页面属性；选中组件后显示该组件属性） */
 const showInspector = ref(true);
 
-// 选中任意节点后，左侧自动切换到属性面板；初始化即展示页面（根节点）属性
+// 任意选中动作（含点击画布空白回到页面）都展示属性面板；初始化即展示页面属性
 watch(
-  () => designer.state.selectedNode?.id,
+  () => designer.selectionVersion.value,
   () => {
     showInspector.value = true;
   },

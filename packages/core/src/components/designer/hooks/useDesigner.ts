@@ -93,6 +93,8 @@ export function useDesigner(
     matched: [],
     selectedNode: null,
   });
+  /** 选中动作版本号：同一节点被再次选中时也能触发属性面板展示 */
+  const selectionVersion = ref(0);
   const revoke = useRevoke(pageSchema, state, setSelectedNode);
 
   // 使用封装的clipboard hook（受控模式整体禁止复制/剪切/粘贴）
@@ -204,6 +206,8 @@ export function useDesigner(
    * @param schema 要选中的组件
    */
   function setSelectedNode(schema?: ComponentSchema) {
+    selectionVersion.value += 1;
+
     if (!schema) {
       schema = pageSchema.schemas[0];
     }
@@ -353,6 +357,7 @@ export function useDesigner(
     ready,
     reset,
     revoke,
+    selectionVersion,
     setHoverNode,
     setSelectedNode,
     state,

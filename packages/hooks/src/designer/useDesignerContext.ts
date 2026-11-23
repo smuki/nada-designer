@@ -1,7 +1,7 @@
 import type { Revoke } from '@nada-designer/manager/src/revoke';
 import type { DesignerProps, PageSchema } from '@nada-designer/types';
 
-import type { InjectionKey } from 'vue';
+import type { InjectionKey, Ref } from 'vue';
 
 import type { BusinessFieldsContext } from './useBusinessFields';
 
@@ -24,6 +24,8 @@ export interface DesignerContext {
   reset: () => void;
   revoke: Revoke;
   save: () => void;
+  /** 选中动作版本号（同一节点再次选中也会 +1） */
+  selectionVersion: Ref<number>;
   setDisabledHover: (disabledHover: boolean) => void;
   setHoverNode: (schema: any) => void;
   setSelectedNode: (schema: any) => void;
