@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import type { ActivitybarModel } from '@nada-designer/types';
 
-import { computed, ref, shallowRef, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue';
 
 import { EpTooltip, NadaIcon } from '@nada-designer/base-ui';
 import { useDesignerContext } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
+
+import ComponentPicker from '../editContainer/componentPicker.vue';
 
 defineOptions({
   name: 'EActivityBar',
@@ -39,11 +41,15 @@ const sidebarComponent = shallowRef<any>(
 /** 是否展示属性面板（常驻：默认显示页面属性；选中组件后显示该组件属性） */
 const showInspector = ref(true);
 
-// 任意选中动作（含点击画布空白回到页面）都展示属性面板；初始化即展示页面属性
+/** 自由模式：组件选择弹出框 */
+const pickerOpen = ref(false);
+
+// 选中动作后展示属性面板；同时关闭组件弹出框
 watch(
   () => designer.selectionVersion.value,
   () => {
     showInspector.value = true;
+    pickerOpen.value = false;
   },
   { immediate: true },
 );
@@ -57,6 +63,14 @@ const renderedComponent = computed(() => {
 });
 
 function handleClick(item: ActivitybarModel, index: number) {
+  // 自由模式：组件面板改为弹出框，不占用左侧栏
+  if (item.id === 'component_view') {
+    pickerOpen.value = !pickerOpen.value;
+    return;
+  }
+
+  pickerOpen.value = false;
+
   // 从属性面板切回图标面板（不触发收起逻辑）
   if (showInspector.value) {
     showInspector.value = false;
@@ -72,6 +86,30 @@ function handleClick(item: ActivitybarModel, index: number) {
   sidebarComponent.value = item.component;
   activityBarCheckedIndex.value = index;
 }
+
+/**
+ * 点击组件弹出框外部时收起
+ * @param event 鼠标事件
+ */
+function handleDocumentMousedown(event: MouseEvent) {
+  if (!pickerOpen.value) return;
+  const target = event.target as HTMLElement | null;
+  if (!target) return;
+  if (
+    target.closest('.ep-component-picker') ||
+    target.closest('[data-activity-id="component_view"]')
+  ) {
+    return;
+  }
+  pickerOpen.value = false;
+}
+
+onMounted(() => {
+  document.addEventListener('mousedown', handleDocumentMousedown);
+});
+onUnmounted(() => {
+  document.removeEventListener('mousedown', handleDocumentMousedown);
+});
 </script>
 <template>
   <div class="relative flex">
@@ -86,8 +124,12 @@ function handleClick(item: ActivitybarModel, index: number) {
           <li
             class="ep-action-item flex-center h-8 w-8 text-[16px]"
             :class="{
-              checked: !showInspector && activityBarCheckedIndex === index,
+              checked:
+                !showInspector &&
+                !pickerOpen &&
+                activityBarCheckedIndex === index,
             }"
+            :data-activity-id="item.id"
             @click="handleClick(item, index)"
           >
             <NadaIcon :name="item.icon" />
@@ -103,5 +145,6 @@ function handleClick(item: ActivitybarModel, index: number) {
         <component :is="renderedComponent" />
       </div>
     </div>
+    <ComponentPicker v-if="pickerOpen" @close="pickerOpen = false" />
   </div>
 </template>
