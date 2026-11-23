@@ -4,6 +4,10 @@
 
 自由模式（默认）行为完全不变。:::
 
+:::warning 属性更名（v1.1.18）
+原 `businessObject` 已更名为 **`modelId`**（设计器 prop 与页面 JSON 顶层字段同名），值仍为业务对象 code（租户内唯一）。
+:::
+
 ## 快速开始
 
 ```vue
@@ -14,17 +18,17 @@ import { EDesigner } from '@nada-designer/core';
 
 // 由业务应用提供：按业务对象 code 返回字段元数据
 async function businessFieldLoader(
-  businessObject: string,
+  modelId: string,
 ): Promise<FieldMeta[]> {
   const res = await fetch(
-    `/api/univ/form-property?code=${encodeURIComponent(businessObject)}`,
+    `/api/univ/form-property?code=${encodeURIComponent(modelId)}`,
   );
   const data = await res.json();
   return data.fields;
 }
 
 function handleSave(pageSchema: any) {
-  // pageSchema.businessObject 为业务对象 code（随页面保存）
+  // pageSchema.modelId 为业务对象 code（随页面保存）
   console.log(pageSchema);
 }
 </script>
@@ -44,8 +48,8 @@ function handleSave(pageSchema: any) {
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | designMode | 设计模式：`free` 自由 / `controlled` 受控；**实例级，初始化后不可切换** | `'free' \| 'controlled'` | `'free'` |
-| businessObject | 业务对象 code（租户内唯一）；受控模式新建页面必填，打开已有页面以页面 JSON 为准 | string | - |
-| businessFieldLoader | 业务字段元数据加载器；未提供时受控模式显示错误态并可重试 | `(businessObject: string) => Promise<FieldMeta[]>` | - |
+| modelId | 业务对象 code（租户内唯一）；受控模式新建页面必填，打开已有页面以页面 JSON 为准 | string | - |
+| businessFieldLoader | 业务字段元数据加载器；未提供时受控模式显示错误态并可重试 | `(modelId: string) => Promise<FieldMeta[]>` | - |
 
 ## 元数据协议
 
@@ -76,14 +80,14 @@ function handleSave(pageSchema: any) {
 | 复制 / 粘贴 / Ctrl+D / Ctrl+X / 大纲复制 | 允许 | 静默禁止 |
 | 跨表单拖拽 | 允许 | 视为移动：重算 id 并同步改写动作引用；目标已有同字段则拒绝 |
 | 大纲拖拽 / 源码面板 | 允许 | 大纲不可拖；源码面板只读 |
-| 页面 JSON | 无变化 | 增加 `businessObject` |
+| 页面 JSON | 无变化 | 增加 `modelId` |
 
 > 提示：受控模式下左侧「添加字段」图标打开与自由模式**同一个弹出选择器**——字段**平铺展示**（不折叠），搜索框前有「类型」下拉可按分组筛选，已放置字段置灰；可直接拖到画布，也可勾选多个后点「插入 N 个字段」批量插入，插入/点外部自动收起。
 
 ## 后端接口约定
 
 - 业务对象标识使用 **code**（租户内唯一），页面 JSON 只存 code，不存租户与内部 id；
-- 建议接口：`GET /api/univ/form-property?code={businessObject}`（租户从登录态/网关注入），返回 `{ businessObject, fields: FieldMeta[] }`；
+- 建议接口：`GET /api/univ/form-property?code={modelId}`（租户从登录态/网关注入），返回 `{ modelId, fields: FieldMeta[] }`；
 - 设计器要求 loader 返回 **数组**，接口若包了一层 `fields`，由适配层解包；
 - `code` 一经创建不建议改名，否则已保存页面会找不到业务对象。
 

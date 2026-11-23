@@ -1,7 +1,7 @@
 # 受控字段模式（Controlled Field Mode）规格书
 
-> **状态**：草案 v0.34　|　**日期**：2026-11-23　|　**范围**：nada-designer 设计器
-> **说明**：本版调整字段选择体验：受控「添加字段」弹层**平铺不折叠**，搜索框前增加**类型下拉**筛选，支持关键字搜索。**评审通过后按 §14 开工 P1，在此之前不做任何代码改动。**
+> **状态**：草案 v0.35　|　**日期**：2026-11-24　|　**范围**：nada-designer 设计器
+> **说明**：本版做**属性更名**：设计器 prop 与页面 JSON 顶层字段 `businessObject` 统一更名为 **`modelId`**（值仍为业务对象 code，语义不变）。**评审通过后按 §14 开工 P1，在此之前不做任何代码改动。**
 > 评审时优先看「0. 确认结论」与「18. 决策记录」；非阻塞问题见 §17；版本差异见 §18.1。
 
 ---
@@ -12,7 +12,7 @@
 |---|---|---|---|
 | 1 | 设计模式 | `designMode: 'free' \| 'controlled'`，默认 `free`，EDesigner 实例级 prop | ✅ |
 | 2 | 模式生命周期 | 不落盘、不进全局状态；初始化读一次，**禁止切换**（prop 变更仅告警） | ✅ |
-| 3 | 业务对象 | 一个设计页面 = 一个业务对象；`businessObject` 为 EDesigner prop | ✅ |
+| 3 | 业务对象 | 一个设计页面 = 一个业务对象；`modelId` 为 EDesigner prop | ✅ |
 | 4 | 业务对象持久化 | **随页面保存**进 `PageSchema`；打开已有页面以 schema 为准，无值回退 prop，保存写回 | ✅ |
 | 5 | 业务对象切换 | 导入/打开页面时与当前不一致 → 按 schema 值重新拉元数据并提示「已切换到 xxx」 | ✅ |
 | 6 | 元数据获取 | 设计器挂载时经 loader 获取（首屏只有 prop 可用）；**schema 晚到时二次解析**；内置 Loading / 失败重试 | ✅ |
@@ -27,7 +27,7 @@
 | 15 | 复制限制 | 由 `designMode` 决定：自由允许（重发 id）；受控整体禁止（**含 Ctrl+X 剪切**）、静默无反应（v0.16） | ✅ |
 | 16 | 字段名 | 受控模式下所有节点 `field` 只读（含旧页面自由字段）；`label` 可改 | ✅ |
 | 17 | 跨 form 拖拽 | 视为**移动**；目标 form 已有同 field 则禁止；**id 重算并同步改写动作引用**（v0.16） | ✅ |
-| 18 | 运行时 | 节点 type 即基础组件，**运行时不需要元数据**；页面 JSON 携带 `businessObject` | ✅ |
+| 18 | 运行时 | 节点 type 即基础组件，**运行时不需要元数据**；页面 JSON 携带 `modelId` | ✅ |
 | 19 | 自由模式 | 保持现状，不加载元数据、不做任何新约束（产品侧可选择不暴露） | ✅ |
 | 20 | 元数据模型 | 精简为 8 项：`field` / `label` / `type` / `scale` / `unit` / `entity` / `group` / `active`（7 个业务属性 + `active` 开关，见 6.3） | ✅ |
 | 21 | 布局组件 | 受控面板只提供**白名单布局**（当前 `card` / `row` / `tabs`）+ `form`；`col` / `tab-pane` / `modal` 等由容器内部结构产生，不从面板拖入 | ✅ v0.16 |
@@ -48,7 +48,7 @@
 | 36 | 源码面板 | 受控模式**强制源码面板只读**（`sourceCodeReadOnly \|\| controlled`） | ✅ v0.17 |
 | 37 | 根 form 布局 | 取当前 UI 库 `form` 组件 `defaultSchema` 深拷贝，覆盖 `id` / `props.name` / `children` | ✅ v0.17 |
 | 38 | setData / 导入契约 | 新增 `setDataAsync(): Promise<boolean>`；同步 `setData` 走乐观应用 + 失败回滚 | ✅ v0.17 |
-| 39 | 撤销/历史 businessObject | 快照有值以快照为准（必要时重载元数据）；快照缺省才回填当前值 | ✅ v0.17 |
+| 39 | 撤销/历史 modelId | 快照有值以快照为准（必要时重载元数据）；快照缺省才回填当前值 | ✅ v0.17 |
 | 40 | 导入校验 | 受控导入发现 id/field 重复或非法 → **拒绝导入**并列出冲突 | ✅ v0.17 |
 | 41 | 依赖方向 | `useBusinessFields` 不运行时依赖 `manager`（配置查询由调用方注入） | ✅ v0.17 |
 | 42 | 字段分组 | **v1 不做分组**：元数据不返回 `group`，面板平铺 + 搜索，数组顺序即展示顺序（后端无需 group/sort 字段） | ✅ v0.18 |
@@ -70,7 +70,7 @@
 2. **落点拿不到父节点上下文**：画布落点组件只持有当前 children 数组，没有 owner schema；需补 `parentSchema` 传递（大纲树已有同类 prop 可参照）。
 3. **`generateNewSchema` 会覆盖 field**：`(field || input)` 且组件未设 `fixedField` 时强制 `field = id`；业务字段不注册组件，拿不到 `fixedField` → 必须参数化。
 4. **没有 `props.schema`**：打开已有页面靠 `setData()`（宿主多在 `onMounted` 后调用）或工具栏导入，schema 一定晚于挂载 → 业务对象解析必须是两段式（prop 首屏 → schema 到达后校正）。
-5. **`PageSchema` 只有 `canvas/schemas/script`**，且导入/`setData` 走 `deepCompareAndModify(shouldDelete=true)`：`businessObject` 会被删键，必须在每次写入后回填。
+5. **`PageSchema` 只有 `canvas/schemas/script`**，且导入/`setData` 走 `deepCompareAndModify(shouldDelete=true)`：`modelId` 会被删键，必须在每次写入后回填。
 6. **保存路径以 `pageSchema` 为唯一真相**：`Ctrl+S` 直接 `emit('save', pageSchema)`、预览 JSON 直接 `JSON.stringify(pageSchema)`，只在 `getData()` 里补字段会漏。
 7. **默认根节点是 `page`**（仅 `formMode` 才换成 form）→ 受控根需初始化成 form。
 8. **`field` 属性项分散在 40+ 处 UI 组件配置**（`field: 'field'`）→ 只读走属性面板统一过滤，不改 40 处配置。
@@ -85,11 +85,11 @@
 
 ### 2.1 目标
 
-1. 设计器可通过 `businessObject` 在挂载时获取字段元数据；
+1. 设计器可通过 `modelId` 在挂载时获取字段元数据；
 2. 元数据字段作为**面板拖拽项**，拖入后生成普通基础组件节点并套用预设属性；
 3. 受控模式下：字段名只读、同一 form 内不重复、禁止复制/剪切；
 4. 自由模式行为零变化（例外：新生成节点 id/field 前缀按 §7.3 归一化；存量数据不改写、影响见该节）；
-5. 页面 JSON 自带 `businessObject`，脱离元数据也能正确渲染。
+5. 页面 JSON 自带 `modelId`，脱离元数据也能正确渲染。
 
 ### 2.2 非目标
 
@@ -109,7 +109,7 @@
 |---|---|
 | 基础组件 | UI 包注册的组件，提供 Vue 实现与属性/事件/样式/动作能力；三套 UI 库共享同一套 `type` 命名 |
 | 布局组件 | 面板中 `groupName === '布局'` 的容器组件（当前 `card` / `row` / `tabs`）；`col` / `tab-pane` / `modal` 由容器内部结构产生，不单独出现在面板 |
-| 业务对象 businessObject | 一个表单业务对象（如报销单）的唯一标识 |
+| 业务对象 modelId | 一个表单业务对象（如报销单）的唯一标识 |
 | 元数据 FieldMeta | 业务对象返回的字段清单，每项描述一个业务字段 |
 | 业务字段 | 元数据中的一项；`field` 全局（业务对象内）唯一 |
 | 拖拽模板 | 面板里的业务字段项；拖入时把元数据套到基础组件默认 schema 上 |
@@ -158,8 +158,8 @@
 ```ts
 // packages/types/src/designer.ts → DesignerProps
 designMode?: 'free' | 'controlled';                          // 默认 'free'
-businessObject?: string;                                     // 业务对象唯一标识
-businessFieldLoader?: (businessObject: string) => Promise<FieldMeta[]>;
+modelId?: string;                                     // 业务对象唯一标识
+businessFieldLoader?: (modelId: string) => Promise<FieldMeta[]>;
 ```
 
 - `free`：自由模式，现状行为，不加载元数据、无字段约束；
@@ -190,17 +190,17 @@ businessFieldLoader?: (businessObject: string) => Promise<FieldMeta[]>;
 | 业务字段拖入身份 | 不适用（不加载元数据） | `id = ${作用域节点 id}_${field}` |
 | 大纲拖拽 | 允许（现状） | 禁止（避免绕过落点管线） |
 | 源码面板 | 可编辑（除非 prop 只读） | 强制只读 |
-| 页面 JSON / 运行时 | 不变 | 增加 `businessObject`；渲染不变 |
+| 页面 JSON / 运行时 | 不变 | 增加 `modelId`；渲染不变 |
 
 ---
 
 ## 6. 业务对象与元数据
 
-### 6.1 businessObject
+### 6.1 modelId
 
 ```ts
 // DesignerProps
-businessObject?: string;   // 业务对象 code，租户内唯一，如 '销售单据'
+modelId?: string;   // 业务对象 code，租户内唯一，如 '销售单据'
 ```
 
 - 字符集：中文 / 字母 / 数字 / 下划线，禁止特殊字符（与 id/field 同规则，见 7.3）；
@@ -208,28 +208,28 @@ businessObject?: string;   // 业务对象 code，租户内唯一，如 '销售�
 - **租户维度**：业务对象定义按租户隔离（`(tenant_id, code)` 唯一），加载时以当前登录租户上下文查询，页面本身不记录租户；
 - **`code` 一经创建不可改名**（`name` 可改）；改名会让已保存页面找不到对象，属数据事故；
 - **跨租户导入/复制页面**：按目标租户的**同 code** 对象解析（业务语义相同）；字段差异由导入校验提示（见 §11.3）；
-- 一页一业务对象；新建页面用 prop，打开已有页面以 `schema.businessObject` 为准；
-- 保存时写入 `PageSchema.businessObject`；
+- 一页一业务对象；新建页面用 prop，打开已有页面以 `schema.modelId` 为准；
+- 保存时写入 `PageSchema.modelId`；
 - 导入/打开页面时与当前不同 → 按 schema 值重新加载元数据并提示「已切换到 xxx」；加载失败则不应用本次导入，保留当前页面；
-- 受控模式下根 form 的 `props.name` 固定 `default`，与 `businessObject` 无关；后续拖入的 form 自动命名 `form_1`…（见 8.3）。
+- 受控模式下根 form 的 `props.name` 固定 `default`，与 `modelId` 无关；后续拖入的 form 自动命名 `form_1`…（见 8.3）。
 
 ### 6.2 元数据获取流程（两段式）
 
 ```ts
 // DesignerProps
-businessFieldLoader?: (businessObject: string) => Promise<FieldMeta[]>;
+businessFieldLoader?: (modelId: string) => Promise<FieldMeta[]>;
 ```
 
 流程：
 
-1. **阶段 A（挂载）**：受控模式挂载时，若宿主传了 `props.defaultSchema`，其 `businessObject` 优先；否则按 `props.businessObject` 加载（打开已有页面通常走 `setData`/导入，schema 在 `onMounted` 之后到达）；两者都没有或未提供 loader → `empty` 错误态，面板提示"未指定业务对象 / 未提供 businessFieldLoader"并提供重新加载；
-2. **阶段 B（schema 到达）**：`setData()` / 导入成功后解析 `schema.businessObject`（优先）→ 与当前不一致时重新加载元数据并提示已切换；加载失败**不应用本次数据**，保留当前页面；
+1. **阶段 A（挂载）**：受控模式挂载时，若宿主传了 `props.defaultSchema`，其 `modelId` 优先；否则按 `props.modelId` 加载（打开已有页面通常走 `setData`/导入，schema 在 `onMounted` 之后到达）；两者都没有或未提供 loader → `empty` 错误态，面板提示"未指定业务对象 / 未提供 businessFieldLoader"并提供重新加载；
+2. **阶段 B（schema 到达）**：`setData()` / 导入成功后解析 `schema.modelId`（优先）→ 与当前不一致时重新加载元数据并提示已切换；加载失败**不应用本次数据**，保留当前页面；
 3. 加载中显示 Loading（与 UI 初始化同一套门控，见 §10.1）；
 4. 失败显示错误 + 重试；允许应用层传入静态数组替代 loader（测试/离线）；
 5. 成功 → 校验（6.4）→ 生成面板业务字段项；
-6. 按 `businessObject` 做内存缓存（只读、可跨实例共享），避免重复打开闪烁；
+6. 按 `modelId` 做内存缓存（只读、可跨实例共享），避免重复打开闪烁；
 7. **并发切换**：以最后一次请求为准，用递增令牌丢弃过期响应；
-8. **loader 契约**：返回 `FieldMeta[]`。接口/mock 可能包一层 `{ businessObject, fields, ... }`（见 `specs/mocks/*`），**解包由调用侧完成**，loader 自身返回数组。
+8. **loader 契约**：返回 `FieldMeta[]`。接口/mock 可能包一层 `{ modelId, fields, ... }`（见 `specs/mocks/*`），**解包由调用侧完成**，loader 自身返回数组。
 
 ### 6.3 元数据协议（FieldMeta，8 项）
 
@@ -342,7 +342,7 @@ rules  = base.defaultSchema.rules
 
 **v0.17 实现说明**：当前 `generateNewSchema` 直接用原始 type 拼 id（`color-picker_1234`），且 `normalizeType` 尚不存在。本版要求新增该函数并按上式生成，**只影响新生成的节点，存量 id 不改写**；自由模式因 `field = id`，`color-picker` / `upload-file` / `upload-image` / `time` 等带中划线类型的新节点，其 **formData key 也会从 `color-picker_1234` 变为 `color_picker_1234`**（随机段不变）——需在 P5 回归与文档中明确。现有单测只断言"新 id ≠ 旧 id"，预计影响小；`generateNewSchema` 的签名扩展须保持第二参数（数组）兼容。
 
-**字符集（id / field / businessObject 统一）：**
+**字符集（id / field / modelId 统一）：**
 
 | 项 | 规则 |
 |---|---|
@@ -479,27 +479,27 @@ rules  = base.defaultSchema.rules
 
 ```ts
 interface PageSchema {
-  businessObject?: string;   // 业务对象标识（随页面保存）
+  modelId?: string;   // 业务对象标识（随页面保存）
   canvas?: {...};
   schemas: ComponentSchema[];
   script?: string;
 }
 ```
 
-- **唯一真相**：`pageSchema.businessObject`（因为 `Ctrl+S` 直接 emit `pageSchema`、预览 JSON 直接 `stringify(pageSchema)`）；
+- **唯一真相**：`pageSchema.modelId`（因为 `Ctrl+S` 直接 emit `pageSchema`、预览 JSON 直接 `stringify(pageSchema)`）；
 - 写入：初始化、切换业务对象、导入成功后、`reset()` 后保持当前值；
-- **回填（v0.16）**：`setData()` / 导入 / 撤销恢复 / `importHistory` / `reset()` 之后都要处理 businessObject——这些路径走 `deepCompareAndModify`（默认删除缺失键），不补就会丢归属；
-- 新建页面：用 prop 的 businessObject，保存时写入 schema；
-- 打开已有页面：`defaultSchema` / `setData` / 导入三种来源的 `businessObject` 优先；无值回退 prop；
+- **回填（v0.16）**：`setData()` / 导入 / 撤销恢复 / `importHistory` / `reset()` 之后都要处理 modelId——这些路径走 `deepCompareAndModify`（默认删除缺失键），不补就会丢归属；
+- 新建页面：用 prop 的 modelId，保存时写入 schema；
+- 打开已有页面：`defaultSchema` / `setData` / 导入三种来源的 `modelId` 优先；无值回退 prop；
 - 导入：schema 值为准；与当前不一致 → 重新加载元数据 + 提示；加载失败不应用导入；
-- **同步/异步契约（v0.17）**：`setData(data)` 保持同步签名，自由模式行为不变。受控且 `businessObject` 一致 → 同步应用；受控且不一致 → **乐观应用 + 失败回滚**（应用前记录快照，异步加载失败则恢复快照、提示、不写撤销），并 `console.warn` 建议改用异步 API。新增 `setDataAsync(data): Promise<boolean>`：先加载目标对象元数据，失败返回 `false` 且不应用，成功后应用并入撤销；工具栏导入与宿主打开页面优先走该 API；
-- **reset 语义（v0.17）**：`reset()` 只重置 `schemas` / `script`，**不改变 businessObject**（保持当前值，避免导入 B 后 reset 残留 B 的归属）；受控下重置为当前业务对象的空 form 页面；
-- **撤销/历史语义（v0.17）**：`applyRecord` 会先删除快照中没有的键，因此恢复时**以快照值为准**——快照有 `businessObject` → 应用该值，若与当前不同则重载元数据 + 提示；快照缺省（旧快照）→ 回填当前值并告警；
-- k-form 旧数据：`convertKFormData` 产出的 `PageSchema` 只构造 `schemas` + `script`，需在解析原始 JSON 时先取出 `businessObject` 并透传。
+- **同步/异步契约（v0.17）**：`setData(data)` 保持同步签名，自由模式行为不变。受控且 `modelId` 一致 → 同步应用；受控且不一致 → **乐观应用 + 失败回滚**（应用前记录快照，异步加载失败则恢复快照、提示、不写撤销），并 `console.warn` 建议改用异步 API。新增 `setDataAsync(data): Promise<boolean>`：先加载目标对象元数据，失败返回 `false` 且不应用，成功后应用并入撤销；工具栏导入与宿主打开页面优先走该 API；
+- **reset 语义（v0.17）**：`reset()` 只重置 `schemas` / `script`，**不改变 modelId**（保持当前值，避免导入 B 后 reset 残留 B 的归属）；受控下重置为当前业务对象的空 form 页面；
+- **撤销/历史语义（v0.17）**：`applyRecord` 会先删除快照中没有的键，因此恢复时**以快照值为准**——快照有 `modelId` → 应用该值，若与当前不同则重载元数据 + 提示；快照缺省（旧快照）→ 回填当前值并告警；
+- k-form 旧数据：`convertKFormData` 产出的 `PageSchema` 只构造 `schemas` + `script`，需在解析原始 JSON 时先取出 `modelId` 并透传。
 
 ### 11.2 运行时
 
-- 节点 `type` 是基础组件 → EBuilder 按现有链路渲染，**不需要元数据、不需要 businessObject**；
+- 节点 `type` 是基础组件 → EBuilder 按现有链路渲染，**不需要元数据、不需要 modelId**；
 - 预设属性已在 schema 里，字段被后端删除也不影响已放置节点渲染（只是设计器面板里不再提供）；
 - 设计器与运行时不需要注册业务字段组件（对比旧方案的大幅简化）；
 - 受控根 form 与自由模式 form 渲染完全一致；
@@ -507,9 +507,9 @@ interface PageSchema {
 
 ### 11.3 保存/导入校验
 
-- 保存：写入 businessObject；节点 `field` 不在元数据中 → **仅警告**（§0-29）；非法 id/field 字符集 → 警告；
-- **导入校验（v0.17，受控）**：`businessObject` 合法、id 唯一（重复会破坏按 id 选中/撤销）、id/field 字符集、作用域内 field 唯一；发现冲突 → **拒绝导入**并列出冲突项（自由模式保持现状，不校验）；
-- 导入中 `businessObject` 非法属严重错误 → 不应用本次导入并提示。
+- 保存：写入 modelId；节点 `field` 不在元数据中 → **仅警告**（§0-29）；非法 id/field 字符集 → 警告；
+- **导入校验（v0.17，受控）**：`modelId` 合法、id 唯一（重复会破坏按 id 选中/撤销）、id/field 字符集、作用域内 field 唯一；发现冲突 → **拒绝导入**并列出冲突项（自由模式保持现状，不校验）；
+- 导入中 `modelId` 非法属严重错误 → 不应用本次导入并提示。
 
 ---
 
@@ -524,7 +524,7 @@ interface PageSchema {
 | 元数据加载失败 | 错误态 + 重试；不进入设计 |
 | 元数据里字段被删除 | 已放置节点照常渲染；设计器标记"元数据中不存在" |
 | 当前 UI 库不支持某 type | 跳过该字段 + 告警 |
-| 导入不同 businessObject 的页面 | 按 schema 重新加载元数据 + 提示；加载失败不应用 |
+| 导入不同 modelId 的页面 | 按 schema 重新加载元数据 + 提示；加载失败不应用 |
 | 存量数据含非法 id/field | 仅警告，不自动改写 |
 | 旧撤销历史 / 外部导入的历史记录 | 快照有值以快照为准（必要时重载元数据）；快照缺省才回填当前值 |
 | 受控实例打开 root=page 页面后拖业务字段 | 作用域=根节点，id 形如 `root_字段`，不出现 undefined 前缀 |
@@ -542,15 +542,15 @@ interface PageSchema {
 
 | 文件 | 改动点 |
 |---|---|
-| `packages/types/src/designer.ts` | `DesignerProps` 增 `designMode` / `businessObject` / `businessFieldLoader`；新增 `FieldMeta` 与 `FieldDataType` |
-| `packages/types/src/nada-designer.ts` | `PageSchema` 增 `businessObject`（该接口无索引签名，必须显式加） |
-| `packages/core/.../designer/src/designer.vue` | props 默认值与模式冻结、`designMode` 快照下发、元数据 Loading/错误重试门控、受控根 form（UI `defaultSchema` 深拷贝）、`setData` 后回填 businessObject、新增 `setDataAsync`、源码面板只读联动 |
-| `packages/core/.../designer/hooks/useDesigner.ts` | 装配 `useBusinessFields`、默认 schema 实例化、businessObject 写入/回填、根 form、复制拦截参数 |
+| `packages/types/src/designer.ts` | `DesignerProps` 增 `designMode` / `modelId` / `businessFieldLoader`；新增 `FieldMeta` 与 `FieldDataType` |
+| `packages/types/src/nada-designer.ts` | `PageSchema` 增 `modelId`（该接口无索引签名，必须显式加） |
+| `packages/core/.../designer/src/designer.vue` | props 默认值与模式冻结、`designMode` 快照下发、元数据 Loading/错误重试门控、受控根 form（UI `defaultSchema` 深拷贝）、`setData` 后回填 modelId、新增 `setDataAsync`、源码面板只读联动 |
+| `packages/core/.../designer/hooks/useDesigner.ts` | 装配 `useBusinessFields`、默认 schema 实例化、modelId 写入/回填、根 form、复制拦截参数 |
 | `packages/core/.../designer/hooks/useHotkeys.ts` | 复制/粘贴/重复/剪切拦截（传入 `canMutate`） |
 | `packages/hooks/src/common/clipboard.ts` | `useClipboard` 增 `canMutate`（**默认 `true`**，兼容现有 3 参调用），`copy/cut/paste/duplicate` 首行早退 |
 | `packages/hooks/src/designer/useBusinessFields.ts`（新增） | 元数据加载、两段式解析、校验、缓存、令牌、面板项生成、节点构造、唯一性判定；配置查询（defaultSchema / attribute 白名单）由调用方注入，**运行时不 import `manager`** |
 | `packages/hooks/src/designer/useDesignerContext.ts` | `DesignerContext` 增 `designMode`（冻结值）与 `businessFields` |
-| `packages/hooks/src/plugin/usePageSchema.ts` | `businessObject` 初始化与回填入口 |
+| `packages/hooks/src/plugin/usePageSchema.ts` | `modelId` 初始化与回填入口 |
 | `packages/hooks/src/designer/index.ts` | 导出新增的 `useBusinessFields`（utils 侧函数已在 `common/index.ts` 通配导出） |
 | `packages/ui-kit/panel-ui/.../componentView` | 业务字段分组渲染、布局白名单 + 实例级过滤、搜索、统一构造入口、拖拽 `clone` 改为占位 |
 | `packages/core/.../nodes.vue` | 落点：`parentSchema` 传递、作用域解析、唯一性校验、id 重算、就地重建/摘除回滚；跨作用域移动需捕获源列表与 `oldIndex`（`@remove` / `@end`） |
@@ -559,8 +559,8 @@ interface PageSchema {
 | `packages/ui-kit/panel-ui/.../attribute` | 受控模式过滤 `field` 编辑项、业务字段只读信息 |
 | `packages/utils/src/common/data.ts` | `generateNewSchema` 第三参 options（id 前缀归一化、field 策略；第二参数数组保持兼容）、最近 form 祖先、唯一性、引用改写、字符集辅助 |
 | `packages/utils/src/common/string.ts` | `normalizeType`、字段/id 字符集正则与校验函数 |
-| `packages/manager/src/revoke.ts` | 撤销/历史恢复后回填 `businessObject` |
-| `packages/core/.../toolbar.vue` | 导入：businessObject 解析/切换/失败不应用/校验提示；`imported` 事件载荷改为回填后的 pageSchema（保持事件签名兼容） |
+| `packages/manager/src/revoke.ts` | 撤销/历史恢复后回填 `modelId` |
+| `packages/core/.../toolbar.vue` | 导入：modelId 解析/切换/失败不应用/校验提示；`imported` 事件载荷改为回填后的 pageSchema（保持事件签名兼容） |
 | `packages/ui-kit/panel-ui/.../sourceCode/index.vue` | 受控强制只读（`sourceCodeReadOnly \|\| controlled`） |
 | `packages/core/.../modules/editContainer/previewWidgets.vue` | 悬停/浮层 label 改为优先 `schema.label` |
 | `examples/src/router/index.ts` + `views/designer/controlledMode/`（新增） | 受控模式 demo（mock loader + demo 元数据副本） |
@@ -596,10 +596,10 @@ interface PageSchema {
 | 阶段 | 内容 | 验收 |
 |---|---|---|
 | **P0** 验证基线（已完成） | 抓取易快报 propertySet / specificationGroups；生成 mock 数据与 35 个模板示例；确认 v1 覆盖 82.5% 控件 | 数据与示例可复现（specs/mocks 脚本）；examples「例子」可查看 |
-| **P1** 设计器模式与元数据获取 | 类型与默认值；模式冻结快照；两段式解析 + 令牌；Loading/失败重试；根 form；businessObject 写入/回填；默认 schema 实例隔离；补 mock `active:false` 样本；demo 骨架 | 受控/自由实例并存互不影响；加载失败可重试；非法字段被跳过告警；`active:false` 不出现 |
+| **P1** 设计器模式与元数据获取 | 类型与默认值；模式冻结快照；两段式解析 + 令牌；Loading/失败重试；根 form；modelId 写入/回填；默认 schema 实例隔离；补 mock `active:false` 样本；demo 骨架 | 受控/自由实例并存互不影响；加载失败可重试；非法字段被跳过告警；`active:false` 不出现 |
 | **P2** 拖拽模板与面板 | 面板业务字段项（分组/搜索）、布局白名单 + 实例级过滤、统一构造入口、**唯一性落点校验（重复 field 拒绝）+ 摘除回滚 + id 重算**、属性面板 field 只读 | 拖入生成正确 type/id/field/props；重复 field 拖入被拒且无残留、无撤销记录；面板无原始输入组件 |
 | **P3** 约束规则 | 复制/剪切禁止（静默）、跨 form 移动（`onMove` 预判 + 跨列表回滚 + 引用改写）、大纲拖拽禁用、源码面板只读、form 自动命名与重名校验 | 复制/剪切无反应；移动成功重算 id 且引用同步、冲突时源/目标均复原；大纲拖不动 |
-| **P4** 持久化与导入 | PageSchema.businessObject 保存/读取/回退/回填；`setDataAsync`；导入切换业务对象；保存/导入校验（重复 id/field 拒绝） | 保存后 JSON 带归属；导入不同对象自动重载并提示；失败不应用；撤销/跨对象恢复语义正确 |
+| **P4** 持久化与导入 | PageSchema.modelId 保存/读取/回退/回填；`setDataAsync`；导入切换业务对象；保存/导入校验（重复 id/field 拒绝） | 保存后 JSON 带归属；导入不同对象自动重载并提示；失败不应用；撤销/跨对象恢复语义正确 |
 | **P5** 文档、示例、测试、回归 | 文档（props/受控章节/hotkeys/updateLog）、受控 demo（三库）、单测、回归 | lint/typecheck/coverage 通过 + 手测清单 |
 
 ---
@@ -629,12 +629,12 @@ interface PageSchema {
 | 作用域回退 | root=page 页面拖业务字段 → id 前缀为根 id |
 | 根 form 布局 | 根 form 保留当前 UI 的 labelCol / labelLayout 等 props |
 | setData 契约 | 一致路径同步应用；不一致且加载失败 → 回滚且不入撤销；`setDataAsync` 失败返回 false 且不应用 |
-| reset | reset 后 businessObject 保持当前值 |
+| reset | reset 后 modelId 保持当前值 |
 | 撤销跨对象 | 快照为 A、当前 B → 恢复为 A 并提示重载；旧快照无值回填当前 |
 | 导入校验 | 受控重复 id/field → 拒绝并列出冲突 |
 | 大纲拖拽 | 受控下 `draggable` 关闭；自由模式不变 |
 | 源码只读 | 受控下源码面板只读 |
-| loader 契约 | 解包 `{businessObject, fields}`；缓存命中不重复调用；令牌丢弃过期响应 |
+| loader 契约 | 解包 `{modelId, fields}`；缓存命中不重复调用；令牌丢弃过期响应 |
 | 模式冻结/双实例 | prop 变更只告警、行为不变；free + controlled 两实例互不影响 |
 | form 命名 | 根 form `default`；拖入 form 自动 `form_N`；重名被拒 |
 | 表单级配置 | required / defaultValue / placeholder / hidden / 长度 / min-max 落到节点 |
@@ -645,12 +645,12 @@ interface PageSchema {
 1. 自由模式全功能回归；
 2. 受控模式：加载元数据 → 面板 → 拖入 → 属性编辑 → 保存 → 刷新 → 预览；
 3. 同一字段二次拖入被拒（列表无残留、Ctrl+Z 不出现空操作）；跨 form 各放一个；复制/剪切无反应；
-4. 导入不同 businessObject 页面 → 自动切换 + 提示；
+4. 导入不同 modelId 页面 → 自动切换 + 提示；
 5. 元数据接口失败 → 错误态 + 重试；
 6. 旧页面（自由字段）在受控实例打开；
 7. 三套 UI 库各跑一遍受控 demo（antd / element-plus / naive-ui）；
 8. 自由模式实例与受控实例同页并存，互不影响；
-9. 撤销/重做后页面 JSON 仍带 `businessObject`；
+9. 撤销/重做后页面 JSON 仍带 `modelId`；
 10. 受控下：大纲节点拖不动、源码面板只读、属性面板无 `field` 项；
 11. root=page 的旧页面在受控实例打开后拖业务字段 → id 前缀为根 id，不出现 undefined；
 12. 导入含重复 id/field 的页面 → 被拒绝并列出冲突项；
@@ -680,7 +680,7 @@ interface PageSchema {
 | 跨 form 移动引用遗漏 | `rewriteComponentRefs` 返回未改写清单 + 告警；单测覆盖 |
 | 全局单例污染（面板过滤） | 强制实例级过滤，不改全局注册表；评审 diff 检查 |
 | 默认 schema 模块级单例 | P1 改为实例级，否则"两实例并存"不成立 |
-| 撤销/历史 businessObject 语义 | 以快照值为准，快照缺省才回填当前；跨对象恢复重载元数据（§11.1） |
+| 撤销/历史 modelId 语义 | 以快照值为准，快照缺省才回填当前；跨对象恢复重载元数据（§11.1） |
 | 复制限制被绕过（源码面板/大纲） | 受控强制源码面板只读；大纲禁用拖拽（v0.17） |
 | 测试全局单例污染 | `createPluginManager()` 隔离或 afterEach 清理 |
 | typecheck/lint 不覆盖测试 | 新增测试后本地跑 vitest；评审时检查用例 |
@@ -734,7 +734,7 @@ interface PageSchema {
 | D1 | 业务字段实现 | 不注册组件，是面板拖拽模板；节点 type = 组件层统一 type |
 | D2 | 业务字段身份 | 元数据 `field`（业务对象内唯一），同时是 formData key |
 | D3 | 节点 id | 受控 `${作用域节点 id}_${field}`；基础组件 `${normalizeType(type)}_${uuid}`；`normalizeType` 需新增，只影响新节点（v0.16/v0.17） |
-| D4 | 字符集 | id/field/businessObject：中文/字母/数字/下划线；禁中划线及其他特殊字符；`entity` 除外 |
+| D4 | 字符集 | id/field/modelId：中文/字母/数字/下划线；禁中划线及其他特殊字符；`entity` 除外 |
 | D5 | 设计模式 | `designMode: 'free' \| 'controlled'`，默认 free，实例级，不落盘，禁止切换 |
 | D6 | 业务对象 | 一页一对象；EDesigner prop；PageSchema 保存；打开时 schema 优先，两段式解析 |
 | D7 | 元数据获取 | 设计器挂载时经 loader 获取；Loading/失败重试；按业务对象缓存；令牌丢弃过期响应 |
@@ -743,7 +743,7 @@ interface PageSchema {
 | D10 | 复制限制 | 按 designMode：free 允许；controlled 整体禁止（含 Ctrl+X）、静默无反应（v0.16） |
 | D11 | 跨 form 拖拽 | 移动语义；目标 form 冲突禁止；id 重算 + 动作引用改写（v0.16） |
 | D12 | 字段名 | 受控模式所有节点 field 只读；label 可改 |
-| D13 | 运行时 | 不需要元数据；页面 JSON 携带 businessObject |
+| D13 | 运行时 | 不需要元数据；页面 JSON 携带 modelId |
 | D14 | 子表/明细 | 不支持；由另一个业务对象承载 |
 | D15 | 元数据版本号 | 不记录 |
 | D16 | 自由模式 | 保持现状，不加载元数据、不加约束 |
@@ -789,16 +789,17 @@ interface PageSchema {
 | D56 | 布局/输入入口拆分 | 布局组件与输入类组件各一个入口按钮（受控/自由统一）；受控「输入」替换为「添加字段」模态面板（v0.32） |
 | D57 | 选择器统一复用 | 受控「添加字段」复用自由模式同一弹出选择器（仅内容换成业务字段，按 group/类型分组）；移除独立模态面板实现（v0.33） |
 | D58 | 字段平铺 + 类型下拉 | 受控添加字段弹层平铺不折叠；搜索框前增加类型下拉（全部 + 各分组），支持关键字搜索（v0.34） |
+| D59 | 属性更名 modelId | `businessObject` 统一更名为 `modelId`（设计器 prop 与页面 JSON 顶层字段一致），值仍为业务对象 code（v0.35） |
 
 ### 18.1 变更记录
 
 | 版本 | 日期 | 变更 |
 |---|---|---|
 | v0.1–v0.12 | 2026-11-20 | 基于"注册组件"方向的多轮迭代（已被 v0.13 取代） |
-| v0.13 | 2026-11-21 | 按「运行时元数据 + 拖拽模板」重构：业务字段不注册组件；businessObject 随页面保存；元数据协议；id/field 统一字符集；重写影响面与计划 |
+| v0.13 | 2026-11-21 | 按「运行时元数据 + 拖拽模板」重构：业务字段不注册组件；modelId 随页面保存；元数据协议；id/field 统一字符集；重写影响面与计划 |
 | v0.14 | 2026-11-21 | 参考易快报 propertySet / specificationGroups：元数据精简为 7 字段；新增 dataType→控件映射；表单级配置收敛为 v1 范围；`ref` 数据源只给 entity |
 | v0.15 | 2026-11-21 | 补充真实数据验证（§13.1：406 字段 / 35 模板 / 748 控件，v1 覆盖 82.5%）；新增开放问题（designable 过滤、是否维度映射、明细优先级）、P0 验证基线与决策 D22 |
-| v0.16 | 2026-11-22 | 落实评审 Q1–Q3：①拖拽改为**落点校验 + 回滚**（§7.1/7.2、§8.2、D23）；②跨 form 移动**重算 id + 动作引用改写**（§7.4、D11）；③受控面板 = 业务字段 + `card`/`row`/`tabs` + `form`（§10.1、D24）。同时按代码现状修正：受控根节点为 form（D25）、元数据两段式解析（§6.2）、businessObject 回填（§11.1）、预设属性白名单（§6.3.1、D29）、`normalizeType`（§7.3）、复制/剪切拦截落点（§9、D28/D31）、元数据模型口径统一为 8 项（D18）、删除表单必填的旧表述冲突；关闭 §17-1/3/5；新增 §1.1 实现约束、§15.3 测试基建、7 条新风险与 D23–D32 |
+| v0.16 | 2026-11-22 | 落实评审 Q1–Q3：①拖拽改为**落点校验 + 回滚**（§7.1/7.2、§8.2、D23）；②跨 form 移动**重算 id + 动作引用改写**（§7.4、D11）；③受控面板 = 业务字段 + `card`/`row`/`tabs` + `form`（§10.1、D24）。同时按代码现状修正：受控根节点为 form（D25）、元数据两段式解析（§6.2）、modelId 回填（§11.1）、预设属性白名单（§6.3.1、D29）、`normalizeType`（§7.3）、复制/剪切拦截落点（§9、D28/D31）、元数据模型口径统一为 8 项（D18）、删除表单必填的旧表述冲突；关闭 §17-1/3/5；新增 §1.1 实现约束、§15.3 测试基建、7 条新风险与 D23–D32 |
 | v0.17 | 2026-11-22 | 落实独立评审 10 阻塞 + 13 建议：①落点时序修正——占位节点**已由库插入**，`@add` 就地重建/摘除（D33）；②作用域回退根节点、id 前缀明确（D34）；③唯一性扫描含旧字段（D35）；④跨 form 移动 `onMove` 预判 + 跨列表回滚（§7.4）；⑤大纲拖拽受控禁用（D36）；⑥`props.entity` 白名单例外（§6.3.1）；⑦撤销/历史以快照值为准（D40）；⑧`setDataAsync` + 同步乐观回滚（D39）；⑨根 form 布局取 UI defaultSchema（D38）；⑩源码面板强制只读（D37）；⑪导入重复 id/field 拒绝（D41）；⑫依赖方向与 `generateNewSchema` 签名兼容（D42）；同步修正 `schedule` 字段、label 一致性、测试用例与风险清单，更新 §0-33~41 与 D33–D42 |
 | v0.18 | 2026-11-22 | 确认 v1 **不做字段分组**：元数据不返回 `group`、面板平铺 + 搜索、数组顺序即展示顺序；后端表无需 group/sort 字段（§6.3、§10.1、D43） |
 | v0.19 | 2026-11-22 | 确认业务对象标识用 **`code`**（租户内唯一，`(tenant_id, code)`；`id` 仅内部主键、不进页面 JSON）；`code` 不可改名；跨租户导入按同 code 解析（§6.1、D44） |
@@ -817,3 +818,4 @@ interface PageSchema {
 | v0.32 | 2026-11-23 | 组件入口拆分为**「布局」+「输入/字段」两个按钮**（受控/自由统一）；布局选择器与输入选择器各自拖拽/多选（§5.3、§10.5、D56） |
 | v0.33 | 2026-11-23 | 受控「添加字段」**复用自由模式同一弹出选择器**（仅内容为业务字段），移除独立模态面板实现（§10.1、D57） |
 | v0.34 | 2026-11-23 | 字段弹层**平铺不折叠**，搜索框前增加**类型下拉**（全部 + 各分组），支持关键字搜索（§10.1、D58） |
+| v0.35 | 2026-11-24 | 属性更名：`businessObject` → **`modelId`**（设计器 prop 与页面 JSON 顶层字段一致，值仍为业务对象 code）（§5.1、D59） |
