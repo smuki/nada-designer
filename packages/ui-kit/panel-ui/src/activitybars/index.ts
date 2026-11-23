@@ -15,30 +15,13 @@ export function setupActivitybar(pluginManager: PluginManager): void {
     title: '组件',
   });
 
-  // 属性 / 样式 / 事件：从右侧栏移到左侧活动栏（所有模式统一）
+  // 属性 / 样式 / 事件：合并为一个左侧面板，底部页签切换
   pluginManager.panel.registerActivitybar({
-    component: async () =>
-      await import('../rightSidebars/attribute/attribute.vue'),
+    component: async () => await import('../rightSidebars/inspector.vue'),
     icon: 'icon--nada--list-alt-outline-rounded',
     id: 'attribute_view',
     sort: 150,
     title: '属性',
-  });
-
-  pluginManager.panel.registerActivitybar({
-    component: async () => await import('../rightSidebars/style/style.vue'),
-    icon: 'icon--nada--palette-outline',
-    id: 'style_view',
-    sort: 160,
-    title: '样式',
-  });
-
-  pluginManager.panel.registerActivitybar({
-    component: async () => await import('../rightSidebars/event/event.vue'),
-    icon: 'icon--nada--dialogs-outline-rounded',
-    id: 'event_view',
-    sort: 170,
-    title: '事件',
   });
 
   pluginManager.panel.registerActivitybar({
