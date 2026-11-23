@@ -36,15 +36,16 @@ const sidebarComponent = shallowRef<any>(
   activityBars.value[0]?.component ?? null,
 );
 
-/** 是否展示属性面板 */
-const showInspector = ref(false);
+/** 是否展示属性面板（常驻：默认显示页面属性；选中组件后显示该组件属性） */
+const showInspector = ref(true);
 
-// 选中任意节点后，左侧自动切换到属性面板（初始化时的根节点选中不触发）
+// 选中任意节点后，左侧自动切换到属性面板；初始化即展示页面（根节点）属性
 watch(
   () => designer.state.selectedNode?.id,
-  (id) => {
-    showInspector.value = Boolean(id);
+  () => {
+    showInspector.value = true;
   },
+  { immediate: true },
 );
 
 /** 实际渲染的面板 */
