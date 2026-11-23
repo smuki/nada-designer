@@ -141,6 +141,16 @@ function handleClick(item: ActivitybarModel, index: number) {
   activityBarCheckedIndex.value = index;
 }
 
+/** UI 库下拉浮层的选择器（浮层多 teleport 到 body，需要排除，否则选类型会误关弹层） */
+const SELECT_POPUP_SELECTOR = [
+  '.ant-select-dropdown',
+  '.el-popper',
+  '.el-select__popper',
+  '.n-base-select-menu',
+  '.n-select-menu',
+  '.n-popover',
+].join(',');
+
 /**
  * 点击弹出框外部时收起
  * @param event 鼠标事件
@@ -151,8 +161,10 @@ function handleDocumentMousedown(event: MouseEvent) {
   if (!target) return;
   if (
     target.closest('.ep-component-picker') ||
+    target.closest(SELECT_POPUP_SELECTOR) ||
     target.closest('[data-activity-id="layout_view"]') ||
-    target.closest('[data-activity-id="component_view"]')
+    target.closest('[data-activity-id="component_view"]') ||
+    target.closest('[data-activity-id="business_field_view"]')
   ) {
     return;
   }
