@@ -336,7 +336,6 @@ watch(
           v-model="category"
           v-model:value="category"
           :options="categoryOptions"
-          :teleported="false"
           size="small"
         />
       </div>
@@ -481,7 +480,8 @@ watch(
   position: absolute;
   top: 8px;
   left: 56px;
-  z-index: 2000;
+  /* 低于各 UI 库下拉浮层（antd 1050 / element、naive 2000+），避免类型下拉被面板盖住 */
+  z-index: 1000;
   display: flex;
   flex-direction: column;
   width: 420px;
@@ -525,6 +525,12 @@ watch(
 .ep-component-picker-category {
   flex-shrink: 0;
   width: 150px;
+
+  :deep(.ant-select),
+  :deep(.el-select),
+  :deep(.n-select) {
+    width: 100%;
+  }
 }
 
 .ep-component-picker-search-input {
