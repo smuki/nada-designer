@@ -39,6 +39,7 @@ const props = withDefaults(
 const emit = defineEmits(['close']);
 
 const Input = pluginManager.component.get('input');
+const Select = pluginManager.component.get('select');
 const designer = useDesignerContext();
 const revoke = designer.revoke;
 const pageSchema = designer.pageSchema;
@@ -61,6 +62,24 @@ const FIELD_TYPE_LABELS: Record<FieldMeta['type'], string> = {
 const keyword = ref('');
 const activeKeys = useStorage('ep-component-view-keys', []);
 const selectedKeys = ref<string[]>([]);
+
+/** 字段类型下拉：全部 + 各分组 */
+const ALL_CATEGORY = '全部';
+const category = ref(ALL_CATEGORY);
+const categoryOptions = computed(() => {
+  const titles: string[] = [];
+  businessFields.fields.value.forEach((meta) => {
+    const title = meta.group?.trim() || FIELD_TYPE_LABELS[meta.type] || '其他';
+    if (!titles.includes(title)) titles.push(title);
+  });
+  return [
+    {
+      label: `全部（${businessFields.fields.value.length}）`,
+      value: ALL_CATEGORY,
+    },
+    ...titles.map((title) => ({ label: title, value: title })),
+  ];
+});
 
 const isFieldMode = computed(() => props.mode === 'field');
 const isLayoutMode = computed(() => props.mode === 'layout');
@@ -109,6 +128,7 @@ const fieldGroups = computed<PickerGroup[]>(() => {
   businessFields.fields.value.forEach((meta) => {
     if (!meta.label.includes(keyword.value)) return;
     const title = meta.group?.trim() || FIELD_TYPE_LABELS[meta.type] || '其他';
+    if (category.value !== ALL_CATEGORY && title !== category.value) return;
     const items = groupMap.get(title) ?? [];
     items.push(toFieldItem(meta));
     groupMap.set(title, items);
@@ -149,6 +169,21 @@ watchEffect(() => {
   layoutFlatItems.value = isLayoutMode.value
     ? (pickerGroups.value[0]?.items ?? [])
     : [];
+});
+
+/** 字段模式平铺列表（不折叠，按类型下拉筛选） */
+const fieldFlatItems = ref<PickerItem[]>([]);
+watchEffect(() => {
+  fieldFlatItems.value = isFieldMode.value
+    ? fieldGroups.value.flatMap((group) => group.items)
+    : [];
+});
+
+/** 当前是否有可展示条目 */
+const hasItems = computed(() => {
+  if (isLayoutMode.value) return layoutFlatItems.value.length > 0;
+  if (isFieldMode.value) return fieldFlatItems.value.length > 0;
+  return pickerGroups.value.length > 0;
 });
 
 /** 按面板顺序排列的已选 key */
@@ -296,14 +331,25 @@ watch(
       <span class="ep-component-picker-close" @click="emit('close')">×</span>
     </div>
     <div class="ep-component-picker-search">
-      <Input
-        v-model="keyword"
-        v-model:value="keyword"
-        placeholder="搜索"
-        size="small"
-        clearable
-        allow-clear
-      />
+      <div v-if="isFieldMode" class="ep-component-picker-category">
+        <Select
+          v-model="category"
+          v-model:value="category"
+          :options="categoryOptions"
+          :teleported="false"
+          size="small"
+        />
+      </div>
+      <div class="ep-component-picker-search-input">
+        <Input
+          v-model="keyword"
+          v-model:value="keyword"
+          placeholder="搜索"
+          size="small"
+          clearable
+          allow-clear
+        />
+      </div>
     </div>
     <div class="ep-component-picker-body">
       <!-- 布局组件：数量少，平铺不分组 -->
@@ -332,7 +378,40 @@ watch(
           <span class="ep-component-picker-label">{{ item.label }}</span>
         </div>
       </VueDraggable>
-      <!-- 输入组件 / 业务字段：按分组展示 -->
+      <!-- 业务字段：平铺展示（不折叠），按类型下拉筛选 -->
+      <VueDraggable
+        v-else-if="isFieldMode"
+        v-model="fieldFlatItems"
+        :group="{ name: 'edit-draggable', pull: 'clone', put: false }"
+        :sort="false"
+        :animation="180"
+        ghost-class="moving"
+        :clone="cloneItem"
+        item-key="key"
+        class="ep-component-picker-grid"
+      >
+        <div
+          v-for="item in fieldFlatItems"
+          :key="item.key"
+          class="ep-component-picker-item"
+          :class="{
+            disabled: isPlaced(item),
+            selected: isSelected(item.key),
+          }"
+          :title="item.field?.field"
+          @click="toggleItem(item)"
+        >
+          <span class="ep-component-picker-check">
+            {{ isSelected(item.key) ? '✓' : '' }}
+          </span>
+          <NadaIcon :name="item.icon" />
+          <span class="ep-component-picker-label">{{ item.label }}</span>
+          <span v-if="item.field" class="ep-component-picker-type">
+            {{ item.field.type }}
+          </span>
+        </div>
+      </VueDraggable>
+      <!-- 输入组件：按分组展示 -->
       <EpCollapse
         v-else
         :default-expand-all="!activeKeys.length"
@@ -377,7 +456,7 @@ watch(
           </VueDraggable>
         </EpCollapsePanel>
       </EpCollapse>
-      <div v-if="pickerGroups.length === 0" class="ep-component-picker-empty">
+      <div v-if="!hasItems" class="ep-component-picker-empty">
         没有查询到的{{ isFieldMode ? '字段' : '组件' }}
       </div>
     </div>
@@ -438,7 +517,19 @@ watch(
 }
 
 .ep-component-picker-search {
+  display: flex;
+  gap: 8px;
   padding: 8px 0;
+}
+
+.ep-component-picker-category {
+  flex-shrink: 0;
+  width: 150px;
+}
+
+.ep-component-picker-search-input {
+  flex: 1;
+  min-width: 0;
 }
 
 .ep-component-picker-body {
