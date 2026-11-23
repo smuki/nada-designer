@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentSchema } from '@nada-designer/types';
+import type { ComponentSchema, FieldMeta } from '@nada-designer/types';
 
 import { computed, ref, watch, watchEffect } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
@@ -7,13 +7,31 @@ import { VueDraggable } from 'vue-draggable-plus';
 import { EpCollapse, EpCollapsePanel, NadaIcon } from '@nada-designer/base-ui';
 import { useDesignerContext } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
-import { findSchemaInfoById, generateNewSchema } from '@nada-designer/utils';
+import {
+  findSchemaInfoById,
+  generateNewSchema,
+  mapFieldDataType,
+} from '@nada-designer/utils';
 import { useStorage } from '@vueuse/core';
+
+/** 选择器条目：输入/布局组件用 schema，业务字段用 field */
+interface PickerItem {
+  field?: FieldMeta;
+  icon: string;
+  key: string;
+  label: string;
+  schema?: ComponentSchema;
+}
+
+interface PickerGroup {
+  items: PickerItem[];
+  title: string;
+}
 
 const props = withDefaults(
   defineProps<{
-    /** 选择器类型：input 输入类组件 / layout 布局类组件 */
-    mode?: 'input' | 'layout';
+    /** input 输入类组件 / layout 布局类组件 / field 业务字段 */
+    mode?: 'field' | 'input' | 'layout';
   }>(),
   { mode: 'input' },
 );
@@ -24,62 +42,170 @@ const Input = pluginManager.component.get('input');
 const designer = useDesignerContext();
 const revoke = designer.revoke;
 const pageSchema = designer.pageSchema;
+const businessFields = designer.businessFields;
 const groups = pluginManager.component.getComponentSchemaGroups();
 
 /** 布局类组件（其余归为输入类） */
 const LAYOUT_TYPES = new Set(['card', 'form', 'row', 'tabs']);
 
-/** 弹框标题 */
-const pickerTitle = computed(() =>
-  props.mode === 'layout' ? '添加布局组件' : '添加输入组件',
-);
+const FIELD_TYPE_LABELS: Record<FieldMeta['type'], string> = {
+  boolean: '开关',
+  date: '日期',
+  money: '金额',
+  number: '数值',
+  ref: '引用',
+  text: '文本',
+  list: '列表',
+};
 
 const keyword = ref('');
 const activeKeys = useStorage('ep-component-view-keys', []);
-const selectedTypes = ref<string[]>([]);
+const selectedKeys = ref<string[]>([]);
 
-const getSchemaTypeList = computed(() => {
-  return groups.value
-    .map((item) => ({
-      ...item,
-      list: item.list.filter((item) => {
-        if (!item.label?.includes(keyword.value)) return false;
-        const isLayout = LAYOUT_TYPES.has(item.type);
-        return props.mode === 'layout' ? isLayout : !isLayout;
-      }),
-    }))
-    .filter((item) => item.list.length > 0);
+const isFieldMode = computed(() => props.mode === 'field');
+const isLayoutMode = computed(() => props.mode === 'layout');
+
+const pickerTitle = computed(() => {
+  if (isFieldMode.value) return '添加字段';
+  return isLayoutMode.value ? '添加布局组件' : '添加输入组件';
 });
 
-/** 布局模式：平铺展示（数量少，不需要分组） */
-const layoutFlatItems = ref<ComponentSchema[]>([]);
-watchEffect(() => {
-  layoutFlatItems.value = getSchemaTypeList.value.flatMap(
-    (group) => group.list,
-  );
-});
+const placedFields = computed(
+  () =>
+    new Set(businessFields.getPlacedFields(designer.state.selectedNode?.id)),
+);
 
-/** 按面板顺序排列的已选组件类型 */
-const orderedSelectedTypes = computed(() => {
-  const allTypes: string[] = [];
-  groups.value.forEach((group) => {
-    group.list.forEach((item) => allTypes.push(item.type));
-  });
-  return allTypes.filter((type) => selectedTypes.value.includes(type));
-});
-
-function isSelected(type: string): boolean {
-  return selectedTypes.value.includes(type);
+/**
+ * 组件 defaultSchema → 选择器条目
+ * @param schema 组件 defaultSchema
+ */
+function toComponentItem(schema: ComponentSchema): PickerItem {
+  return {
+    icon: pluginManager.component.getConfigByType(schema.type).icon ?? '',
+    key: schema.type,
+    label: schema.label ?? schema.type,
+    schema,
+  };
 }
 
 /**
- * 切换组件选中状态
- * @param schema 组件 defaultSchema
+ * 业务字段 → 选择器条目
+ * @param meta 业务字段元数据
  */
-function toggleSelect(schema: ComponentSchema) {
-  selectedTypes.value = selectedTypes.value.includes(schema.type)
-    ? selectedTypes.value.filter((type) => type !== schema.type)
-    : [...selectedTypes.value, schema.type];
+function toFieldItem(meta: FieldMeta): PickerItem {
+  const componentType = mapFieldDataType(meta.type);
+  return {
+    field: meta,
+    icon: componentType ? pluginManager.component.getIcon(componentType) : '',
+    key: meta.field,
+    label: meta.label,
+  };
+}
+
+/** 业务字段分组（按元数据 group，缺省按数据类型） */
+const fieldGroups = computed<PickerGroup[]>(() => {
+  const groupMap = new Map<string, PickerItem[]>();
+
+  businessFields.fields.value.forEach((meta) => {
+    if (!meta.label.includes(keyword.value)) return;
+    const title = meta.group?.trim() || FIELD_TYPE_LABELS[meta.type] || '其他';
+    const items = groupMap.get(title) ?? [];
+    items.push(toFieldItem(meta));
+    groupMap.set(title, items);
+  });
+
+  return [...groupMap.entries()].map(([title, items]) => ({ title, items }));
+});
+
+/** 组件分组（按注册表分组；布局模式只保留布局类） */
+const componentGroups = computed<PickerGroup[]>(() => {
+  return groups.value
+    .map((group) => ({
+      title: group.title,
+      items: group.list
+        .filter((item) => {
+          if (!item.label?.includes(keyword.value)) return false;
+          const isLayout = LAYOUT_TYPES.has(item.type);
+          return isLayoutMode.value ? isLayout : !isLayout;
+        })
+        .map(toComponentItem),
+    }))
+    .filter((group) => group.items.length > 0);
+});
+
+/** 实际展示的分组；布局模式平铺（数量少，不分组） */
+const pickerGroups = computed<PickerGroup[]>(() => {
+  if (isFieldMode.value) return fieldGroups.value;
+  if (isLayoutMode.value) {
+    const items = componentGroups.value.flatMap((group) => group.items);
+    return items.length > 0 ? [{ title: '布局', items }] : [];
+  }
+  return componentGroups.value;
+});
+
+/** 布局模式平铺列表 */
+const layoutFlatItems = ref<PickerItem[]>([]);
+watchEffect(() => {
+  layoutFlatItems.value = isLayoutMode.value
+    ? (pickerGroups.value[0]?.items ?? [])
+    : [];
+});
+
+/** 按面板顺序排列的已选 key */
+const orderedSelectedKeys = computed(() => {
+  const allKeys: string[] = [];
+
+  if (isFieldMode.value) {
+    businessFields.fields.value.forEach((meta) => allKeys.push(meta.field));
+  } else {
+    groups.value.forEach((group) => {
+      group.list.forEach((item) => allKeys.push(item.type));
+    });
+  }
+
+  return allKeys.filter((key) => selectedKeys.value.includes(key));
+});
+
+function isSelected(key: string): boolean {
+  return selectedKeys.value.includes(key);
+}
+
+/**
+ * 条目是否已放置（业务字段）
+ * @param item 选择器条目
+ */
+function isPlaced(item: PickerItem): boolean {
+  return Boolean(item.field && placedFields.value.has(item.field.field));
+}
+
+/**
+ * 切换条目选中状态
+ * @param item 选择器条目
+ */
+function toggleItem(item: PickerItem) {
+  if (isPlaced(item)) {
+    pluginManager.global.$message.info(`字段「${item.label}」已放置`);
+    return;
+  }
+  selectedKeys.value = selectedKeys.value.includes(item.key)
+    ? selectedKeys.value.filter((key) => key !== item.key)
+    : [...selectedKeys.value, item.key];
+}
+
+/**
+ * 拖拽克隆：业务字段产出落点占位节点，组件产出新节点
+ * @param item 选择器条目
+ */
+function cloneItem(item: PickerItem): ComponentSchema {
+  if (item.field) {
+    return {
+      __businessField: item.field,
+      id: `__pending_${item.field.field}`,
+      label: item.label,
+      type: '__pending',
+    } as ComponentSchema;
+  }
+  return generateNewSchema(item.schema as ComponentSchema);
 }
 
 /**
@@ -104,38 +230,63 @@ function getInsertTarget() {
   return { index, list };
 }
 
-/** 批量插入已选组件 */
+/** 批量插入已选条目 */
 function handleConfirm() {
-  if (orderedSelectedTypes.value.length === 0) return;
+  if (orderedSelectedKeys.value.length === 0) return;
 
-  const target = getInsertTarget();
-  if (!target) return;
-
+  let targetId = designer.state.selectedNode?.id ?? pageSchema.schemas[0]?.id;
   let lastNode: ComponentSchema | null = null;
-  orderedSelectedTypes.value.forEach((type) => {
-    const defaultSchema =
-      pluginManager.component.getComponentConfigByType(type)?.defaultSchema;
-    if (!defaultSchema) return;
+  const failures: string[] = [];
 
-    const node = generateNewSchema(defaultSchema);
-    target.list.splice(target.index + 1, 0, node);
-    target.index += 1;
-    lastNode = node;
-  });
+  if (isFieldMode.value) {
+    orderedSelectedKeys.value.forEach((key) => {
+      const meta = businessFields.fieldMap.value.get(key);
+      if (!meta) return;
+      const result = businessFields.insertField(meta, {
+        onInserted: (node) => {
+          targetId = node.id;
+          lastNode = node;
+        },
+        targetId,
+      });
+      if (!result.ok) {
+        failures.push(result.message ?? meta.label);
+      }
+    });
+  } else {
+    const target = getInsertTarget();
+    if (target) {
+      orderedSelectedKeys.value.forEach((key) => {
+        const defaultSchema =
+          pluginManager.component.getComponentConfigByType(key)?.defaultSchema;
+        if (!defaultSchema) return;
+
+        const node = generateNewSchema(defaultSchema);
+        target.list.splice(target.index + 1, 0, node);
+        target.index += 1;
+        lastNode = node;
+      });
+    }
+  }
 
   if (lastNode) {
     designer.setSelectedNode(lastNode);
-    revoke.push('插入组件', true);
+    revoke.push(isFieldMode.value ? '插入业务字段' : '插入组件', true);
   }
+
+  if (failures.length > 0) {
+    pluginManager.global.$message.warning(
+      `部分字段未插入：${failures[0]}${failures.length > 1 ? ` 等 ${failures.length} 项` : ''}`,
+    );
+  }
+
   emit('close');
 }
 
 // 画布发生任何插入/选中（例如拖拽落点）后自动收起
 watch(
   () => designer.selectionVersion.value,
-  () => {
-    emit('close');
-  },
+  () => emit('close'),
 );
 </script>
 <template>
@@ -148,7 +299,7 @@ watch(
       <Input
         v-model="keyword"
         v-model:value="keyword"
-        placeholder="搜索组件"
+        placeholder="搜索"
         size="small"
         clearable
         allow-clear
@@ -157,81 +308,77 @@ watch(
     <div class="ep-component-picker-body">
       <!-- 布局组件：数量少，平铺不分组 -->
       <VueDraggable
-        v-if="props.mode === 'layout'"
+        v-if="isLayoutMode"
         v-model="layoutFlatItems"
         :group="{ name: 'edit-draggable', pull: 'clone', put: false }"
         :sort="false"
         :animation="180"
         ghost-class="moving"
-        :clone="generateNewSchema"
-        item-key="type"
+        :clone="cloneItem"
+        item-key="key"
         class="ep-component-picker-grid"
       >
         <div
           v-for="item in layoutFlatItems"
-          :key="item.type"
+          :key="item.key"
           class="ep-component-picker-item"
-          :class="{ selected: isSelected(item.type) }"
-          @click="toggleSelect(item)"
+          :class="{ selected: isSelected(item.key) }"
+          @click="toggleItem(item)"
         >
           <span class="ep-component-picker-check">
-            {{ isSelected(item.type) ? '✓' : '' }}
+            {{ isSelected(item.key) ? '✓' : '' }}
           </span>
-          <NadaIcon
-            :name="
-              pluginManager.component.getConfigByType(item.type).icon ?? ''
-            "
-          />
+          <NadaIcon :name="item.icon" />
           <span class="ep-component-picker-label">{{ item.label }}</span>
         </div>
       </VueDraggable>
-      <!-- 输入组件：按注册表分组 -->
+      <!-- 输入组件 / 业务字段：按分组展示 -->
       <EpCollapse
         v-else
         :default-expand-all="!activeKeys.length"
         v-model="activeKeys"
       >
         <EpCollapsePanel
-          v-for="group in getSchemaTypeList"
+          v-for="group in pickerGroups"
           :name="group.title"
           :title="group.title"
           :key="group.title"
         >
           <VueDraggable
-            v-model="group.list"
+            v-model="group.items"
             :group="{ name: 'edit-draggable', pull: 'clone', put: false }"
             :sort="false"
             :animation="180"
             ghost-class="moving"
-            :clone="generateNewSchema"
-            item-key="id"
+            :clone="cloneItem"
+            item-key="key"
             class="ep-component-picker-grid"
           >
             <div
-              v-for="item in group.list"
-              :key="item.type"
+              v-for="item in group.items"
+              :key="item.key"
               class="ep-component-picker-item"
-              :class="{ selected: isSelected(item.type) }"
-              @click="toggleSelect(item)"
+              :class="{
+                disabled: isPlaced(item),
+                selected: isSelected(item.key),
+              }"
+              :title="item.field?.field"
+              @click="toggleItem(item)"
             >
               <span class="ep-component-picker-check">
-                {{ isSelected(item.type) ? '✓' : '' }}
+                {{ isSelected(item.key) ? '✓' : '' }}
               </span>
-              <NadaIcon
-                :name="
-                  pluginManager.component.getConfigByType(item.type).icon ?? ''
-                "
-              />
+              <NadaIcon :name="item.icon" />
               <span class="ep-component-picker-label">{{ item.label }}</span>
+              <span v-if="item.field" class="ep-component-picker-type">
+                {{ item.field.type }}
+              </span>
             </div>
           </VueDraggable>
         </EpCollapsePanel>
       </EpCollapse>
-      <div
-        v-if="getSchemaTypeList.length === 0"
-        class="ep-component-picker-empty"
-      >
-        没有查询到的组件
+      <div v-if="pickerGroups.length === 0" class="ep-component-picker-empty">
+        没有查询到的{{ isFieldMode ? '字段' : '组件' }}
       </div>
     </div>
     <div class="ep-component-picker-footer">
@@ -240,10 +387,12 @@ watch(
       </span>
       <span
         class="ep-component-picker-confirm"
-        :class="{ disabled: orderedSelectedTypes.length === 0 }"
+        :class="{ disabled: orderedSelectedKeys.length === 0 }"
         @click="handleConfirm"
       >
-        插入 {{ orderedSelectedTypes.length }} 个组件
+        插入 {{ orderedSelectedKeys.length }} 个{{
+          isFieldMode ? '字段' : '组件'
+        }}
       </span>
     </div>
   </div>
@@ -313,6 +462,8 @@ watch(
   color: var(--ep-text-main);
   cursor: pointer;
   border-radius: var(--ep-radius);
+  content-visibility: auto;
+  contain-intrinsic-size: 32px;
 
   &:hover {
     background: var(--ep-primary-faded);
@@ -321,6 +472,15 @@ watch(
   &.selected {
     color: var(--ep-primary);
     background: var(--ep-primary-faded);
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+
+    &:hover {
+      background: transparent;
+    }
   }
 }
 
@@ -332,9 +492,16 @@ watch(
 }
 
 .ep-component-picker-label {
+  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.ep-component-picker-type {
+  flex-shrink: 0;
+  color: var(--ep-text-helper);
+  font-size: 12px;
 }
 
 .ep-component-picker-empty {

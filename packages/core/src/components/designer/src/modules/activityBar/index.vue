@@ -7,7 +7,6 @@ import { EpTooltip, NadaIcon } from '@nada-designer/base-ui';
 import { useDesignerContext } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
 
-import BusinessFieldPicker from '../editContainer/businessFieldPicker.vue';
 import ComponentPicker from '../editContainer/componentPicker.vue';
 
 defineOptions({
@@ -68,11 +67,8 @@ const sidebarComponent = shallowRef<any>(
 /** 是否展示属性面板（常驻：默认显示页面属性；选中组件后显示该组件属性） */
 const showInspector = ref(true);
 
-/** 组件选择弹出框：input 输入类 / layout 布局类 */
-const pickerMode = ref<'input' | 'layout' | null>(null);
-
-/** 受控模式：添加字段面板 */
-const fieldPickerOpen = ref(false);
+/** 组件选择弹出框：field 业务字段 / input 输入类 / layout 布局类 */
+const pickerMode = ref<'field' | 'input' | 'layout' | null>(null);
 
 // 选中动作后展示属性面板；同时关闭组件弹出框
 watch(
@@ -100,11 +96,10 @@ const renderedComponent = computed(() => {
 function isItemActive(item: ActivitybarModel, index: number): boolean {
   if (item.id === 'layout_view') return pickerMode.value === 'layout';
   if (item.id === 'component_view') return pickerMode.value === 'input';
-  if (item.id === 'business_field_view') return fieldPickerOpen.value;
+  if (item.id === 'business_field_view') return pickerMode.value === 'field';
   return (
     !showInspector.value &&
     pickerMode.value === null &&
-    !fieldPickerOpen.value &&
     activityBarCheckedIndex.value === index
   );
 }
@@ -122,14 +117,13 @@ function handleClick(item: ActivitybarModel, index: number) {
     return;
   }
 
-  // 受控模式：添加字段入口
+  // 受控模式：添加字段入口（复用同一弹出框，仅内容不同）
   if (item.id === 'business_field_view') {
-    fieldPickerOpen.value = !fieldPickerOpen.value;
+    pickerMode.value = pickerMode.value === 'field' ? null : 'field';
     return;
   }
 
   pickerMode.value = null;
-  fieldPickerOpen.value = false;
 
   // 从属性面板切回图标面板（不触发收起逻辑）
   if (showInspector.value) {
@@ -205,10 +199,6 @@ onUnmounted(() => {
       v-if="pickerMode"
       :mode="pickerMode"
       @close="pickerMode = null"
-    />
-    <BusinessFieldPicker
-      v-if="fieldPickerOpen"
-      @close="fieldPickerOpen = false"
     />
   </div>
 </template>
