@@ -450,7 +450,7 @@ watch(
 .ep-component-picker-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 4px;
+  gap: 6px;
   padding: 2px;
 }
 
@@ -458,20 +458,39 @@ watch(
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 8px;
+  padding: 8px 10px;
   color: var(--ep-text-main);
   cursor: pointer;
+  background-color: var(--ep-secondary);
+  border: 1px solid transparent;
   border-radius: var(--ep-radius);
   content-visibility: auto;
-  contain-intrinsic-size: 32px;
+  contain-intrinsic-size: 36px;
+
+  .iconfont {
+    margin-right: 2px;
+    color: var(--ep-text-secondary);
+    font-size: 16px;
+  }
 
   &:hover {
-    background: var(--ep-primary-faded);
+    color: var(--ep-primary);
+    background-color: var(--ep-primary-faded);
+    border-color: var(--ep-primary);
+
+    .iconfont {
+      color: var(--ep-primary);
+    }
   }
 
   &.selected {
     color: var(--ep-primary);
-    background: var(--ep-primary-faded);
+    background-color: var(--ep-primary-faded);
+    border-color: var(--ep-primary);
+
+    .iconfont {
+      color: var(--ep-primary);
+    }
   }
 
   &.disabled {
@@ -479,7 +498,13 @@ watch(
     opacity: 0.45;
 
     &:hover {
-      background: transparent;
+      color: var(--ep-text-main);
+      background-color: var(--ep-secondary);
+      border-color: transparent;
+
+      .iconfont {
+        color: var(--ep-text-secondary);
+      }
     }
   }
 }
