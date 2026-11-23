@@ -1,7 +1,7 @@
 {
-  "businessObject": "expense",
+  "modelId": "expense",
   "source": "https://app.ekuaibao.com/api/flow/v2/propertySet?corpId=ID01PH4Q5CJboX",
-  "note": "由 build_mock.py 生成；businessObject 为占位值，可替换为真实业务对象标识",
+  "note": "由 build_mock.py 生成；modelId 为占位值，可替换为真实业务对象标识",
   "stats": {
     "total": 406,
     "supported": 361,

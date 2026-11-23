@@ -249,9 +249,9 @@ describe('useRevoke', () => {
     expect(revoke.currentRecord.value).toBeNull();
   });
 
-  it('旧快照没有 businessObject 时保留当前归属', () => {
+  it('旧快照没有 modelId 时保留当前归属', () => {
     const pageSchema: any = {
-      businessObject: '销售单据',
+      modelId: '销售单据',
       schemas: [{ children: [], id: 'root', type: 'page' }],
       script: '',
     };
@@ -270,12 +270,12 @@ describe('useRevoke', () => {
       undoList: [],
     });
 
-    expect(pageSchema.businessObject).toBe('销售单据');
+    expect(pageSchema.modelId).toBe('销售单据');
   });
 
-  it('快照带 businessObject 时以快照为准', () => {
+  it('快照带 modelId 时以快照为准', () => {
     const pageSchema: any = {
-      businessObject: 'A',
+      modelId: 'A',
       schemas: [{ children: [], id: 'root', type: 'page' }],
       script: '',
     };
@@ -284,7 +284,7 @@ describe('useRevoke', () => {
     revoke.importHistory({
       currentRecord: {
         pageSchema: JSON.stringify({
-          businessObject: 'B',
+          modelId: 'B',
           schemas: [{ children: [], id: 'root', type: 'page' }],
           script: '',
         }),
@@ -295,6 +295,6 @@ describe('useRevoke', () => {
       undoList: [],
     });
 
-    expect(pageSchema.businessObject).toBe('B');
+    expect(pageSchema.modelId).toBe('B');
   });
 });

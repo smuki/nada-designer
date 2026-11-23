@@ -8,7 +8,7 @@ import { vi } from 'vitest';
 /** 测试用页面数据：根节点为 form */
 export function makePageSchema(): any {
   return {
-    businessObject: '销售单据',
+    modelId: '销售单据',
     canvas: { mode: 'desktop' },
     schemas: [
       {
@@ -111,7 +111,7 @@ export function makeDesignerContext(
 
   const businessFields = {
     buildNode: () => null,
-    businessObject: ref('销售单据'),
+    modelId: ref('销售单据'),
     checkField: () => ({ ok: true }),
     error: ref(null),
     fieldMap,

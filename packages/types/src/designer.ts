@@ -49,11 +49,7 @@ export interface FieldMeta {
 
 export interface DesignerProps {
   /** 业务字段元数据 loader（受控模式使用；可直接返回静态数组，便于测试/离线） */
-  businessFieldLoader?: (
-    businessObject: string,
-  ) => FieldMeta[] | Promise<FieldMeta[]>;
-  /** 业务对象 code（租户内唯一），受控模式必填 */
-  businessObject?: string;
+  businessFieldLoader?: (modelId: string) => FieldMeta[] | Promise<FieldMeta[]>;
   canvasMode?: 'desktop' | 'mobile' | 'tablet';
   canvasPadding?: number | string;
   defaultSchema?: PageSchema;
@@ -65,6 +61,8 @@ export interface DesignerProps {
   hiddenHeader?: boolean;
   hidePreviewConfirm?: boolean;
   lockDefaultSchemaEdit?: boolean;
+  /** 业务对象 code（租户内唯一），受控模式必填 */
+  modelId?: string;
   showHiddenItems?: boolean;
   sourceCodeReadOnly?: boolean;
   tableJson?: TableMeta[];

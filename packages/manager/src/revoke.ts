@@ -66,14 +66,13 @@ export function useRevoke(
     try {
       // 解析存储的页面架构
       const parsedSchema = JSON.parse(record.pageSchema) as PageSchema;
-      // 旧快照可能没有 businessObject：回填当前值，避免归属丢失（规格 §11.1）
-      const businessObject =
-        parsedSchema.businessObject ?? pageSchema.businessObject;
+      // 旧快照可能没有 modelId：回填当前值，避免归属丢失（规格 §11.1）
+      const modelId = parsedSchema.modelId ?? pageSchema.modelId;
 
       // 使用深度比较和修改算法，高效更新页面架构
       deepCompareAndModify(pageSchema, parsedSchema);
-      if (!parsedSchema.businessObject) {
-        pageSchema.businessObject = businessObject;
+      if (!parsedSchema.modelId) {
+        pageSchema.modelId = modelId;
       }
 
       // 清空 hover 状态，避免撤销后高亮指向已经不存在的节点

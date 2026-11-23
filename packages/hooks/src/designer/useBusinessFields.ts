@@ -45,7 +45,7 @@ export interface UseBusinessFieldsOptions {
   /** 取当前 UI 库的组件配置；由调用方注入（hooks 不运行时依赖 manager） */
   getComponentConfig?: (type: string) => ComponentConfigLike | undefined;
   /** 业务字段元数据加载器（可直接返回静态数组，便于测试/离线） */
-  loader?: (businessObject: string) => FieldMeta[] | Promise<FieldMeta[]>;
+  loader?: (modelId: string) => FieldMeta[] | Promise<FieldMeta[]>;
 }
 
 /** 支持的数据类型（规格 §6.3.1） */
@@ -164,7 +164,7 @@ export function useBusinessFields(
   pageSchema: PageSchema,
   options: UseBusinessFieldsOptions,
 ) {
-  const businessObject = ref<null | string>(null);
+  const modelId = ref<null | string>(null);
   const error = ref<null | string>(null);
   const fields = ref<FieldMeta[]>([]);
   const issues = ref<BusinessFieldIssue[]>([]);
@@ -183,25 +183,25 @@ export function useBusinessFields(
 
   /**
    * 加载指定业务对象的元数据
-   * @param nextBusinessObject 业务对象 code
+   * @param nextModelId 业务对象 code
    * @param loadOptions 加载选项
    * @param loadOptions.force 是否绕过缓存
    * @returns 是否加载成功（过期或失败返回 false）
    */
   async function load(
-    nextBusinessObject: string,
+    nextModelId: string,
     loadOptions: { force?: boolean } = {},
   ): Promise<boolean> {
-    if (!nextBusinessObject) {
+    if (!nextModelId) {
       status.value = 'empty';
       error.value = '未指定业务对象';
       fields.value = [];
       return false;
     }
 
-    const cached = fieldsCache.get(nextBusinessObject);
+    const cached = fieldsCache.get(nextModelId);
     if (cached && !loadOptions.force) {
-      businessObject.value = nextBusinessObject;
+      modelId.value = nextModelId;
       fields.value = cached;
       issues.value = [];
       error.value = null;
@@ -217,23 +217,23 @@ export function useBusinessFields(
     }
 
     const currentToken = (token += 1);
-    businessObject.value = nextBusinessObject;
+    modelId.value = nextModelId;
     status.value = 'loading';
     error.value = null;
 
     try {
-      const raw = await options.loader(nextBusinessObject);
+      const raw = await options.loader(nextModelId);
       if (currentToken !== token) return false;
 
       const result = validateFieldMeta(raw, options.getComponentConfig);
-      fieldsCache.set(nextBusinessObject, result.fields);
+      fieldsCache.set(nextModelId, result.fields);
       fields.value = result.fields;
       issues.value = result.issues;
       status.value = 'ready';
 
       result.issues.forEach((issue) => {
         console.warn(
-          `[受控字段] 业务对象 ${nextBusinessObject} 的元数据问题：${issue.message}${
+          `[受控字段] 业务对象 ${nextModelId} 的元数据问题：${issue.message}${
             issue.field ? `（field: ${issue.field}）` : ''
           }`,
         );
@@ -250,25 +250,20 @@ export function useBusinessFields(
 
   /**
    * schema 晚到时校正业务对象（两段式解析，规格 §6.2）
-   * @param nextBusinessObject schema 中的业务对象 code
+   * @param nextModelId schema 中的业务对象 code
    */
-  async function switchTo(
-    nextBusinessObject?: null | string,
-  ): Promise<boolean> {
-    if (!nextBusinessObject) return false;
-    if (
-      nextBusinessObject === businessObject.value &&
-      status.value === 'ready'
-    ) {
+  async function switchTo(nextModelId?: null | string): Promise<boolean> {
+    if (!nextModelId) return false;
+    if (nextModelId === modelId.value && status.value === 'ready') {
       return true;
     }
-    return load(nextBusinessObject);
+    return load(nextModelId);
   }
 
   /** 重新加载当前业务对象（跳过缓存） */
   async function retry(): Promise<boolean> {
-    if (!businessObject.value) return false;
-    return load(businessObject.value, { force: true });
+    if (!modelId.value) return false;
+    return load(modelId.value, { force: true });
   }
 
   /**
@@ -405,7 +400,6 @@ export function useBusinessFields(
 
   return {
     buildNode,
-    businessObject,
     checkField,
     error,
     fieldMap,
@@ -417,6 +411,7 @@ export function useBusinessFields(
     isReady,
     issues,
     load,
+    modelId,
     resolveScope,
     retry,
     status,

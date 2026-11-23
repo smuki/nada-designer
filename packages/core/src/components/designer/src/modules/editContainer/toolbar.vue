@@ -229,18 +229,16 @@ async function handleImportData(content?: string) {
   try {
     let schema = JSON.parse(content ?? '');
 
-    // k-form 旧数据转换会丢 businessObject，先取出再透传
-    const businessObject =
-      typeof schema?.businessObject === 'string'
-        ? schema.businessObject
-        : undefined;
+    // k-form 旧数据转换会丢 modelId，先取出再透传
+    const modelId =
+      typeof schema?.modelId === 'string' ? schema.modelId : undefined;
 
     if (!schema.schemas) {
       // 兼容 处理kform表单数据
       schema = convertKFormData(schema);
     }
-    if (businessObject && !schema.businessObject) {
-      schema.businessObject = businessObject;
+    if (modelId && !schema.modelId) {
+      schema.modelId = modelId;
     }
 
     // 迁移旧的 canvas mode 数据

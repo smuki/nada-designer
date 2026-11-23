@@ -119,8 +119,8 @@ describe('useBusinessFields 函数测试', () => {
 
   it('切换业务对象时丢弃过期响应', async () => {
     let resolveA: (value: any) => void = () => {};
-    const loader = vi.fn((businessObject: string) => {
-      if (businessObject === 'A') {
+    const loader = vi.fn((modelId: string) => {
+      if (modelId === 'A') {
         return new Promise((resolve) => {
           resolveA = resolve;
         });
@@ -139,7 +139,7 @@ describe('useBusinessFields 函数测试', () => {
     resolveA([{ field: 'fromA', label: 'A', type: 'text' }]);
     expect(await first).toBe(false);
     expect(bf.fields.value.map((item) => item.field)).toEqual(['fromB']);
-    expect(bf.businessObject.value).toBe('B');
+    expect(bf.modelId.value).toBe('B');
   });
 
   it('switchTo：同一对象直接返回，不同对象重新加载', async () => {

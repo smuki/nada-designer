@@ -81,7 +81,7 @@ export function useDesigner(
     props.defaultSchema ??
     (designMode === 'controlled'
       ? {
-          businessObject: props.businessObject,
+          modelId: props.modelId,
           schemas: [createControlledFormRoot()],
           script: DEFAULT_SCRIPT,
         }
@@ -288,26 +288,24 @@ export function useDesigner(
 
   /**
    * 解析当前业务对象：schema 优先 → defaultSchema → prop
-   * @param schemaBusinessObject 页面 schema 中的业务对象
+   * @param schemaModelId 页面 schema 中的业务对象
    */
-  function resolveBusinessObject(
-    schemaBusinessObject?: string,
-  ): string | undefined {
+  function resolveModelId(schemaModelId?: string): string | undefined {
     return (
-      schemaBusinessObject ??
-      props.defaultSchema?.businessObject ??
-      props.businessObject ??
+      schemaModelId ??
+      props.defaultSchema?.modelId ??
+      props.modelId ??
       undefined
     );
   }
 
   /**
-   * 回填 businessObject
+   * 回填 modelId
    * @description setData / 导入走 deepCompareAndModify（默认删除缺失键），之后必须回填（规格 §11.1）
-   * @param schemaBusinessObject 页面 schema 中的业务对象
+   * @param schemaModelId 页面 schema 中的业务对象
    */
-  function applyBusinessObject(schemaBusinessObject?: string) {
-    pageSchema.businessObject = resolveBusinessObject(schemaBusinessObject);
+  function applyModelId(schemaModelId?: string) {
+    pageSchema.modelId = resolveModelId(schemaModelId);
   }
 
   /**
@@ -339,7 +337,7 @@ export function useDesigner(
     // 初始化默认节点
     pageSchema.schemas = deepClone(innerDefaultSchema.schemas);
     // 记录业务对象归属
-    pageSchema.businessObject = resolveBusinessObject();
+    pageSchema.modelId = resolveModelId();
     // 选中根节点
     setSelectedNode(pageSchema.schemas[0]);
     // 初始化必须立即入栈：否则 200ms 内的第一次编辑会与之合并，导致首个操作无法撤销
@@ -349,7 +347,7 @@ export function useDesigner(
   init();
 
   return {
-    applyBusinessObject,
+    applyModelId,
     handleDelete,
     handleDuplicate,
     pageManager,

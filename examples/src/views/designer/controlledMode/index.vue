@@ -10,7 +10,7 @@ import { businessFieldLoader } from './fieldMeta';
 const designerRef = ref<InstanceType<typeof EDesigner>>();
 
 /**
- * 保存时打印页面 JSON（含 businessObject）
+ * 保存时打印页面 JSON（含 modelId）
  * @param data 页面数据
  */
 function handleSave(data: PageSchema) {

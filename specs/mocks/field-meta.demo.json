@@ -1,5 +1,5 @@
 {
-  "businessObject": "expense",
+  "modelId": "expense",
   "note": "报销单常用字段子集，用于快速验证设计器拖拽/属性面板",
   "fields": [
     {

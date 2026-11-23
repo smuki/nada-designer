@@ -84,7 +84,7 @@ watch(
 );
 
 const {
-  applyBusinessObject,
+  applyModelId,
   handleDelete,
   handleDuplicate,
   pageManager,
@@ -112,12 +112,12 @@ const businessFields = useBusinessFields(pageSchema, {
       editConstraints: config.editConstraints,
     };
   },
-  loader: (businessObject) => {
+  loader: (modelId) => {
     const loader = props.businessFieldLoader;
     if (!loader) {
       return Promise.reject(new Error('未提供 businessFieldLoader'));
     }
-    return loader(businessObject);
+    return loader(modelId);
   },
 });
 const {
@@ -125,23 +125,22 @@ const {
   isLoading: metaLoading,
   retry: retryBusinessFields,
   status: metaStatus,
-  switchTo: switchBusinessObject,
+  switchTo: switchModelId,
 } = businessFields;
 
-/** businessObject 变化（撤销/历史恢复等）时同步元数据 */
+/** modelId 变化（撤销/历史恢复等）时同步元数据 */
 watch(
-  () => pageSchema.businessObject,
+  () => pageSchema.modelId,
   (next) => {
     if (designMode !== 'controlled' || !next) return;
-    if (next === businessFields.businessObject.value) return;
-    void switchBusinessObject(next);
+    if (next === businessFields.modelId.value) return;
+    void switchModelId(next);
   },
 );
 
 if (designMode === 'controlled') {
-  const initialBusinessObject =
-    props.defaultSchema?.businessObject ?? props.businessObject;
-  void businessFields.load(initialBusinessObject ?? '');
+  const initialModelId = props.defaultSchema?.modelId ?? props.modelId;
+  void businessFields.load(initialModelId ?? '');
 }
 
 /** 首屏门控：UI 初始化中，或受控元数据首次加载中 */
@@ -239,7 +238,7 @@ function applyPageSchemaData(schema: PageSchema) {
   migrateComponentProps(schema);
   pageManager.setPageSchema(schema);
   // deepCompareAndModify 会删除缺失键，必须回填业务对象归属（规格 §11.1）
-  applyBusinessObject(schema.businessObject);
+  applyModelId(schema.modelId);
   setSelectedNode();
   revoke.push('加载数据');
 }
@@ -250,7 +249,7 @@ function applyPageSchemaData(schema: PageSchema) {
  * @param data 页面数据
  */
 async function importSchema(data: PageSchema): Promise<boolean> {
-  const nextBusinessObject = data.businessObject ?? props.businessObject;
+  const nextModelId = data.modelId ?? props.modelId;
 
   if (designMode === 'controlled') {
     const issues = validateControlledPage(data.schemas);
@@ -261,11 +260,8 @@ async function importSchema(data: PageSchema): Promise<boolean> {
       return false;
     }
 
-    if (
-      nextBusinessObject &&
-      nextBusinessObject !== businessFields.businessObject.value
-    ) {
-      const ok = await switchBusinessObject(nextBusinessObject);
+    if (nextModelId && nextModelId !== businessFields.modelId.value) {
+      const ok = await switchModelId(nextModelId);
       if (!ok) {
         pluginManager.global.$message.error(
           '业务字段元数据加载失败，未应用本次导入',
@@ -287,11 +283,11 @@ async function importSchema(data: PageSchema): Promise<boolean> {
  */
 function setData(schema: PageSchema) {
   // 自由模式或业务对象未变化：同步应用
-  const nextBusinessObject = schema.businessObject ?? props.businessObject;
+  const nextModelId = schema.modelId ?? props.modelId;
   if (
     designMode !== 'controlled' ||
-    !nextBusinessObject ||
-    nextBusinessObject === businessFields.businessObject.value
+    !nextModelId ||
+    nextModelId === businessFields.modelId.value
   ) {
     applyPageSchemaData(schema);
     return;
@@ -300,11 +296,11 @@ function setData(schema: PageSchema) {
   // 受控 + 切换对象：先应用（乐观），失败再回滚
   const previous = getData();
   applyPageSchemaData(schema);
-  void switchBusinessObject(nextBusinessObject).then((ok) => {
+  void switchModelId(nextModelId).then((ok) => {
     if (ok) return;
 
     pageManager.setPageSchema(previous);
-    applyBusinessObject(previous.businessObject);
+    applyModelId(previous.modelId);
     setSelectedNode();
     pluginManager.global.$message.error(
       '业务字段元数据加载失败，已回滚本次数据',
@@ -318,14 +314,14 @@ function setData(schema: PageSchema) {
  * @param schema 页面数据
  */
 async function setDataAsync(schema: PageSchema): Promise<boolean> {
-  const nextBusinessObject = schema.businessObject ?? props.businessObject;
+  const nextModelId = schema.modelId ?? props.modelId;
 
   if (
     designMode === 'controlled' &&
-    nextBusinessObject &&
-    nextBusinessObject !== businessFields.businessObject.value
+    nextModelId &&
+    nextModelId !== businessFields.modelId.value
   ) {
-    const ok = await switchBusinessObject(nextBusinessObject);
+    const ok = await switchModelId(nextModelId);
     if (!ok) {
       pluginManager.global.$message.error(
         '业务字段元数据加载失败，未应用本次数据',
