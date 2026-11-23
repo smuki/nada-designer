@@ -2,6 +2,8 @@ import { defineConfig } from 'vitepress';
 
 export default defineConfig({
   base: '/',
+  // 忽略本地示例地址（如 http://localhost:9980/...）的死链检查
+  ignoreDeadLinks: 'localhostLinks',
   // 网站描述
   description: '可视化表单设计器及生成器',
   // 打包目录

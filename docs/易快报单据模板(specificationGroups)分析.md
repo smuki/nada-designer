@@ -5,6 +5,7 @@
 > - **抓取时间**：2026-11-21
 > - **企业 ID**：`ID01PH4Q5CJboX`
 > - **数据规模**：4 个模板分组、35 个单据模板、748 个控件实例、约 877 KB
+> - **结构化参考包**（供新系统设计使用）：[docs/reference/ekb/README.md](reference/ekb/README.md)（配置项字典 JSON + 控件清单 JSON + 设计要点）
 >
 > **一句话结论**：上一份 [`propertySet` 字段字典](易快报业务字段定义.md) 只回答“字段是什么”（数据语义），这份 `specificationGroups` 回答“字段在界面上怎么渲染”（控件类型 + 绑定 + 配置）。二者通过 `component.field` ↔ `propertySet.name` 关联——本次 150 个模板字段 **100% 命中** propertySet。
 
@@ -242,7 +243,7 @@
 | `text` | 168 | 单行文本输入 | text | title、u_供应商名称、u_供应商编码 |
 | `date` | 46 | 日期选择 | date | expenseDate、u_开始时间、u_结束时间 |
 | `textarea` | 41 | 多行文本输入 | text | title、u_内部备注、description |
-| `attachments` | 40 | 附件上传 | list<attachment> | attachments、u_银行回单、u_退票回单 |
+| `attachments` | 40 | 附件上传 | list&lt;attachment&gt; | attachments、u_银行回单、u_退票回单 |
 | `money` | 40 | 金额输入（千分位、上下限） | money | u_合同金额、beforeAdjustAmount、afterAdjustAmount |
 | `dataLink` | 24 | 业务对象（数据关联）选择 | ref → datalink.DataLinkEntity.* | u_关联合同流程、u_使用权摊销明细、u_关联直线摊销 |
 | `annotation` | 19 | 说明/提示文本（版式元素） | —（无 field） | — |
@@ -357,6 +358,8 @@
 - **`group` / `annotation` / `separator`**：分别 19 / 19 / 13 个，是纯版式元素（分组标题、说明文字、分隔线），没有 `field`，渲染时可跳过或作为区块标题；
 - **`payeeInfo`**：收款信息组合组件，绑定 `payeeId`；
 - **`dataLink`**：业务对象选择，`referenceData` 给出业务对象模板 ID（如 `af15be9234f71a3703c0`），与 propertySet 中 `ref.entity` 的后缀一致，可用于二次查询业务对象数据。
+
+> 控件可配置的全部选项（共 84 个配置项，含默认值、显隐、依赖、类型专属配置等）见配套文档：[易快报单据模板字段配置项说明.md](易快报单据模板字段配置项说明.md)。
 
 ## 7. 控件与业务字段映射
 

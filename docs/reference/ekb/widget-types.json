@@ -1,0 +1,1661 @@
+{
+  "description": "18 种控件类型的统计、绑定数据类型、典型字段与配置项清单，用于新系统控件注册表设计参考",
+  "meta": {
+    "source": {
+      "endpoint": "https://app.ekuaibao.com/api/form/v2/specificationGroups",
+      "params": {
+        "corpId": "ID01PH4Q5CJboX",
+        "accessToken": "<token>"
+      },
+      "capturedAt": "2026-11-22",
+      "note": "token 不入库，使用前请替换/重新获取"
+    },
+    "scale": {
+      "specificationGroups": 4,
+      "specifications": 35,
+      "components": 748,
+      "fieldComponents": 697,
+      "widgetTypes": 18,
+      "configOptions": 84
+    }
+  },
+  "dataTypeToWidgets": {
+    "ref": {
+      "select": 273,
+      "dataLink": 24,
+      "payeeInfo": 17,
+      "city": 6
+    },
+    "text": {
+      "text": 168,
+      "textarea": 41
+    },
+    "list": {
+      "select": 3,
+      "attachments": 40,
+      "details": 14,
+      "requisitionDetails": 11
+    },
+    "date": {
+      "date": 46
+    },
+    "money": {
+      "money": 40
+    },
+    "dateRange": {
+      "dateRange": 7
+    },
+    "boolean": {
+      "switcher": 5
+    },
+    "corporateExpenseCard": {
+      "corporateExpenseCard": 1
+    },
+    "number": {
+      "number": 1
+    }
+  },
+  "widgetTypes": [
+    {
+      "type": "select",
+      "count": 276,
+      "fieldBound": 276,
+      "dataTypes": {
+        "ref": 273,
+        "list": 3
+      },
+      "typicalFields": [
+        "submitterId×35",
+        "法人实体×25",
+        "u_申请人部门×22",
+        "u_申请人成本中心×18",
+        "u_直接上级×15"
+      ],
+      "options": {
+        "label": 276,
+        "cnLabel": 276,
+        "enLabel": 276,
+        "type": 276,
+        "field": 276,
+        "placeholder": 276,
+        "editable": 276,
+        "optional": 276,
+        "defaultValue": 276,
+        "showInDetails": 276,
+        "selectRange": 276,
+        "multiple": 276,
+        "dependence": 276,
+        "priority": 276,
+        "onlyBelongDepartment": 276,
+        "allowExternalStaff": 276,
+        "hide": 276,
+        "inheritedFieldDependency": 276,
+        "cnPlaceholder": 276,
+        "enPlaceholder": 276,
+        "hideVisibility": 276,
+        "configs": 276,
+        "isShowFullPath": 276,
+        "isLinkageAssignment": 276,
+        "assignmentRule": 276,
+        "valueRangeFilter": 276,
+        "dependenceCondition": 276,
+        "hideCode": 276,
+        "filterId": 276,
+        "editStatePathRule": 276,
+        "readStatePathRule": 276,
+        "allowCancelDependence": 276,
+        "allowUseDeactivatedData": 276,
+        "automaticImport": 276,
+        "canNotBeApportioned": 276,
+        "canNotBeApportionedFields": 276,
+        "defaultField": 276,
+        "isAllowExcelImport": 276,
+        "allowUseDeactivateDepartment": 276,
+        "allowInteriorStaff": 276,
+        "readonly": 276,
+        "hideBlacklistVisibility": 276,
+        "autoDependence": 276,
+        "rangeOnlyOneAutomaticAssignment": 276,
+        "copyable": 276
+      },
+      "example": {
+        "label": "我方签约公司名称",
+        "cnLabel": "我方签约公司名称",
+        "enLabel": "Legal Entity",
+        "type": "select",
+        "field": "法人实体",
+        "placeholder": "请选择我方公司名称",
+        "editable": true,
+        "optional": false,
+        "defaultValue": {
+          "type": "none"
+        },
+        "showInDetails": false,
+        "selectRange": "all",
+        "multiple": false,
+        "dependence": null,
+        "priority": [
+          {
+            "type": "MANUALLY_FILL_IN",
+            "value": 5
+          },
+          {
+            "type": "LINKAGE_ASSIGNMENT",
+            "value": 10
+          },
+          {
+            "type": "AUTOMATIC_CALCULATION",
+            "value": 15
+          },
+          {
+            "type": "COST_STANDARD",
+            "value": 20
+          }
+        ],
+        "onlyBelongDepartment": false,
+        "allowExternalStaff": false,
+        "hide": false,
+        "inheritedFieldDependency": false,
+        "cnPlaceholder": "请选择我方公司名称",
+        "enPlaceholder": null,
+        "hideVisibility": {
+          "fullVisible": false,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "configs": [],
+        "isShowFullPath": false,
+        "isLinkageAssignment": false,
+        "assignmentRule": null,
+        "valueRangeFilter": null,
+        "dependenceCondition": null,
+        "hideCode": true,
+        "filterId": null,
+        "editStatePathRule": "choosePath",
+        "readStatePathRule": "fullPath",
+        "allowCancelDependence": false,
+        "allowUseDeactivatedData": false,
+        "automaticImport": false,
+        "canNotBeApportioned": null,
+        "canNotBeApportionedFields": null,
+        "defaultField": false,
+        "isAllowExcelImport": false,
+        "allowUseDeactivateDepartment": false,
+        "allowInteriorStaff": true,
+        "readonly": false,
+        "hideBlacklistVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "autoDependence": null,
+        "rangeOnlyOneAutomaticAssignment": false,
+        "copyable": true
+      }
+    },
+    {
+      "type": "text",
+      "count": 168,
+      "fieldBound": 168,
+      "dataTypes": {
+        "text": 168
+      },
+      "typicalFields": [
+        "title×23",
+        "u_OA文本×19",
+        "u_支出事由×13",
+        "u_摘要×12",
+        "u_内部备注×11"
+      ],
+      "options": {
+        "label": 168,
+        "cnLabel": 168,
+        "enLabel": 168,
+        "type": 168,
+        "showInDetails": 168,
+        "readonly": 168,
+        "field": 168,
+        "placeholder": 168,
+        "cnPlaceholder": 168,
+        "enPlaceholder": 168,
+        "editable": 168,
+        "optional": 168,
+        "configs": 168,
+        "defaultValue": 168,
+        "defaultField": 168,
+        "copyable": 168,
+        "hide": 168,
+        "hideVisibility": 168,
+        "hideBlacklistVisibility": 168,
+        "priority": 168,
+        "maxLength": 168,
+        "minLength": 168,
+        "exceedConfigs": 168
+      },
+      "example": {
+        "label": "标题",
+        "cnLabel": "标题",
+        "enLabel": "Subject",
+        "type": "text",
+        "showInDetails": false,
+        "readonly": false,
+        "field": "title",
+        "placeholder": "请输入标题",
+        "cnPlaceholder": "请输入标题",
+        "enPlaceholder": "Please input the subject.",
+        "editable": false,
+        "optional": false,
+        "configs": [],
+        "defaultValue": {
+          "value": "`$提交人`.name+\"申请\"+`$ 摊销方式`.name+\"确认\"",
+          "customRuleId": null,
+          "assignValueTo": null,
+          "type": "formula"
+        },
+        "defaultField": false,
+        "copyable": true,
+        "hide": true,
+        "hideVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": false
+        },
+        "hideBlacklistVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": false
+        },
+        "priority": [
+          {
+            "type": "MANUALLY_FILL_IN",
+            "value": 5
+          },
+          {
+            "type": "LINKAGE_ASSIGNMENT",
+            "value": 10
+          },
+          {
+            "type": "AUTOMATIC_CALCULATION",
+            "value": 15
+          },
+          {
+            "type": "COST_STANDARD",
+            "value": 20
+          }
+        ],
+        "maxLength": 14,
+        "minLength": 0,
+        "exceedConfigs": null
+      }
+    },
+    {
+      "type": "date",
+      "count": 46,
+      "fieldBound": 46,
+      "dataTypes": {
+        "date": 46
+      },
+      "typicalFields": [
+        "expenseDate×14",
+        "requisitionDate×14",
+        "u_预计付款日期×7",
+        "loanDate×3",
+        "u_开始时间×1"
+      ],
+      "options": {
+        "label": 46,
+        "cnLabel": 46,
+        "enLabel": 46,
+        "type": 46,
+        "showInDetails": 46,
+        "readonly": 46,
+        "field": 46,
+        "placeholder": 46,
+        "cnPlaceholder": 46,
+        "enPlaceholder": 46,
+        "editable": 46,
+        "optional": 46,
+        "configs": 46,
+        "defaultValue": 46,
+        "defaultField": 46,
+        "copyable": 46,
+        "hide": 46,
+        "hideVisibility": 46,
+        "hideBlacklistVisibility": 46,
+        "priority": 46,
+        "withTime": 46,
+        "specificTime": 46,
+        "dateTimeType": 46
+      },
+      "example": {
+        "label": "申请日期",
+        "cnLabel": "申请日期",
+        "enLabel": "Reimbursement Date",
+        "type": "date",
+        "showInDetails": false,
+        "readonly": false,
+        "field": "expenseDate",
+        "placeholder": null,
+        "cnPlaceholder": null,
+        "enPlaceholder": null,
+        "editable": false,
+        "optional": false,
+        "configs": [],
+        "defaultValue": {
+          "value": "submit.date",
+          "type": "predefine"
+        },
+        "defaultField": false,
+        "copyable": true,
+        "hide": false,
+        "hideVisibility": {
+          "fullVisible": false,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "hideBlacklistVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "priority": [
+          {
+            "type": "MANUALLY_FILL_IN",
+            "value": 5
+          },
+          {
+            "type": "LINKAGE_ASSIGNMENT",
+            "value": 10
+          },
+          {
+            "type": "AUTOMATIC_CALCULATION",
+            "value": 15
+          },
+          {
+            "type": "COST_STANDARD",
+            "value": 20
+          }
+        ],
+        "withTime": false,
+        "specificTime": false,
+        "dateTimeType": null
+      }
+    },
+    {
+      "type": "textarea",
+      "count": 41,
+      "fieldBound": 41,
+      "dataTypes": {
+        "text": 41
+      },
+      "typicalFields": [
+        "u_内部备注×18",
+        "title×12",
+        "u_支出事由×8",
+        "description×2",
+        "u_OA文本×1"
+      ],
+      "options": {
+        "label": 41,
+        "cnLabel": 41,
+        "enLabel": 41,
+        "type": 41,
+        "showInDetails": 41,
+        "readonly": 41,
+        "field": 41,
+        "placeholder": 41,
+        "cnPlaceholder": 41,
+        "enPlaceholder": 41,
+        "editable": 41,
+        "optional": 41,
+        "configs": 41,
+        "defaultValue": 41,
+        "defaultField": 41,
+        "copyable": 41,
+        "hide": 41,
+        "hideVisibility": 41,
+        "hideBlacklistVisibility": 41,
+        "priority": 41,
+        "maxLength": 41,
+        "minLength": 41,
+        "exceedConfigs": 41
+      },
+      "example": {
+        "label": "标题",
+        "cnLabel": "标题",
+        "enLabel": "Subject",
+        "type": "textarea",
+        "showInDetails": false,
+        "readonly": false,
+        "field": "title",
+        "placeholder": "请输入合同名称",
+        "cnPlaceholder": "请输入合同名称",
+        "enPlaceholder": "Please input the subject.",
+        "editable": false,
+        "optional": false,
+        "configs": [],
+        "defaultValue": {
+          "value": "\"待摊合同确认\"",
+          "customRuleId": null,
+          "assignValueTo": null,
+          "type": "formula"
+        },
+        "defaultField": false,
+        "copyable": true,
+        "hide": true,
+        "hideVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": false
+        },
+        "hideBlacklistVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": false
+        },
+        "priority": [
+          {
+            "type": "MANUALLY_FILL_IN",
+            "value": 5
+          },
+          {
+            "type": "AUTOMATIC_CALCULATION",
+            "value": 10
+          },
+          {
+            "type": "COST_STANDARD",
+            "value": 15
+          },
+          {
+            "type": "LINKAGE_ASSIGNMENT",
+            "value": 20
+          }
+        ],
+        "maxLength": 140,
+        "minLength": 0,
+        "exceedConfigs": null
+      }
+    },
+    {
+      "type": "money",
+      "count": 40,
+      "fieldBound": 40,
+      "dataTypes": {
+        "money": 40
+      },
+      "typicalFields": [
+        "u_付款金额×13",
+        "u_发票金额×6",
+        "loanMoney×5",
+        "payMoney×3",
+        "u_票和款差额×3"
+      ],
+      "options": {
+        "label": 40,
+        "cnLabel": 40,
+        "enLabel": 40,
+        "type": 40,
+        "showInDetails": 40,
+        "readonly": 40,
+        "field": 40,
+        "placeholder": 40,
+        "cnPlaceholder": 40,
+        "enPlaceholder": 40,
+        "editable": 40,
+        "optional": 40,
+        "configs": 40,
+        "defaultValue": 40,
+        "defaultField": 40,
+        "copyable": 40,
+        "hide": 40,
+        "hideVisibility": 40,
+        "hideBlacklistVisibility": 40,
+        "priority": 40,
+        "isShowThousandsSeparator": 40,
+        "max": 40,
+        "min": 40,
+        "hiddenRate": 40
+      },
+      "example": {
+        "label": "合同金额",
+        "cnLabel": "合同金额",
+        "enLabel": "",
+        "type": "money",
+        "showInDetails": false,
+        "readonly": false,
+        "field": "u_合同金额",
+        "placeholder": "请输入合同金额",
+        "cnPlaceholder": "请输入合同金额",
+        "enPlaceholder": null,
+        "editable": true,
+        "optional": false,
+        "configs": [],
+        "defaultValue": {
+          "type": "none"
+        },
+        "defaultField": false,
+        "copyable": true,
+        "hide": false,
+        "hideVisibility": {
+          "fullVisible": false,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "hideBlacklistVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "priority": [
+          {
+            "type": "MANUALLY_FILL_IN",
+            "value": 5
+          },
+          {
+            "type": "LINKAGE_ASSIGNMENT",
+            "value": 10
+          },
+          {
+            "type": "AUTOMATIC_CALCULATION",
+            "value": 15
+          },
+          {
+            "type": "COST_STANDARD",
+            "value": 20
+          }
+        ],
+        "isShowThousandsSeparator": false,
+        "max": "10000000000.00",
+        "min": "0.01",
+        "hiddenRate": false
+      }
+    },
+    {
+      "type": "attachments",
+      "count": 40,
+      "fieldBound": 40,
+      "dataTypes": {
+        "list": 40
+      },
+      "typicalFields": [
+        "attachments×27",
+        "u_银行回单×12",
+        "u_退票回单×1"
+      ],
+      "options": {
+        "label": 40,
+        "cnLabel": 40,
+        "enLabel": 40,
+        "type": 40,
+        "showInDetails": 40,
+        "readonly": 40,
+        "field": 40,
+        "placeholder": 40,
+        "cnPlaceholder": 40,
+        "enPlaceholder": 40,
+        "editable": 40,
+        "optional": 40,
+        "configs": 40,
+        "defaultValue": 40,
+        "defaultField": 40,
+        "copyable": 40,
+        "hide": 40,
+        "hideVisibility": 40,
+        "hideBlacklistVisibility": 40,
+        "priority": 40,
+        "checkDetailInvoiceType": 40,
+        "detailInvoiceTypes": 40
+      },
+      "example": {
+        "label": "附件内容（非发票）",
+        "cnLabel": "附件内容（非发票）",
+        "enLabel": null,
+        "type": "attachments",
+        "showInDetails": false,
+        "readonly": false,
+        "field": "attachments",
+        "placeholder": null,
+        "cnPlaceholder": null,
+        "enPlaceholder": null,
+        "editable": true,
+        "optional": true,
+        "configs": [],
+        "defaultValue": {
+          "type": "none"
+        },
+        "defaultField": false,
+        "copyable": true,
+        "hide": false,
+        "hideVisibility": {
+          "fullVisible": false,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "hideBlacklistVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "priority": null,
+        "checkDetailInvoiceType": false,
+        "detailInvoiceTypes": []
+      }
+    },
+    {
+      "type": "dataLink",
+      "count": 24,
+      "fieldBound": 24,
+      "dataTypes": {
+        "ref": 24
+      },
+      "typicalFields": [
+        "u_关联合同流程×10",
+        "u_关联供应商×8",
+        "u_开票台账×2",
+        "u_使用权摊销明细×1",
+        "u_关联直线摊销×1"
+      ],
+      "options": {
+        "label": 24,
+        "cnLabel": 24,
+        "enLabel": 24,
+        "field": 24,
+        "placeholder": 24,
+        "editable": 24,
+        "optional": 24,
+        "defaultValue": 24,
+        "showInDetails": 24,
+        "isLinkageAssignment": 24,
+        "assignmentRule": 24,
+        "referenceData": 24,
+        "priority": 24,
+        "filterId": 24,
+        "hide": 24,
+        "dependence": 24,
+        "cnPlaceholder": 24,
+        "enPlaceholder": 24,
+        "hideVisibility": 24,
+        "configs": 24,
+        "dependenceCondition": 24,
+        "allowCancelDependence": 24,
+        "autoFillByFilterDataOnlyOne": 24,
+        "defaultField": 24,
+        "subTypeId": 24,
+        "readonly": 24,
+        "hideBlacklistVisibility": 24,
+        "autoDependence": 24,
+        "rangeOnlyOneAutomaticAssignment": 24,
+        "enableExactSearchAllData": 24,
+        "type": 24,
+        "copyable": 24
+      },
+      "example": {
+        "label": "关联合同流程",
+        "cnLabel": "关联合同流程",
+        "enLabel": "",
+        "field": "u_关联合同流程",
+        "placeholder": "请选择关联合同流程",
+        "editable": true,
+        "optional": true,
+        "defaultValue": {
+          "type": "none"
+        },
+        "showInDetails": false,
+        "isLinkageAssignment": false,
+        "assignmentRule": "ID01TRWvYFAulh",
+        "referenceData": "af15be9234f71a3703c0",
+        "priority": [
+          {
+            "type": "MANUALLY_FILL_IN",
+            "value": 5
+          },
+          {
+            "type": "LINKAGE_ASSIGNMENT",
+            "value": 10
+          },
+          {
+            "type": "AUTOMATIC_CALCULATION",
+            "value": 15
+          },
+          {
+            "type": "COST_STANDARD",
+            "value": 20
+          }
+        ],
+        "filterId": "",
+        "hide": false,
+        "dependence": null,
+        "cnPlaceholder": "请选择关联合同流程",
+        "enPlaceholder": null,
+        "hideVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": false
+        },
+        "configs": [],
+        "dependenceCondition": null,
+        "allowCancelDependence": false,
+        "autoFillByFilterDataOnlyOne": false,
+        "defaultField": false,
+        "subTypeId": null,
+        "readonly": false,
+        "hideBlacklistVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": false
+        },
+        "autoDependence": null,
+        "rangeOnlyOneAutomaticAssignment": false,
+        "enableExactSearchAllData": false,
+        "type": "dataLink",
+        "copyable": true
+      }
+    },
+    {
+      "type": "group",
+      "count": 19,
+      "fieldBound": 0,
+      "dataTypes": {},
+      "typicalFields": [],
+      "options": {
+        "label": 19,
+        "cnLabel": 19,
+        "enLabel": 19,
+        "type": 19,
+        "showInDetails": 19,
+        "readonly": 19
+      },
+      "example": {
+        "label": "以下为员工基础信息",
+        "cnLabel": "以下为员工基础信息",
+        "enLabel": null,
+        "type": "group",
+        "showInDetails": false,
+        "readonly": false
+      }
+    },
+    {
+      "type": "annotation",
+      "count": 19,
+      "fieldBound": 0,
+      "dataTypes": {},
+      "typicalFields": [],
+      "options": {
+        "label": 19,
+        "cnLabel": 19,
+        "enLabel": 19,
+        "type": 19,
+        "showInDetails": 19,
+        "readonly": 19,
+        "url": 19,
+        "maxLength": 19,
+        "onlyEditVisible": 19
+      },
+      "example": {
+        "label": "以下为员工基础信息",
+        "cnLabel": "以下为员工基础信息",
+        "enLabel": "",
+        "type": "annotation",
+        "showInDetails": false,
+        "readonly": false,
+        "url": "",
+        "maxLength": 400,
+        "onlyEditVisible": true
+      }
+    },
+    {
+      "type": "payeeInfo",
+      "count": 17,
+      "fieldBound": 17,
+      "dataTypes": {
+        "ref": 17
+      },
+      "typicalFields": [
+        "payeeId×17"
+      ],
+      "options": {
+        "label": 17,
+        "cnLabel": 17,
+        "enLabel": 17,
+        "type": 17,
+        "field": 17,
+        "placeholder": 17,
+        "editable": 17,
+        "optional": 17,
+        "defaultValue": 17,
+        "showInDetails": 17,
+        "priority": 17,
+        "hide": 17,
+        "dependence": 17,
+        "filterRules": 17,
+        "cnPlaceholder": 17,
+        "enPlaceholder": 17,
+        "hideVisibility": 17,
+        "configs": 17,
+        "dependenceCondition": 17,
+        "allowCancelDependence": 17,
+        "defaultField": 17,
+        "readonly": 17,
+        "hideBlacklistVisibility": 17,
+        "autoDependence": 17,
+        "rangeOnlyOneAutomaticAssignment": 17,
+        "copyable": 17
+      },
+      "example": {
+        "label": "收款信息",
+        "cnLabel": "收款信息",
+        "enLabel": "Payee/Account Information",
+        "type": "payeeInfo",
+        "field": "payeeId",
+        "placeholder": "请选择收款信息",
+        "editable": true,
+        "optional": false,
+        "defaultValue": {
+          "value": "entity.default",
+          "type": "predefine"
+        },
+        "showInDetails": false,
+        "priority": [
+          {
+            "type": "MANUALLY_FILL_IN",
+            "value": 5
+          },
+          {
+            "type": "LINKAGE_ASSIGNMENT",
+            "value": 10
+          },
+          {
+            "type": "AUTOMATIC_CALCULATION",
+            "value": 15
+          },
+          {
+            "type": "COST_STANDARD",
+            "value": 20
+          }
+        ],
+        "hide": false,
+        "dependence": [
+          {
+            "use": false,
+            "dependenceId": "submitterId",
+            "roleDefId": "ID01RFjXNnsLJt",
+            "direction": "forward"
+          }
+        ],
+        "filterRules": [
+          {
+            "name": "type",
+            "value": [
+              "PERSONAL"
+            ],
+            "isCustomField": false
+          }
+        ],
+        "cnPlaceholder": "请选择收款信息",
+        "enPlaceholder": "Please select the payee/account.",
+        "hideVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": false
+        },
+        "configs": [],
+        "dependenceCondition": "AND",
+        "allowCancelDependence": false,
+        "defaultField": false,
+        "readonly": false,
+        "hideBlacklistVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": false
+        },
+        "autoDependence": null,
+        "rangeOnlyOneAutomaticAssignment": false,
+        "copyable": true
+      }
+    },
+    {
+      "type": "details",
+      "count": 14,
+      "fieldBound": 14,
+      "dataTypes": {
+        "list": 14
+      },
+      "typicalFields": [
+        "details×14"
+      ],
+      "options": {
+        "label": 14,
+        "cnLabel": 14,
+        "enLabel": 14,
+        "type": 14,
+        "field": 14,
+        "placeholder": 14,
+        "editable": 14,
+        "optional": 14,
+        "defaultValue": 14,
+        "showInDetails": 14,
+        "orderByType": 14,
+        "showType": 14,
+        "hide": 14,
+        "feeTypeImportRuleId": 14,
+        "isFeeTypeEmpty": 14,
+        "dependence": 14,
+        "mustAllFeeTypeCurrencyEqual": 14,
+        "visibility": 14,
+        "visibleStaffSelection": 14,
+        "cnPlaceholder": 14,
+        "enPlaceholder": 14,
+        "hideVisibility": 14,
+        "configs": 14,
+        "dependenceCondition": 14,
+        "requisitionCanBindInvoice": 14,
+        "showTypeNew": 14,
+        "allowCancelDependence": 14,
+        "batchApportionDisabled": 14,
+        "showTypeByRole": 14,
+        "showDetailNo": 14,
+        "defaultField": 14,
+        "realtimeCalculateBudget": 14,
+        "readonly": 14,
+        "hideBlacklistVisibility": 14,
+        "autoDependence": 14,
+        "rangeOnlyOneAutomaticAssignment": 14,
+        "copyable": 14
+      },
+      "example": {
+        "label": "费用明细",
+        "cnLabel": "费用明细",
+        "enLabel": "Expense Lines",
+        "type": "details",
+        "field": "details",
+        "placeholder": null,
+        "editable": true,
+        "optional": false,
+        "defaultValue": {
+          "type": "none"
+        },
+        "showInDetails": false,
+        "orderByType": "INPUT",
+        "showType": "LIST",
+        "hide": false,
+        "feeTypeImportRuleId": "DEFAULT_ID",
+        "isFeeTypeEmpty": true,
+        "dependence": null,
+        "mustAllFeeTypeCurrencyEqual": false,
+        "visibility": null,
+        "visibleStaffSelection": null,
+        "cnPlaceholder": null,
+        "enPlaceholder": null,
+        "hideVisibility": {
+          "fullVisible": false,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "configs": [],
+        "dependenceCondition": null,
+        "requisitionCanBindInvoice": false,
+        "showTypeNew": [
+          "TABLE_P",
+          "TABLE"
+        ],
+        "allowCancelDependence": false,
+        "batchApportionDisabled": false,
+        "showTypeByRole": null,
+        "showDetailNo": null,
+        "defaultField": false,
+        "realtimeCalculateBudget": false,
+        "readonly": false,
+        "hideBlacklistVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "autoDependence": null,
+        "rangeOnlyOneAutomaticAssignment": false,
+        "copyable": true
+      }
+    },
+    {
+      "type": "separator",
+      "count": 13,
+      "fieldBound": 0,
+      "dataTypes": {},
+      "typicalFields": [],
+      "options": {
+        "label": 13,
+        "cnLabel": 13,
+        "enLabel": 13,
+        "type": 13,
+        "showInDetails": 13,
+        "readonly": 13
+      },
+      "example": {
+        "label": "",
+        "cnLabel": null,
+        "enLabel": null,
+        "type": "separator",
+        "showInDetails": false,
+        "readonly": false
+      }
+    },
+    {
+      "type": "requisitionDetails",
+      "count": 11,
+      "fieldBound": 11,
+      "dataTypes": {
+        "list": 11
+      },
+      "typicalFields": [
+        "details×11"
+      ],
+      "options": {
+        "label": 11,
+        "cnLabel": 11,
+        "enLabel": 11,
+        "type": 11,
+        "field": 11,
+        "placeholder": 11,
+        "editable": 11,
+        "optional": 11,
+        "defaultValue": 11,
+        "showInDetails": 11,
+        "orderByType": 11,
+        "showType": 11,
+        "hide": 11,
+        "feeTypeImportRuleId": 11,
+        "isFeeTypeEmpty": 11,
+        "dependence": 11,
+        "mustAllFeeTypeCurrencyEqual": 11,
+        "visibility": 11,
+        "visibleStaffSelection": 11,
+        "cnPlaceholder": 11,
+        "enPlaceholder": 11,
+        "hideVisibility": 11,
+        "configs": 11,
+        "dependenceCondition": 11,
+        "requisitionCanBindInvoice": 11,
+        "showTypeNew": 11,
+        "allowCancelDependence": 11,
+        "batchApportionDisabled": 11,
+        "showTypeByRole": 11,
+        "showDetailNo": 11,
+        "defaultField": 11,
+        "realtimeCalculateBudget": 11,
+        "readonly": 11,
+        "hideBlacklistVisibility": 11,
+        "autoDependence": 11,
+        "rangeOnlyOneAutomaticAssignment": 11,
+        "copyable": 11
+      },
+      "example": {
+        "label": "费用明细",
+        "cnLabel": null,
+        "enLabel": null,
+        "type": "requisitionDetails",
+        "field": "details",
+        "placeholder": null,
+        "editable": true,
+        "optional": false,
+        "defaultValue": {
+          "type": "none"
+        },
+        "showInDetails": false,
+        "orderByType": "INPUT",
+        "showType": "LIST",
+        "hide": false,
+        "feeTypeImportRuleId": null,
+        "isFeeTypeEmpty": false,
+        "dependence": null,
+        "mustAllFeeTypeCurrencyEqual": false,
+        "visibility": null,
+        "visibleStaffSelection": null,
+        "cnPlaceholder": null,
+        "enPlaceholder": null,
+        "hideVisibility": {
+          "fullVisible": false,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "configs": [],
+        "dependenceCondition": null,
+        "requisitionCanBindInvoice": false,
+        "showTypeNew": [
+          "TABLE_P",
+          "TABLE"
+        ],
+        "allowCancelDependence": false,
+        "batchApportionDisabled": false,
+        "showTypeByRole": null,
+        "showDetailNo": null,
+        "defaultField": false,
+        "realtimeCalculateBudget": false,
+        "readonly": false,
+        "hideBlacklistVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "autoDependence": null,
+        "rangeOnlyOneAutomaticAssignment": false,
+        "copyable": true
+      }
+    },
+    {
+      "type": "dateRange",
+      "count": 7,
+      "fieldBound": 7,
+      "dataTypes": {
+        "dateRange": 7
+      },
+      "typicalFields": [
+        "u_受益期间×6",
+        "feeDatePeriod×1"
+      ],
+      "options": {
+        "label": 7,
+        "cnLabel": 7,
+        "enLabel": 7,
+        "type": 7,
+        "showInDetails": 7,
+        "readonly": 7,
+        "field": 7,
+        "placeholder": 7,
+        "cnPlaceholder": 7,
+        "enPlaceholder": 7,
+        "editable": 7,
+        "optional": 7,
+        "configs": 7,
+        "defaultValue": 7,
+        "defaultField": 7,
+        "copyable": 7,
+        "hide": 7,
+        "hideVisibility": 7,
+        "hideBlacklistVisibility": 7,
+        "priority": 7,
+        "withTime": 7,
+        "specificTime": 7,
+        "dateTimeType": 7,
+        "defaultWorkingTime": 7
+      },
+      "example": {
+        "label": "受益期间",
+        "cnLabel": "受益期间",
+        "enLabel": "",
+        "type": "dateRange",
+        "showInDetails": false,
+        "readonly": false,
+        "field": "u_受益期间",
+        "placeholder": null,
+        "cnPlaceholder": null,
+        "enPlaceholder": null,
+        "editable": true,
+        "optional": false,
+        "configs": [],
+        "defaultValue": {
+          "value": "submit.date",
+          "type": "predefine"
+        },
+        "defaultField": false,
+        "copyable": true,
+        "hide": false,
+        "hideVisibility": {
+          "fullVisible": false,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "hideBlacklistVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "priority": [
+          {
+            "type": "MANUALLY_FILL_IN",
+            "value": 5
+          },
+          {
+            "type": "LINKAGE_ASSIGNMENT",
+            "value": 10
+          },
+          {
+            "type": "AUTOMATIC_CALCULATION",
+            "value": 15
+          },
+          {
+            "type": "COST_STANDARD",
+            "value": 20
+          }
+        ],
+        "withTime": false,
+        "specificTime": false,
+        "dateTimeType": null,
+        "defaultWorkingTime": null
+      }
+    },
+    {
+      "type": "city",
+      "count": 6,
+      "fieldBound": 6,
+      "dataTypes": {
+        "ref": 6
+      },
+      "typicalFields": [
+        "u_常驻地×6"
+      ],
+      "options": {
+        "label": 6,
+        "cnLabel": 6,
+        "enLabel": 6,
+        "type": 6,
+        "showInDetails": 6,
+        "readonly": 6,
+        "field": 6,
+        "placeholder": 6,
+        "cnPlaceholder": 6,
+        "enPlaceholder": 6,
+        "editable": 6,
+        "optional": 6,
+        "configs": 6,
+        "defaultValue": 6,
+        "defaultField": 6,
+        "copyable": 6,
+        "hide": 6,
+        "hideVisibility": 6,
+        "hideBlacklistVisibility": 6,
+        "priority": 6,
+        "multiple": 6,
+        "hasForbiddenCityGroup": 6,
+        "cityGroupId": 6,
+        "cityOptions": 6
+      },
+      "example": {
+        "label": "常驻地",
+        "cnLabel": "常驻地",
+        "enLabel": "Applicant's Regular Residence",
+        "type": "city",
+        "showInDetails": false,
+        "readonly": false,
+        "field": "u_常驻地",
+        "placeholder": "请选择常驻地",
+        "cnPlaceholder": "请选择常驻地",
+        "enPlaceholder": "Applicant's Regular Residence",
+        "editable": true,
+        "optional": false,
+        "configs": [],
+        "defaultValue": {
+          "type": "none"
+        },
+        "defaultField": false,
+        "copyable": true,
+        "hide": true,
+        "hideVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": false
+        },
+        "hideBlacklistVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": false
+        },
+        "priority": [
+          {
+            "type": "MANUALLY_FILL_IN",
+            "value": 5
+          },
+          {
+            "type": "LINKAGE_ASSIGNMENT",
+            "value": 10
+          },
+          {
+            "type": "AUTOMATIC_CALCULATION",
+            "value": 15
+          },
+          {
+            "type": "COST_STANDARD",
+            "value": 20
+          }
+        ],
+        "multiple": false,
+        "hasForbiddenCityGroup": false,
+        "cityGroupId": null,
+        "cityOptions": null
+      }
+    },
+    {
+      "type": "switcher",
+      "count": 5,
+      "fieldBound": 5,
+      "dataTypes": {
+        "boolean": 5
+      },
+      "typicalFields": [
+        "u_合思提单判断×5"
+      ],
+      "options": {
+        "label": 5,
+        "cnLabel": 5,
+        "enLabel": 5,
+        "type": 5,
+        "showInDetails": 5,
+        "readonly": 5,
+        "field": 5,
+        "placeholder": 5,
+        "cnPlaceholder": 5,
+        "enPlaceholder": 5,
+        "editable": 5,
+        "optional": 5,
+        "configs": 5,
+        "defaultValue": 5,
+        "defaultField": 5,
+        "copyable": 5,
+        "hide": 5,
+        "hideVisibility": 5,
+        "hideBlacklistVisibility": 5,
+        "priority": 5
+      },
+      "example": {
+        "label": "合思提单判断",
+        "cnLabel": "合思提单判断",
+        "enLabel": "Maximum Reimbursement Limit of Quick Reimbursement Form: RMB 2,000",
+        "type": "switcher",
+        "showInDetails": false,
+        "readonly": false,
+        "field": "u_合思提单判断",
+        "placeholder": "合思提单判断",
+        "cnPlaceholder": null,
+        "enPlaceholder": null,
+        "editable": false,
+        "optional": false,
+        "configs": [
+          {
+            "property": "hide",
+            "valueType": "BOOLEAN",
+            "formula": "`$付款金额`.本位币 <= 2000",
+            "ability": "caculate"
+          },
+          {
+            "property": "setip",
+            "valueType": "STRING",
+            "formula": "\"快速报销单最高报销2000元【Maximum Reimbursement Limit of Quick Reimbursement Form: RMB 2,000】\"",
+            "ability": "caculate"
+          }
+        ],
+        "defaultValue": {
+          "value": "if (`$付款金额`.本位币 >=2000 ) {\n    return false\n} else { \n    return true  \n }\n",
+          "customRuleId": null,
+          "assignValueTo": null,
+          "type": "formula"
+        },
+        "defaultField": false,
+        "copyable": true,
+        "hide": true,
+        "hideVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": false
+        },
+        "hideBlacklistVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": false
+        },
+        "priority": [
+          {
+            "type": "MANUALLY_FILL_IN",
+            "value": 5
+          },
+          {
+            "type": "LINKAGE_ASSIGNMENT",
+            "value": 10
+          },
+          {
+            "type": "AUTOMATIC_CALCULATION",
+            "value": 15
+          },
+          {
+            "type": "COST_STANDARD",
+            "value": 20
+          }
+        ]
+      }
+    },
+    {
+      "type": "corporateExpenseCard",
+      "count": 1,
+      "fieldBound": 1,
+      "dataTypes": {
+        "corporateExpenseCard": 1
+      },
+      "typicalFields": [
+        "corporateExpenseCardForm×1"
+      ],
+      "options": {
+        "label": 1,
+        "cnLabel": 1,
+        "enLabel": 1,
+        "type": 1,
+        "showInDetails": 1,
+        "readonly": 1,
+        "field": 1,
+        "placeholder": 1,
+        "cnPlaceholder": 1,
+        "enPlaceholder": 1,
+        "editable": 1,
+        "optional": 1,
+        "configs": 1,
+        "defaultValue": 1,
+        "defaultField": 1,
+        "copyable": 1,
+        "hide": 1,
+        "hideVisibility": 1,
+        "hideBlacklistVisibility": 1,
+        "priority": 1,
+        "eCardOptionalRange": 1
+      },
+      "example": {
+        "label": "申请易商卡线下消费",
+        "cnLabel": "申请易商卡线下消费",
+        "enLabel": "Apply for Corporate Expense Card for offline consumption",
+        "type": "corporateExpenseCard",
+        "showInDetails": false,
+        "readonly": false,
+        "field": "corporateExpenseCardForm",
+        "placeholder": null,
+        "cnPlaceholder": null,
+        "enPlaceholder": null,
+        "editable": true,
+        "optional": false,
+        "configs": [],
+        "defaultValue": {
+          "type": "none"
+        },
+        "defaultField": false,
+        "copyable": true,
+        "hide": false,
+        "hideVisibility": {
+          "fullVisible": false,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "hideBlacklistVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "priority": null,
+        "eCardOptionalRange": {
+          "domestic": {
+            "checked": null,
+            "alipay": false,
+            "wechat": null
+          },
+          "international": {
+            "checked": null,
+            "ll": {
+              "checked": true,
+              "CNY": true
+            },
+            "ll_physical_card": true,
+            "worldfirst": null,
+            "sunrate": null,
+            "sunrate_physical_card": null
+          }
+        }
+      }
+    },
+    {
+      "type": "number",
+      "count": 1,
+      "fieldBound": 1,
+      "dataTypes": {
+        "number": 1
+      },
+      "typicalFields": [
+        "u_总天数×1"
+      ],
+      "options": {
+        "label": 1,
+        "cnLabel": 1,
+        "enLabel": 1,
+        "type": 1,
+        "showInDetails": 1,
+        "readonly": 1,
+        "field": 1,
+        "placeholder": 1,
+        "cnPlaceholder": 1,
+        "enPlaceholder": 1,
+        "editable": 1,
+        "optional": 1,
+        "configs": 1,
+        "defaultValue": 1,
+        "defaultField": 1,
+        "copyable": 1,
+        "hide": 1,
+        "hideVisibility": 1,
+        "hideBlacklistVisibility": 1,
+        "priority": 1,
+        "max": 1,
+        "min": 1,
+        "countRuleCheck": 1,
+        "countRule": 1
+      },
+      "example": {
+        "label": "总天数",
+        "cnLabel": "总天数",
+        "enLabel": "",
+        "type": "number",
+        "showInDetails": false,
+        "readonly": false,
+        "field": "u_总天数",
+        "placeholder": "请输入总天数",
+        "cnPlaceholder": "请输入总天数",
+        "enPlaceholder": null,
+        "editable": false,
+        "optional": false,
+        "configs": [],
+        "defaultValue": {
+          "value": "day_diff(`$结束时间`,`$开始时间`)+1",
+          "customRuleId": null,
+          "assignValueTo": null,
+          "type": "formula"
+        },
+        "defaultField": false,
+        "copyable": true,
+        "hide": false,
+        "hideVisibility": {
+          "fullVisible": false,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "hideBlacklistVisibility": {
+          "fullVisible": true,
+          "staffs": [],
+          "roles": [],
+          "departments": [],
+          "departmentsIncludeChildren": true
+        },
+        "priority": [
+          {
+            "type": "MANUALLY_FILL_IN",
+            "value": 5
+          },
+          {
+            "type": "LINKAGE_ASSIGNMENT",
+            "value": 10
+          },
+          {
+            "type": "AUTOMATIC_CALCULATION",
+            "value": 15
+          },
+          {
+            "type": "COST_STANDARD",
+            "value": 20
+          }
+        ],
+        "max": "10000000000",
+        "min": "-1000000000",
+        "countRuleCheck": false,
+        "countRule": null
+      }
+    }
+  ]
+}
