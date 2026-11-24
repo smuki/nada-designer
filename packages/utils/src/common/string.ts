@@ -58,11 +58,11 @@ export function normalizeType(type: string): string {
   return type.replaceAll('-', '_');
 }
 
-/** id / field / modelId 的字符集：中文、字母、数字、下划线，首字符不能是数字 */
+/** id / field 的字符集：中文、字母、数字、下划线，首字符不能是数字 */
 const SCHEMA_NAME_RE = /^[\u4E00-\u9FA5A-Z_][\u4E00-\u9FA5\w]*$/i;
 
 /**
- * 校验 id / field / modelId 是否符合字符集要求
+ * 校验 id / field 是否符合字符集要求
  * @param name 待校验的标识
  */
 export function isValidSchemaName(name?: string): boolean {

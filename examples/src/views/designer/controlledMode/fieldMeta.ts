@@ -30,12 +30,12 @@ export const salesOrderFields: FieldMeta[] = [
 
 /**
  * 模拟后端加载业务字段元数据
- * @param modelId 业务对象 code
+ * @param modelId 业务对象模型 id
  */
 export function businessFieldLoader(modelId: string): Promise<FieldMeta[]> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(modelId === '销售单据' ? salesOrderFields : []);
+      resolve(modelId === '1001' ? salesOrderFields : []);
     }, 300);
   });
 }

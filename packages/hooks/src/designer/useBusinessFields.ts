@@ -183,7 +183,7 @@ export function useBusinessFields(
 
   /**
    * 加载指定业务对象的元数据
-   * @param nextModelId 业务对象 code
+   * @param nextModelId 业务对象模型 id
    * @param loadOptions 加载选项
    * @param loadOptions.force 是否绕过缓存
    * @returns 是否加载成功（过期或失败返回 false）
@@ -250,7 +250,7 @@ export function useBusinessFields(
 
   /**
    * schema 晚到时校正业务对象（两段式解析，规格 §6.2）
-   * @param nextModelId schema 中的业务对象 code
+   * @param nextModelId schema 中的业务对象模型 id
    */
   async function switchTo(nextModelId?: null | string): Promise<boolean> {
     if (!nextModelId) return false;

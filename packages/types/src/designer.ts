@@ -61,7 +61,7 @@ export interface DesignerProps {
   hiddenHeader?: boolean;
   hidePreviewConfirm?: boolean;
   lockDefaultSchemaEdit?: boolean;
-  /** 业务对象 code（租户内唯一），受控模式必填 */
+  /** 业务对象模型 id（主键；字符串传递避免大整数精度丢失），受控模式必填 */
   modelId?: string;
   showHiddenItems?: boolean;
   sourceCodeReadOnly?: boolean;

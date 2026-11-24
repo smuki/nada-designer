@@ -20,7 +20,7 @@ function handleSave(data: PageSchema) {
 <template>
   <EDesigner
     ref="designerRef"
-    business-object="销售单据"
+    model-id="1001"
     :business-field-loader="businessFieldLoader"
     design-mode="controlled"
     title="受控字段模式示例（销售单据）"
