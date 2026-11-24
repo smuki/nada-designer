@@ -5,7 +5,7 @@
 自由模式（默认）行为完全不变。:::
 
 :::warning 属性更名（v1.1.18）
-原 `businessObject` 已更名为 **`modelId`**（设计器 prop 与页面 JSON 顶层字段同名），值仍为业务对象 code（租户内唯一）。
+原 `businessObject` 已更名为 **`modelId`**（设计器 prop 与页面 JSON 顶层字段同名），值为**业务对象模型主键 id**（`code` 仅展示/兼容）。
 :::
 
 ## 快速开始
@@ -16,26 +16,26 @@ import type { FieldMeta } from '@nada-designer/types';
 
 import { EDesigner } from '@nada-designer/core';
 
-// 由业务应用提供：按业务对象 code 返回字段元数据
+// 由业务应用提供：按业务对象模型 id 返回字段元数据
 async function businessFieldLoader(
   modelId: string,
 ): Promise<FieldMeta[]> {
   const res = await fetch(
-    `/api/univ/form-property?code=${encodeURIComponent(modelId)}`,
+    `/api/univ/form-property?modelId=${encodeURIComponent(modelId)}`,
   );
   const data = await res.json();
   return data.fields;
 }
 
 function handleSave(pageSchema: any) {
-  // pageSchema.modelId 为业务对象 code（随页面保存）
+  // pageSchema.modelId 为业务对象模型 id（随页面保存）
   console.log(pageSchema);
 }
 </script>
 
 <template>
   <EDesigner
-    business-object="销售单据"
+    model-id="1001"
     :business-field-loader="businessFieldLoader"
     design-mode="controlled"
     @save="handleSave"
@@ -48,7 +48,7 @@ function handleSave(pageSchema: any) {
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | designMode | 设计模式：`free` 自由 / `controlled` 受控；**实例级，初始化后不可切换** | `'free' \| 'controlled'` | `'free'` |
-| modelId | 业务对象 code（租户内唯一）；受控模式新建页面必填，打开已有页面以页面 JSON 为准 | string | - |
+| modelId | 业务对象模型 id（主键）；受控模式新建页面必填，打开已有页面以页面 JSON 为准 | string | - |
 | businessFieldLoader | 业务字段元数据加载器；未提供时受控模式显示错误态并可重试 | `(modelId: string) => Promise<FieldMeta[]>` | - |
 
 ## 元数据协议
@@ -86,10 +86,10 @@ function handleSave(pageSchema: any) {
 
 ## 后端接口约定
 
-- 业务对象标识使用 **code**（租户内唯一），页面 JSON 只存 code，不存租户与内部 id；
-- 建议接口：`GET /api/univ/form-property?code={modelId}`（租户从登录态/网关注入），返回 `{ modelId, fields: FieldMeta[] }`；
+- 业务对象标识使用**模型主键 id**（`modelId`），页面 JSON 只存 `modelId`，不存租户与业务 `code`；
+- 建议接口：`GET /api/univ/form-property?modelId={modelId}`（租户从登录态/网关注入），返回 `{ modelId, fields: FieldMeta[] }`；
 - 设计器要求 loader 返回 **数组**，接口若包了一层 `fields`，由适配层解包；
-- `code` 一经创建不建议改名，否则已保存页面会找不到业务对象。
+- `code` 仅用于展示/兼容旧数据，可改名，不影响已保存页面。
 
 ## 限制（v1）
 
