@@ -11,11 +11,15 @@ import { setupTDesign } from '../index';
  * 任何一个 type 缺失都会让设计器在运行时静默降级（属性面板空白 / 组件不渲染）。
  */
 
-// 适配包对外承诺的组件 type（与 elementPlus / naiveUi 适配包保持一致）
+// 适配包对外承诺的组件 type（与 elementPlus / naiveUi 适配包保持一致，另含 antd 独有的 time）
 const EXPECTED_TYPES = [
   'button',
   'card',
+  'cascader',
   'checkbox',
+  'collapse',
+  'collapse-item',
+  'color-picker',
   'col',
   'date',
   'form',
@@ -28,7 +32,12 @@ const EXPECTED_TYPES = [
   'select',
   'slider',
   'switch',
+  'tab-pane',
+  'tabs',
   'textarea',
+  'time',
+  'upload-file',
+  'upload-image',
 ];
 
 // 设计器外壳按固定 type 查找的组件，缺失会在运行时直接报错

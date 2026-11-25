@@ -29,6 +29,58 @@
       cursor: default;
     }
   }
+
+  // 标签页设计态：TTabs 无法接收可拖拽列表，退化为纵向可编辑面板
+  .ep-tdesign-tabs-design {
+    border: 1px solid var(--td-component-stroke);
+    border-radius: var(--td-radius-default);
+    background: var(--td-bg-color-container);
+
+    &__header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 4px 8px;
+      border-bottom: 1px solid var(--td-component-stroke);
+      background: var(--td-bg-color-secondarycontainer);
+    }
+
+    &__tab {
+      padding: 2px 12px;
+      border-radius: var(--td-radius-default);
+      color: var(--td-text-color-secondary);
+      cursor: pointer;
+
+      &--active {
+        background: var(--td-bg-color-container);
+        color: var(--td-text-color-primary);
+      }
+    }
+
+    &__content {
+      padding: 8px;
+    }
+  }
+
+  .ep-tdesign-tab-pane-design {
+    border: 1px dashed var(--td-component-stroke);
+    border-radius: var(--td-radius-default);
+
+    & + & {
+      margin-top: 8px;
+    }
+
+    &__header {
+      padding: 4px 8px;
+      border-bottom: 1px dashed var(--td-component-stroke);
+      color: var(--td-text-color-secondary);
+      font-size: 12px;
+    }
+
+    &__content {
+      padding: 8px;
+    }
+  }
 }
 
 .ep-tdesign-modal-footer {
