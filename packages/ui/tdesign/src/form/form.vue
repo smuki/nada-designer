@@ -38,6 +38,8 @@ const props = withDefaults(
 provideBuilderDisabled(computed(() => props.disabled));
 
 const form = ref<null | TDesignFormInstance>(null);
+// TDesign 暴露的原始 validate 方法：注册到设计器时会被替换为契约版本，必须先保存
+const rawValidate = ref<(() => Promise<unknown>) | null>(null);
 const { formData, formInstances } = useForm(
   props.componentSchema?.props?.name ?? 'default',
 );
@@ -68,7 +70,7 @@ function resetData(): void {
  * @description TDesign 的 validate 在校验失败时 resolve 结果对象，设计器契约要求 reject，这里做一次语义转换
  */
 async function validate(): Promise<unknown> {
-  const result = await form.value?.validate();
+  const result = await rawValidate.value?.();
   if (result !== true) {
     throw result;
   }
@@ -89,6 +91,8 @@ const mountedForm = (vNode: VNode) => {
       props.componentSchema?.name ??
       ('default' as string);
 
+    // 先保存 TDesign 原始 validate，再替换为设计器契约版本，避免自我递归
+    rawValidate.value = form.value.validate.bind(form.value);
     form.value.validate = validate;
     formInstances.value[name] = form.value;
     form.value.getData = getData;
