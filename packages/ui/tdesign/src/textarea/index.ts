@@ -16,8 +16,6 @@ export default {
         type: 'number',
       },
       { field: 'props.autosize', label: '自动高度', type: 'switch' },
-      { field: 'props.autosize.minRows', label: '最小行数', type: 'number' },
-      { field: 'props.autosize.maxRows', label: '最大行数', type: 'number' },
       {
         field: 'props.status',
         label: '校验状态',
@@ -54,7 +52,6 @@ export default {
     input: true,
     label: '文本域',
     props: {
-      autosize: { maxRows: 5, minRows: 2 },
       placeholder: '请输入',
     },
     type: 'textarea',

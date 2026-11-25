@@ -7,6 +7,7 @@ import { describe, expect, it, vi } from 'vitest';
 import Button from '../button/button.vue';
 import Input from '../input/input.vue';
 import Select from '../select/select.vue';
+import Switch from '../switch/switch.vue';
 
 /**
  * 跨 UI 库 schema 兼容测试
@@ -103,5 +104,40 @@ describe('属性兼容：旧库枚举值归一化', () => {
     const select = wrapper.findComponent({ name: 'TSelect' });
     expect(select.props('clearable')).toBe(true);
     expect(select.props('size')).toBe('large');
+  });
+});
+
+describe('属性面板控件：旧 schema 的异常值归一化', () => {
+  it('switch：对象值（如 element 的 autosize）视为开启，不触发类型告警', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const wrapper = mount(Switch as any, {
+      // 属性面板会把 schema 原值透传给控件
+      attrs: { modelValue: { maxRows: 5, minRows: 2 } },
+      props: { componentSchema: schema('switch') },
+    });
+
+    expect(wrapper.findComponent({ name: 'TSwitch' }).props('modelValue')).toBe(
+      true,
+    );
+    const typeWarnings = warnSpy.mock.calls.filter((args) =>
+      String(args[0] ?? '').includes('type check failed'),
+    );
+    expect(typeWarnings).toEqual([]);
+
+    warnSpy.mockRestore();
+  });
+
+  it('textarea 默认 schema 不再用对象作为 autosize（避免属性面板开关收到对象）', async () => {
+    const textareaConfig = (await import('../textarea/index')).default as any;
+
+    expect(typeof textareaConfig.defaultSchema.props.autosize).not.toBe(
+      'object',
+    );
+    // 可选：确认属性面板里不再出现依赖对象路径的编辑器
+    const fields = (textareaConfig.config.attribute ?? []).map(
+      (item: any) => item.field,
+    );
+    expect(fields).not.toContain('props.autosize.minRows');
   });
 });

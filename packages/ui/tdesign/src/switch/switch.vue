@@ -12,9 +12,14 @@ defineOptions({ inheritAttrs: false });
 defineProps<{ componentSchema?: ComponentSchema }>();
 
 const attrs = useAttrs();
-const bindProps = computed(() =>
-  sanitizeAttrs(TSwitch, normalizeSize(attrs as Record<string, unknown>)),
-);
+const bindProps = computed(() => {
+  const raw = { ...(attrs as Record<string, unknown>) };
+  // 属性面板 / 旧 schema 可能给布尔开关传入对象（如 element 的 autosize: { maxRows, minRows }）
+  if (raw.modelValue !== null && typeof raw.modelValue === 'object') {
+    raw.modelValue = true;
+  }
+  return sanitizeAttrs(TSwitch, normalizeSize(raw));
+});
 </script>
 
 <template>
