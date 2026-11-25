@@ -7,6 +7,7 @@ import { setupElementPlus } from 'nada-designer-element-plus';
 import { useTheme } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
 import { setupNaiveUi } from 'nada-designer-naive-ui';
+import { setupTDesign } from 'nada-designer-tdesign';
 import { useStorage } from '@vueuse/core';
 import { Divider, Select, Switch } from 'ant-design-vue';
 
@@ -48,6 +49,10 @@ const selectOptions = [
     label: 'naiveUi',
     value: 'naive-ui',
   },
+  {
+    label: 'TDesign Vue Next',
+    value: 'tdesign',
+  },
 ];
 const router = useRouter();
 const route = useRoute();
@@ -84,6 +89,11 @@ function switchUI(ui: string) {
     }
     case 'naive-ui': {
       setupNaiveUi(pluginManager);
+
+      break;
+    }
+    case 'tdesign': {
+      setupTDesign(pluginManager);
 
       break;
     }

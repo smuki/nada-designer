@@ -18,7 +18,8 @@
       "dependsOn": [
         "nada-designer-antd#stub",
         "nada-designer-element-plus#stub",
-        "nada-designer-naive-ui#stub"
+        "nada-designer-naive-ui#stub",
+        "nada-designer-tdesign#stub"
       ],
       "cache": false,
       "persistent": true

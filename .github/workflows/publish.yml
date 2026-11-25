@@ -73,6 +73,7 @@ jobs:
           pnpm --filter nada-designer-element-plus build
           pnpm --filter nada-designer-antd build
           pnpm --filter nada-designer-naive-ui build
+          pnpm --filter nada-designer-tdesign build
 
       - name: Verify build output
         run: |
@@ -127,9 +128,10 @@ jobs:
           publish nada-designer-element-plus   packages/ui/elementPlus
           publish nada-designer-antd           packages/ui/antd
           publish nada-designer-naive-ui       packages/ui/naiveUi
+          publish nada-designer-tdesign       packages/ui/tdesign
 
           echo "===== 4) 结果汇总 ====="
-          for p in nada-designer nada-designer-element-plus nada-designer-antd nada-designer-naive-ui; do
+          for p in nada-designer nada-designer-element-plus nada-designer-antd nada-designer-naive-ui nada-designer-tdesign; do
             echo "$p -> $(npm view "$p" version 2>/dev/null || echo '未发布')"
           done
 

@@ -1,0 +1,38 @@
+.ep-designer-main {
+  .t-input,
+  .t-textarea,
+  .t-select,
+  .t-input-number,
+  .t-date-picker,
+  .t-time-picker,
+  .t-cascader {
+    width: 100%;
+  }
+
+  // 表单样式
+  .t-form-inline {
+    [name='ep-draggable-range'] {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .t-form__item {
+      width: 175px;
+    }
+  }
+
+  // 只读态
+  .ep-readonly {
+    .t-input__inner,
+    .t-textarea__inner,
+    .t-select-input {
+      cursor: default;
+    }
+  }
+}
+
+.ep-tdesign-modal-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}

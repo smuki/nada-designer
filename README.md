@@ -95,6 +95,7 @@ nada-designer 目标是支持多 UI 兼容,目前支持以下 UI
 - element-plus
 - ant-design-vue
 - naive-ui
+- tdesign-vue-next
 
 ## 选择 UI 组件库
 
@@ -177,6 +178,24 @@ import { setupNaiveUi } from "nada-designer-naive-ui";
 setupNaiveUi();
 ```
 
+### 选择 TDesign Vue Next
+
+安装ui框架依赖
+
+```bash
+npm i tdesign-vue-next nada-designer-tdesign
+```
+
+main.ts 或者 main.js 引入注册组件
+
+```javascript
+// 引入nada-designer样式
+import "nada-designer/dist/style.css";
+
+import { setupTDesign } from "nada-designer-tdesign";
+// 注册TDesign
+setupTDesign();
+```
 ## EDesigner(设计器) 基础用法
 
 ```vue

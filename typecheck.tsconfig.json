@@ -26,7 +26,8 @@
     "packages/ui-kit/panel-ui/src/**/*",
     "packages/ui/antd/src/**/*",
     "packages/ui/elementPlus/src/**/*",
-    "packages/ui/naiveUi/src/**/*"
+    "packages/ui/naiveUi/src/**/*",
+    "packages/ui/tdesign/src/**/*"
   ],
   "exclude": [
     "**/node_modules",
