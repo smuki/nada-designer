@@ -73,6 +73,12 @@ import './styles/dark-vars.css'
 
 [调整主题 - Naive UI](https://www.naiveui.com/zh-CN/light/docs/customize-theme#使用暗色主题)
 
+### TDesign Vue Next
+
+> TDesign 同时支持 html.dark 类与 html[theme-mode='dark']，与 nadaDesigner 的暗色类一致
+
+[暗黑模式 | TDesign Vue Next (tdesign.tencent.com)](https://tdesign.tencent.com/vue-next/dark-mode)
+
 ## css变量
 
 ```

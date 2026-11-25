@@ -68,15 +68,16 @@ git push --force origin main
    git tag v1.1.17
    git push origin v1.1.17
    ```
-3. Actions 会自动：校验 tag 与版本一致 → 安装 → 测试 → 构建 4 个包 → 发布到 npm（已存在的版本自动跳过）
+3. Actions 会自动：校验 tag 与版本一致 → 安装 → 测试 → 构建 5 个包 → 发布到 npm（已存在的版本自动跳过）
 
 ## 五、以后发版流程
 
-1. 把 4 个 `package.json` 的 `version` 一起改成新版本：
+1. 把 5 个 `package.json` 的 `version` 一起改成新版本：
    - `packages/nada-designer/package.json`
    - `packages/ui/elementPlus/package.json`
    - `packages/ui/antd/package.json`
    - `packages/ui/naiveUi/package.json`
+   - `packages/ui/tdesign/package.json`
 2. `git commit -am "chore: release vX.Y.Z"`
 3. `git tag vX.Y.Z && git push origin main vX.Y.Z`
 

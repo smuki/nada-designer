@@ -8,7 +8,7 @@
 > ```bash
 > npm i nada-designer
 > # 再按需安装一套 UI 适配包
-> npm i nada-designer-element-plus   # 或 nada-designer-antd 、 nada-designer-naive-ui
+> npm i nada-designer-element-plus   # 或 nada-designer-antd 、 nada-designer-naive-ui 、 nada-designer-tdesign
 > ```
 >
 > ```ts

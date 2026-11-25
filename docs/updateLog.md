@@ -1,3 +1,21 @@
+## 1.1.18（2026-11-25）
+
+【注意】更新版本请同步更新 nada-designer-element-plus、nada-designer-antd、nada-designer-naive-ui、nada-designer-tdesign 依赖
+
+### ✨ Feat
+
+- 新增 TDesign Vue Next 适配包 `nada-designer-tdesign`：25 个组件 type，覆盖画布组件、布局容器、表单校验、上传与全局提示
+- 支持运行时切换 UI：`setupTDesign()` 与已有三个适配包行为一致（`removeBaseComponents` 后重新注册）
+- 新增 `specs/ui-adapter-contract.md`：UI 适配器契约与验收清单
+
+### 🐛 Bug Fixes
+
+- 修复 TDesign 表单 `validate()` 校验失败时未按设计器契约 reject 的问题
+- 修复 TDesign tabs / collapse 在预览态被误判为设计态导致不渲染的问题
+
+### ✅ Tests
+
+- 新增 63 条适配包测试：注册契约、控件渲染、表单/上传语义、容器结构、EBuilder 端到端集成
 ## 1.1.12（2026-06-05）
 
 【注意】更新版本请同步更新nada-designer-element-plus、nada-designer-antd、nada-designer-naive-ui依赖

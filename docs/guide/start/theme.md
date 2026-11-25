@@ -46,6 +46,12 @@ import './styles/common-vars.css'
 
 [调整主题 - Naive UI](https://www.naiveui.com/zh-CN/os-theme/docs/customize-theme)
 
+### TDesign Vue Next
+
+> 通过 CSS 变量定制，覆盖 --td-* 设计令牌即可
+
+[主题定制 | TDesign Vue Next (tdesign.tencent.com)](https://tdesign.tencent.com/vue-next/customize-theme)
+
 ## css变量
 
 ```
