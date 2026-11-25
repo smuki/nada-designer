@@ -6,6 +6,8 @@ import { defineComponent, h, renderSlot } from 'vue';
 
 import { Row as TRow } from 'tdesign-vue-next';
 
+import { normalizeSize, sanitizeAttrs } from '../utils/attrs';
+
 export default defineComponent({
   inheritAttrs: false,
   props: {
@@ -26,7 +28,13 @@ export default defineComponent({
 
       return h(
         TRow,
-        { ...attrs, ...componentSchema },
+        {
+          ...sanitizeAttrs(
+            TRow,
+            normalizeSize(attrs as Record<string, unknown>),
+          ),
+          ...componentSchema,
+        },
         {
           default: () => [
             renderSlot(slots, 'edit-node', {}, () =>

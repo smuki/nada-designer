@@ -6,6 +6,8 @@ import { defineComponent, h, renderSlot } from 'vue';
 
 import { Col as TCol } from 'tdesign-vue-next';
 
+import { normalizeSize, sanitizeAttrs } from '../utils/attrs';
+
 export default defineComponent({
   inheritAttrs: false,
   props: {
@@ -26,7 +28,13 @@ export default defineComponent({
 
       return h(
         TCol,
-        { ...attrs, ...componentSchema },
+        {
+          ...sanitizeAttrs(
+            TCol,
+            normalizeSize(attrs as Record<string, unknown>),
+          ),
+          ...componentSchema,
+        },
         {
           default: () =>
             renderSlot(slots, 'edit-node', {}, () =>

@@ -6,6 +6,8 @@ import { defineComponent, h, renderSlot } from 'vue';
 
 import { Card as TCard } from 'tdesign-vue-next';
 
+import { normalizeSize, sanitizeAttrs } from '../utils/attrs';
+
 export default defineComponent({
   inheritAttrs: false,
   props: {
@@ -26,7 +28,13 @@ export default defineComponent({
 
       return h(
         TCard,
-        { ...attrs, ...componentSchema },
+        {
+          ...sanitizeAttrs(
+            TCard,
+            normalizeSize(attrs as Record<string, unknown>),
+          ),
+          ...componentSchema,
+        },
         {
           default: () =>
             renderSlot(slots, 'edit-node', {}, () =>

@@ -16,6 +16,8 @@ import {
 
 import { Tabs as TTabs } from 'tdesign-vue-next';
 
+import { normalizeSize, sanitizeAttrs } from '../utils/attrs';
+
 export default defineComponent({
   inheritAttrs: false,
   props: {
@@ -95,7 +97,10 @@ export default defineComponent({
 
       // 预览态：通过 list 渲染，TTabs 内部据此创建 TTabPanel，panel 提供每个页签的内容
       const tabsProps: Record<string, any> = {
-        ...attrs,
+        ...sanitizeAttrs(
+          TTabs,
+          normalizeSize(attrs as Record<string, unknown>),
+        ),
         ...props.componentSchema?.props,
         modelValue: activeValue.value,
         'onUpdate:modelValue': (value: number | string) => {

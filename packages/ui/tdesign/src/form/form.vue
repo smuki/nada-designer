@@ -8,6 +8,8 @@ import { computed, ref } from 'vue';
 import { provideBuilderDisabled, useForm } from '@nada-designer/hooks';
 import { Form as TForm } from 'tdesign-vue-next';
 
+import { sanitizeAttrs } from '../utils/attrs';
+
 interface TDesignFormInstance {
   clearValidate: (fields?: string[]) => void;
   getData?: () => FormDataModel;
@@ -108,7 +110,8 @@ const formProps = computed<Record<string, any>>(() => {
     unknown
   >;
   return {
-    ...recordProps,
+    // 兼容其它 UI 库的 schema：过滤 TDesign 不接受的旧枚举值（如 layout: 'horizontal'）
+    ...sanitizeAttrs(TForm, recordProps),
     scrollToFirstError: props.scrollToFirstError ? 'smooth' : undefined,
   };
 });

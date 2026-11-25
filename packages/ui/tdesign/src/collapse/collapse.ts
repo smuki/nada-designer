@@ -6,6 +6,8 @@ import { Comment, defineComponent, Fragment, h, renderSlot, Text } from 'vue';
 
 import { Collapse as TCollapse } from 'tdesign-vue-next';
 
+import { normalizeSize, sanitizeAttrs } from '../utils/attrs';
+
 export default defineComponent({
   inheritAttrs: false,
   props: {
@@ -34,7 +36,10 @@ export default defineComponent({
       );
 
       const collapseProps: Record<string, any> = {
-        ...attrs,
+        ...sanitizeAttrs(
+          TCollapse,
+          normalizeSize(attrs as Record<string, unknown>),
+        ),
         ...segmentSchema.props,
         modelValue: isDesignMode
           ? designValues

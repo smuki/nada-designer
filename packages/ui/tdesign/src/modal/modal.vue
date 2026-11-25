@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import type { ComponentSchema } from '@nada-designer/types';
 
-import { computed } from 'vue';
+import { computed, useAttrs } from 'vue';
 
 import { Button as TButton, Dialog as TDialog } from 'tdesign-vue-next';
 
+import { sanitizeAttrs } from '../utils/attrs';
+
 defineOptions({ inheritAttrs: false });
 
-// 定义 props
 const props = withDefaults(
   defineProps<{
     cancelText?: string;
@@ -30,6 +31,11 @@ const props = withDefaults(
 );
 // 定义 emits
 const emit = defineEmits(['ok', 'close', 'update:modelValue']);
+// 定义 props
+const attrs = useAttrs();
+const dialogProps = computed(() =>
+  sanitizeAttrs(TDialog, attrs as Record<string, unknown>),
+);
 
 const children = computed(() => props.componentSchema?.children ?? []);
 
@@ -48,7 +54,7 @@ function updateVisible(value: boolean) {
 
 <template>
   <TDialog
-    v-bind="$attrs"
+    v-bind="dialogProps"
     :visible="props.modelValue"
     :header="props.componentSchema?.label ?? ''"
     :width="props.width"

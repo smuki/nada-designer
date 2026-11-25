@@ -8,6 +8,8 @@ import { computed, defineComponent, h, ref, watch } from 'vue';
 import { pluginManager } from '@nada-designer/manager';
 import { MessagePlugin, Upload as TUpload } from 'tdesign-vue-next';
 
+import { normalizeSize, sanitizeAttrs } from '../utils/attrs';
+
 /**
  * 上传图片组件
  *
@@ -101,7 +103,10 @@ export default defineComponent({
 
     const getUploadProps = computed<UploadProps>(() => {
       const uploadProps = {
-        ...attrs,
+        ...sanitizeAttrs(
+          TUpload,
+          normalizeSize(attrs as Record<string, unknown>),
+        ),
         accept: 'image/gif,image/jpeg,image/jpg,image/png,image/svg',
         action: pluginManager.global.uploadImage ?? attrs.action,
         formatResponse,

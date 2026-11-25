@@ -9,6 +9,8 @@ import { pluginManager } from '@nada-designer/manager';
 import { getFileNameByUrl } from '@nada-designer/utils';
 import { MessagePlugin, Upload as TUpload } from 'tdesign-vue-next';
 
+import { normalizeSize, sanitizeAttrs } from '../utils/attrs';
+
 /**
  * 上传文件组件
  *
@@ -102,7 +104,10 @@ export default defineComponent({
 
     const getUploadProps = computed<UploadProps>(() => {
       const uploadProps = {
-        ...attrs,
+        ...sanitizeAttrs(
+          TUpload,
+          normalizeSize(attrs as Record<string, unknown>),
+        ),
         action: pluginManager.global.uploadFile ?? attrs.action,
         formatResponse,
         headers: pluginManager.global.axiosConfig?.headers,
