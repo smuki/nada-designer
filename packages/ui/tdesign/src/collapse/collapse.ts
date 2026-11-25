@@ -2,7 +2,7 @@ import type { ComponentSchema } from '@nada-designer/types';
 
 import type { PropType } from 'vue';
 
-import { defineComponent, h, renderSlot } from 'vue';
+import { Comment, defineComponent, Fragment, h, renderSlot, Text } from 'vue';
 
 import { Collapse as TCollapse } from 'tdesign-vue-next';
 
@@ -18,7 +18,14 @@ export default defineComponent({
     return () => {
       const segmentSchema = props.componentSchema ?? {};
       const children = segmentSchema.children ?? [];
-      const editNodes = slots['edit-node']?.() ?? [];
+      // node.vue 运行时也会转发空的 edit-node（注释节点），需过滤后再判断设计态
+      const editNodes = (slots['edit-node']?.() ?? []).filter(
+        (node: any) =>
+          node &&
+          node.type !== Comment &&
+          node.type !== Text &&
+          node.type !== Fragment,
+      );
       const isDesignMode = editNodes.length > 0;
 
       // 设计态默认展开全部，保证折叠项内容可直接拖拽编辑

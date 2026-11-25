@@ -2,7 +2,17 @@ import type { ComponentSchema } from '@nada-designer/types';
 
 import type { PropType } from 'vue';
 
-import { computed, defineComponent, h, ref, renderSlot, watch } from 'vue';
+import {
+  Comment,
+  computed,
+  defineComponent,
+  Fragment,
+  h,
+  ref,
+  renderSlot,
+  Text,
+  watch,
+} from 'vue';
 
 import { Tabs as TTabs } from 'tdesign-vue-next';
 
@@ -38,8 +48,21 @@ export default defineComponent({
       },
     );
 
+    // node.vue 在运行时也会转发一个空的 edit-node 插槽（渲染为注释节点），
+    // 因此不能仅用「插槽是否返回内容」判断设计态，必须过滤注释/文本/空 Fragment
+    function getDesignNodes() {
+      const nodes = slots['edit-node']?.() ?? [];
+      return nodes.filter(
+        (node: any) =>
+          node &&
+          node.type !== Comment &&
+          node.type !== Text &&
+          node.type !== Fragment,
+      );
+    }
+
     return () => {
-      const editNodes = slots['edit-node']?.() ?? [];
+      const editNodes = getDesignNodes();
 
       // 设计态：TTabs 只会收集 type.name === 'TTabPanel' 的子节点（源码 getSlotPanels 硬过滤），
       // 无法接收 NadaNodes 可拖拽列表，因此退化为纵向可编辑面板；预览态仍使用真实 Tabs
