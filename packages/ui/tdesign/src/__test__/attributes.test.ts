@@ -1,13 +1,19 @@
 import type { ComponentSchema } from '@nada-designer/types';
 
 import { mount } from '@vue/test-utils';
-import { Button as TButton, Input as TInput } from 'tdesign-vue-next';
+import {
+  Button as TButton,
+  Input as TInput,
+  RadioGroup as TRadioGroup,
+} from 'tdesign-vue-next';
 import { describe, expect, it, vi } from 'vitest';
 
 import Button from '../button/button.vue';
 import Input from '../input/input.vue';
 import Select from '../select/select.vue';
+import Radio from '../radio/radio.vue';
 import Switch from '../switch/switch.vue';
+import { sanitizeAttrs } from '../utils/attrs';
 
 /**
  * 跨 UI 库 schema 兼容测试
@@ -158,5 +164,40 @@ describe('属性面板控件：旧 schema 的异常值归一化', () => {
       (item: any) => item.field,
     );
     expect(fields).not.toContain('props.autosize.minRows');
+  });
+});
+
+describe('sanitizeAttrs 只过滤、不注入默认值（回归）', () => {
+  it('空 attrs 不产生任何属性（此前误把按钮的 theme 回落写进了通用清洗器）', () => {
+    expect(sanitizeAttrs(TRadioGroup, {})).toEqual({});
+  });
+
+  it('属性面板风格的 radio 不会收到 theme=default', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const wrapper = mount(Radio as any, {
+      attrs: {
+        clearable: true,
+        modelValue: 'left',
+        options: [
+          { label: '左边', value: 'left' },
+          { label: '右边', value: 'right' },
+          { label: '顶部', value: 'top' },
+        ],
+        radioButton: true,
+      },
+      props: { componentSchema: schema('radio') },
+    });
+
+    // TDesign RadioGroup 的 theme 只接受 radio / button，缺省应为 radio
+    expect(wrapper.findComponent({ name: 'TRadioGroup' }).props('theme')).toBe(
+      'radio',
+    );
+    const warnings = warnSpy.mock.calls.filter((args) =>
+      String(args[0] ?? '').includes('validator check failed'),
+    );
+    expect(warnings).toEqual([]);
+
+    warnSpy.mockRestore();
   });
 });
