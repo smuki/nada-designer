@@ -20,9 +20,8 @@ const props = withDefaults(
   }>(),
   {
     cancelText: '关闭',
-    componentSchema: () => ({
-      type: 'modal',
-    }),
+    // 缺省视为「直接使用」（设计器外壳的预览/动作弹窗），走懒渲染与 title 回退
+    componentSchema: undefined,
     hideConfirm: false,
     modelValue: false,
     okText: '确定',
@@ -33,11 +32,22 @@ const props = withDefaults(
 const emit = defineEmits(['ok', 'close', 'update:modelValue']);
 // 定义 props
 const attrs = useAttrs();
-const dialogProps = computed(() =>
-  sanitizeAttrs(TDialog, attrs as Record<string, unknown>),
-);
+const dialogProps = computed(() => {
+  const raw = sanitizeAttrs(TDialog, attrs as Record<string, unknown>);
+  // TDesign Dialog 用 header 而不是 title；title 仅用于直接使用时的标题回退
+  delete raw.title;
+  return raw;
+});
+
+// 组件面板场景取 schema label；设计器预览/动作弹窗等直接使用场景取 title
+const dialogHeader = computed(() => {
+  return props.componentSchema?.label ?? (attrs.title as string) ?? '';
+});
 
 const children = computed(() => props.componentSchema?.children ?? []);
+
+// 设计器外壳直接使用弹窗（预览、动作配置等）时懒渲染，避免隐藏弹窗提前挂载重内容
+const isDirectUse = computed(() => !props.componentSchema);
 
 function handleOk() {
   emit('ok');
@@ -56,20 +66,24 @@ function updateVisible(value: boolean) {
   <TDialog
     v-bind="dialogProps"
     :visible="props.modelValue"
-    :header="props.componentSchema?.label ?? ''"
+    :header="dialogHeader"
     :width="props.width"
     attach="body"
     :destroy-on-close="true"
+    :lazy="isDirectUse"
     @update:visible="updateVisible"
   >
-    <slot name="edit-node">
-      <template v-if="children.length > 0">
-        <slot
-          v-for="node in children"
-          name="node"
-          :component-schema="node"
-        ></slot>
-      </template>
+    <!-- 直接使用场景（预览弹窗、动作配置弹窗）依赖默认插槽，需优先渲染 -->
+    <slot>
+      <slot name="edit-node">
+        <template v-if="children.length > 0">
+          <slot
+            v-for="node in children"
+            name="node"
+            :component-schema="node"
+          ></slot>
+        </template>
+      </slot>
     </slot>
     <template #footer>
       <div class="ep-tdesign-modal-footer">

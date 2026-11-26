@@ -21,5 +21,8 @@ const bindProps = computed(() =>
 </script>
 
 <template>
-  <TButton v-bind="bindProps">{{ props.componentSchema?.label }}</TButton>
+  <TButton v-bind="bindProps">
+    <!-- 设计器头部等场景会直接使用该组件并传默认插槽（图标 + 文案），需优先渲染插槽 -->
+    <slot>{{ props.componentSchema?.label }}</slot>
+  </TButton>
 </template>

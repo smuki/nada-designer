@@ -14,6 +14,8 @@
 - 修复 TDesign tabs / collapse 在预览态被误判为设计态导致不渲染的问题
 - 修复跨 UI 库 schema 的旧属性值（如 	ype="primary"、size="middle"、layout="horizontal"）触发 TDesign prop 校验告警的问题
 - 修复属性面板布尔开关（switch）收到旧 schema 对象值（如 element 的 utosize）时的类型告警，并修正 textarea 的 autosize 默认值与编辑器配置
+- 修复设计器头部「预览/保存」按钮不显示：button 包装补默认插槽转发，无 theme 时回落到中性描边样式
+- 修复设计器预览/动作配置弹窗内容为空：modal 包装补默认插槽转发与 title 回退，直接使用场景改为懒渲染
 
 ### ✅ Tests
 

@@ -5,6 +5,7 @@ import { Button as TButton } from 'tdesign-vue-next';
 import { describe, expect, it, vi } from 'vitest';
 import { h, nextTick } from 'vue';
 
+import Button from '../button/button.vue';
 import Card from '../card/card';
 import Col from '../col/col';
 import Collapse from '../collapse/collapse';
@@ -177,6 +178,20 @@ describe('modal 容器', () => {
     expect(wrapper.emitted('update:modelValue')?.at(-1)?.[0]).toBe(false);
   });
 
+  it('隐藏状态懒渲染：未打开时不挂载内容（避免提前挂载 Monaco 等重组件）', async () => {
+    const wrapper = mount(Modal as any, {
+      global: { stubs: { teleport: true } },
+      props: { modelValue: false },
+      slots: {
+        default: () => h('div', { class: 'lazy-guard-marker' }, 'hidden'),
+      },
+    });
+
+    await nextTick();
+    expect(wrapper.find('.lazy-guard-marker').exists()).toBe(false);
+    wrapper.unmount();
+  });
+
   it('确认/取消按钮派发 ok / close 事件', async () => {
     const wrapper = mount(Modal as any, {
       props: { componentSchema: modalSchema, modelValue: true },
@@ -265,5 +280,54 @@ describe('card / row / col 容器', () => {
     expect(wrapper.findComponent({ name: 'TCol' }).props('span')).toBe(8);
     expect(wrapper.find('.pane-child').exists()).toBe(true);
     warnSpy.mockRestore();
+  });
+});
+
+describe('直接使用（设计器外壳）时的插槽与标题', () => {
+  it('button：渲染默认插槽内容（头部「预览/保存」按钮靠插槽传图标与文案）', () => {
+    const wrapper = mount(Button as any, {
+      props: { componentSchema: { label: '兜底文案', type: 'button' } },
+      slots: { default: () => '插槽文案' },
+    });
+
+    expect(wrapper.text()).toContain('插槽文案');
+    expect(wrapper.text()).not.toContain('兜底文案');
+  });
+
+  it('button：无插槽时回退到 componentSchema.label', () => {
+    const wrapper = mount(Button as any, {
+      props: { componentSchema: { label: '兜底文案', type: 'button' } },
+    });
+
+    expect(wrapper.text()).toContain('兜底文案');
+  });
+
+  it('modal：无 componentSchema 时 header 回退到 title，并渲染默认插槽', async () => {
+    const wrapper = mount(Modal as any, {
+      attrs: { title: '预览' },
+      props: { modelValue: false },
+      slots: {
+        default: () => h('div', { class: 'modal-slot-content' }, '弹窗内容'),
+      },
+    });
+
+    // 直接使用时为懒渲染：需要真实打开一次才会挂载内容
+    await wrapper.setProps({ modelValue: true });
+    await nextTick();
+    await nextTick();
+
+    // 直接使用场景的标题来自 attrs.title
+    expect(wrapper.findComponent({ name: 'TDialog' }).props('header')).toBe(
+      '预览',
+    );
+
+    // Teleport 到 body，从 document 查询
+    const dialogs = document.body.querySelectorAll('.t-dialog__ctx');
+    const dialog = Array.from(dialogs).at(-1) as HTMLElement;
+    expect(dialog.querySelector('.modal-slot-content')?.textContent).toBe(
+      '弹窗内容',
+    );
+
+    wrapper.unmount();
   });
 });

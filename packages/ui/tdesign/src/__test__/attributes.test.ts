@@ -51,6 +51,25 @@ describe('属性兼容：旧库枚举值归一化', () => {
     expect(dashed.findComponent(TButton).props('variant')).toBe('dashed');
   });
 
+  it('button：未指定 theme 时回落到 default（避免默认渲染成 primary 蓝色）', () => {
+    const wrapper = mount(Button as any, {
+      attrs: {},
+      props: { componentSchema: schema('button') },
+    });
+
+    expect(wrapper.findComponent(TButton).props('theme')).toBe('default');
+    expect(wrapper.findComponent(TButton).props('variant')).toBe('outline');
+  });
+
+  it('button：显式 theme 不被覆盖（画布按钮默认 primary）', () => {
+    const wrapper = mount(Button as any, {
+      attrs: { theme: 'primary' },
+      props: { componentSchema: schema('button') },
+    });
+
+    expect(wrapper.findComponent(TButton).props('theme')).toBe('primary');
+  });
+
   it('button：原生 type=submit 保留', () => {
     const wrapper = mount(Button as any, {
       attrs: { type: 'submit' },

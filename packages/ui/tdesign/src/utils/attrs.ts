@@ -68,6 +68,16 @@ export function sanitizeAttrs(component: any, attrs: AnyProps): AnyProps {
     result[key] = value;
   });
 
+  // TDesign Button 在 theme 缺省且 variant=base 时会回退成 primary（蓝色实心），
+  // 而设计器头部等直接使用场景期望中性按钮，这里显式回落到 default
+  if (result.theme === undefined) {
+    // 中性按钮对齐 element/antd 的「白底描边」观感（TDesign 的 default+base 是灰底填充）
+    result.theme = 'default';
+    if (result.variant === undefined) {
+      result.variant = 'outline';
+    }
+  }
+
   return result;
 }
 
@@ -102,6 +112,16 @@ export function normalizeButtonAttrs(attrs: AnyProps): AnyProps {
       }
     } else if (BUTTON_THEME_MAP[type] && result.theme === undefined) {
       result.theme = BUTTON_THEME_MAP[type];
+    }
+  }
+
+  // TDesign Button 在 theme 缺省且 variant=base 时会回退成 primary（蓝色实心），
+  // 而设计器头部等直接使用场景期望中性按钮，这里显式回落到 default
+  if (result.theme === undefined) {
+    // 中性按钮对齐 element/antd 的「白底描边」观感（TDesign 的 default+base 是灰底填充）
+    result.theme = 'default';
+    if (result.variant === undefined) {
+      result.variant = 'outline';
     }
   }
 
