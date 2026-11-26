@@ -146,7 +146,7 @@ function isBusinessFieldMove(event: any): boolean {
   return Boolean(
     data?.id &&
       data?.field &&
-      designer.businessFields.fieldMap.value.has(data.field),
+      designer.businessFields.propertyMap.value.has(data.field),
   );
 }
 
@@ -216,12 +216,12 @@ function handleBusinessFieldMove(event: any) {
  * @param event Sortable add 事件
  */
 function handleBusinessFieldDrop(event: any) {
-  const meta = event.clonedData?.__businessField as Property | undefined;
+  const meta = event.clonedData?.__businessProperty as Property | undefined;
   const list = getTargetList();
   const index = list.findIndex(
     (item: any) =>
-      item?.__businessField?.field === meta?.field &&
-      Boolean(item?.__businessField),
+      item?.__businessProperty?.field === meta?.field &&
+      Boolean(item?.__businessProperty),
   );
   if (!meta || index === -1) return;
 
@@ -229,7 +229,7 @@ function handleBusinessFieldDrop(event: any) {
   const scopeId = getTargetScopeId();
   const result: { message?: string; node?: ComponentSchema; ok: boolean } =
     scopeId
-      ? designer.businessFields.checkField(meta, scopeId)
+      ? designer.businessFields.checkProperty(meta, scopeId)
       : { message: '未找到业务对象作用域', ok: false };
 
   if (!result.ok || !result.node) {
@@ -272,7 +272,7 @@ function nextFormName(): string {
 function handleDragAdd(event: any) {
   if (
     designer.designMode === 'controlled' &&
-    !event.clonedData?.__businessField &&
+    !event.clonedData?.__businessProperty &&
     isBusinessFieldMove(event)
   ) {
     handleBusinessFieldMove(event);
@@ -281,7 +281,7 @@ function handleDragAdd(event: any) {
 
   if (
     designer.designMode === 'controlled' &&
-    event.clonedData?.__businessField
+    event.clonedData?.__businessProperty
   ) {
     handleBusinessFieldDrop(event);
     return;

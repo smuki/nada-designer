@@ -3,8 +3,8 @@
 
 输入：propertySet.raw.json（原始接口响应，已随仓库保存）
 输出：
-  field-meta.mock.json   按规格书 6.3 精简后的 Property 列表（含统计与被跳过项）
-  field-meta.demo.json   用于快速验证设计器的一组报销单常用字段
+  property.mock.json   按规格书 6.3 精简后的 Property 列表（含统计与被跳过项）
+  property.demo.json   用于快速验证设计器的一组报销单常用字段
   README.md              说明与统计
 
 运行：python build_mock.py
@@ -126,16 +126,16 @@ def convert(item):
 
 def main():
     items = load_raw()
-    fields, skipped = [], []
+    properties, skipped = [], []
     for item in items:
         field, skip = convert(item)
         if field:
-            fields.append(field)
+            properties.append(field)
         else:
             skipped.append(skip)
 
-    type_counter = Counter(f["type"] for f in fields)
-    group_counter = Counter(f["group"] for f in fields)
+    type_counter = Counter(f["type"] for f in properties)
+    group_counter = Counter(f["group"] for f in properties)
 
     mock = {
         "businessObject": "expense",
@@ -143,24 +143,24 @@ def main():
         "note": "由 build_mock.py 生成；businessObject 为占位值，可替换为真实业务对象标识",
         "stats": {
             "total": len(items),
-            "supported": len(fields),
+            "supported": len(properties),
             "skipped": len(skipped),
             "byType": dict(sorted(type_counter.items(), key=lambda kv: -kv[1])),
         },
-        "fields": fields,
+        "properties": properties,
         "skipped": skipped,
     }
-    with open(os.path.join(BASE_DIR, "field-meta.mock.json"), "w", encoding="utf-8") as f:
+    with open(os.path.join(BASE_DIR, "property.mock.json"), "w", encoding="utf-8") as f:
         json.dump(mock, f, ensure_ascii=False, indent=2)
 
-    by_name = {f["field"]: f for f in fields}
+    by_name = {f["field"]: f for f in properties}
     demo = [by_name[n] for n in DEMO_NAMES if n in by_name]
-    with open(os.path.join(BASE_DIR, "field-meta.demo.json"), "w", encoding="utf-8") as f:
+    with open(os.path.join(BASE_DIR, "property.demo.json"), "w", encoding="utf-8") as f:
         json.dump(
             {
                 "businessObject": "expense",
                 "note": "报销单常用字段子集，用于快速验证设计器拖拽/属性面板",
-                "fields": demo,
+                "properties": demo,
             },
             f,
             ensure_ascii=False,
@@ -187,8 +187,8 @@ def main():
 | 文件 | 说明 |
 |---|---|
 | `propertySet.raw.json` | 接口原始响应（未改动） |
-| `field-meta.mock.json` | 全量精简后的 Property（含 skipped 明细与统计） |
-| `field-meta.demo.json` | 报销单常用字段子集（约 {len(demo)} 个），用于快速验证 |
+| `property.mock.json` | 全量精简后的 Property（含 skipped 明细与统计） |
+| `property.demo.json` | 报销单常用字段子集（约 {len(demo)} 个），用于快速验证 |
 | `build_mock.py` | 字段转换脚本，可重跑 |
 | `specificationGroups.raw.json` | 单据模板接口原始响应（35 个模板 / 748 个控件） |
 | `template-analysis.md` | 模板分析：控件分布、能力映射、能否复刻的结论 |
@@ -207,7 +207,7 @@ def main():
 ## 统计
 
 - 原始字段：{len(items)}
-- 可用字段：{len(fields)}；跳过：{len(skipped)}
+- 可用字段：{len(properties)}；跳过：{len(skipped)}
 - 分组数：{len(group_counter)}
 
 ### 类型分布

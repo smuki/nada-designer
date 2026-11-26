@@ -3,7 +3,7 @@
 
 输入：
   specs/mocks/specificationGroups.raw.json  模板原始数据
-  specs/mocks/field-meta.mock.json          业务字段元数据（取 ref 的 entity）
+  specs/mocks/property.mock.json          业务字段元数据（取 ref 的 entity）
 输出：
   examples/src/views/examples/staticFieldForm/fixtures/*.ts   每个模板一个 fixture
   examples/src/views/examples/staticFieldForm/registry.ts     示例注册表（菜单/路由由它生成）
@@ -214,10 +214,10 @@ def main():
         os.path.join(BASE_DIR, "specificationGroups.raw.json"), "r", encoding="utf-8"
     ) as f:
         data = json.load(f)
-    with open(os.path.join(BASE_DIR, "field-meta.mock.json"), "r", encoding="utf-8") as f:
+    with open(os.path.join(BASE_DIR, "property.mock.json"), "r", encoding="utf-8") as f:
         field_meta = json.load(f)
 
-    entities = {item["field"]: item.get("entity") for item in field_meta["fields"]}
+    entities = {item["field"]: item.get("entity") for item in field_meta["properties"]}
 
     templates = []
     for group in data.get("items") or []:

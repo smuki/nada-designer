@@ -15,7 +15,7 @@
       "boolean": 13
     }
   },
-  "fields": [
+  "properties": [
     {
       "field": "detailStatus",
       "label": "费用明细状态",

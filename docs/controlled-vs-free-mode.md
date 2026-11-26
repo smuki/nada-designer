@@ -96,7 +96,7 @@ mode?: 'field' | 'input' | 'layout'   // 默认 'input'
 |---|---|---|---|
 | `'input'` | 自由模式「组件」图标 | 组件注册表分组 | `generateNewSchema` + `splice` |
 | `'layout'` | **两模式共用**「布局」图标 | 注册表 ∩ `['card','form','row','tabs']` | `generateNewSchema` + `splice` |
-| `'field'` | 受控模式「添加字段」图标 | `businessFields.fields` | `businessFields.insertField` + 落点校验 |
+| `'field'` | 受控模式「添加字段」图标 | `businessFields.properties` | `businessFields.insertProperty` + 落点校验 |
 
 `activityBar/index.vue:120` 的注释写得很直白：`// 受控模式：添加字段入口（复用同一弹出框，仅内容不同）`。
 
@@ -132,7 +132,7 @@ mode?: 'field' | 'input' | 'layout'   // 默认 'input'
 
 - 作用域键 = **最近的 `form` 祖先节点**，找不到回退页面根节点：`businessFields.ts:87-102` `resolveScopeNode`、`nodes.vue:99-128`。
 - 唯一键 = `(作用域节点 id, field)`。
-- 三层执行点：**面板置灰**（预览级）→ **落点校验**（拖入 / 跨 form 移动）→ **点击插入前校验**（`checkField`）。失败时摘除占位节点、弹 warning、**不写撤销栈**。
+- 三层执行点：**面板置灰**（预览级）→ **落点校验**（拖入 / 跨 form 移动）→ **点击插入前校验**（`checkProperty`）。失败时摘除占位节点、弹 warning、**不写撤销栈**。
 
 ---
 
@@ -158,9 +158,9 @@ setSelectedNode + revoke.push('拖入组件', true)  nodes.vue:301-305
 ```
 「添加字段」图标 → pickerMode='field'           activityBar/index.vue:121
   ↓
-ComponentPicker(mode=field) 读 businessFields.fields（平铺 + 类型下拉）
+ComponentPicker(mode=field) 读 businessFields.properties（平铺 + 类型下拉）
   ↓ 拖拽开始，cloneItem() 产出占位节点
-{ __businessField: meta, id: '__pending_<field>', type: '__pending' }
+{ __businessProperty: meta, id: '__pending_<field>', type: '__pending' }
                                                componentPicker.vue:234-242
   ↓ 先过 onMove 预判（跨 list 才校验）
 nodes.vue:157 handleDragMove → 目标作用域已有同 field → return false（拖不进去）
@@ -169,8 +169,8 @@ nodes.vue:282 handleDragAdd → handleBusinessFieldDrop
   ↓
 scopeId = getTargetScopeId()（最近 form 祖先）  nodes.vue:99-111
   ↓
-designer.businessFields.checkField(meta, scopeId)   useBusinessFields.ts:325
-   ├ buildNode: mapFieldDataType → 组件 defaultSchema 深拷贝
+designer.businessFields.checkProperty(meta, scopeId)   useBusinessFields.ts:325
+   ├ buildNode: mapPropertyType → 组件 defaultSchema 深拷贝
    │            id = `${scopeId}_${field}`，field/label 覆写
    │            props 按该组件 config.attribute 白名单过滤预设值
    ├ hasFieldInScope(scope, field) → 重复则拒绝
@@ -221,7 +221,7 @@ function copy(selectedNode) {
 
 ## 6. 元数据层的状态机
 
-`useBusinessFields`（`packages/hooks/src/designer/useBusinessFields.ts`）在**两种模式下都会创建**（`designer.vue:104`），但只有受控模式会真正 `load`。自由模式拿到的是一个 `fields = []`、`status = 'empty'` 的空上下文。
+`useBusinessFields`（`packages/hooks/src/designer/useBusinessFields.ts`）在**两种模式下都会创建**（`designer.vue:104`），但只有受控模式会真正 `load`。自由模式拿到的是一个 `properties = []`、`status = 'empty'` 的空上下文。
 
 状态：`'empty' | 'loading' | 'ready' | 'error'`（`:20-21`）
 
@@ -234,7 +234,7 @@ empty ──load(modelId)──> loading ──成功──> ready
 
 几个值得注意的实现细节：
 
-- **跨实例内存缓存**：`const fieldsCache = new Map<string, Property[]>()`（`:62-63`），模块级、跨实例共享，只读。
+- **跨实例内存缓存**：`const propertiesCache = new Map<string, Property[]>()`（`:62-63`），模块级、跨实例共享，只读。
 - **请求令牌**：`let token = 0`（`:174`），切换业务对象时丢弃过期响应（`:219,226,243`）。
 - **单条失败不影响其余**：`validateProperty`（`:71-156`）逐条校验，非法条目推 `issues` + `console.warn`，其余照常进入面板。
 - **`active === false` 的字段**：不进入面板，但**不报 issue**（`:134-137`），意图是"仍记录在元数据中，用于漂移提示"。
@@ -262,7 +262,7 @@ function getPlacedFields(nodeId?: string): string[] {
 而 `findSchemas`（`data.ts:595-634`）是**无边界 DFS**，会继续下钻 `children` 和 `slots`。这意味着：父 form 的"已放置字段"集合会**包含嵌套子 form 里的同名字段**，导致
 
 - 面板过度置灰（子 form 里放过的字段，父 form 也显示"已放置"）；
-- 落点过度拒绝（`checkField` 走同一个 `hasFieldInScope`）。
+- 落点过度拒绝（`checkProperty` 走同一个 `hasFieldInScope`）。
 
 对比 `validateControlledPage`（`businessFields.ts:248`）——它用 `const nextScope = node.type === 'form' && node.id ? node.id : scopeId;` 正确维护了作用域栈。**同一条规则，导入校验和落点校验口径不一致。**
 
@@ -363,7 +363,7 @@ useBusinessFields.ts:264-267 retry(): if (!modelId.value) return false → 重�
 
 | 有测试 | 无测试 |
 |---|---|
-| `useBusinessFields.test.ts`（加载/缓存/令牌/`checkField`/`insertField`/`buildNode`） | `ComponentPicker` 三种模式内容切换、批量插入、占位克隆 |
+| `useBusinessFields.test.ts`（加载/缓存/令牌/`checkProperty`/`insertProperty`/`buildNode`） | `ComponentPicker` 三种模式内容切换、批量插入、占位克隆 |
 | `componentView.test.ts`（**死代码**） | `nodes.vue` 落点摘除/回滚、跨 form 预判与 id 重算 |
 | `attribute.test.ts`（field 只读 / 业务字段行 / 根 name 隐藏） | 模式冻结告警、首屏门控、`importSchema` 拒绝、`setData` 回滚 |
 | `outline.test.ts`（`draggable` 开关） | `sourceCode` 只读、`previewWidgets` 复制隐藏 |
@@ -383,7 +383,7 @@ if (meta.active === false) {
 }
 ```
 
-注释说"仍记录"，实际是**直接 `return`，不 push、也不记 issues**，该字段从 `fields` 里彻底消失。于是属性面板对"元数据里存在但已停用"的字段会显示「（元数据中不存在）」（`attribute.vue:109`），与注释意图相反，也和 spec §12 的"漂移提示"语义不符。
+注释说"仍记录"，实际是**直接 `return`，不 push、也不记 issues**，该字段从 `properties` 里彻底消失。于是属性面板对"元数据里存在但已停用"的字段会显示「（元数据中不存在）」（`attribute.vue:109`），与注释意图相反，也和 spec §12 的"漂移提示"语义不符。
 
 ### 7.11 `group` 在归一化时被丢弃，类型下拉永远只有类型名
 
@@ -399,7 +399,7 @@ const title = meta.group?.trim() || FIELD_TYPE_LABELS[meta.type] || '其他';  /
 
 ### 7.12 mock 生成脚本会回退已完成的改名
 
-`specs/mocks/build_mock.py` 仍输出 `"businessObject": "expense"`（`:141`、`:161`），而仓库里已提交的 `specs/mocks/field-meta.mock.json` / `field-meta.demo.json` 已被改成 `"modelId"`。重跑该脚本会把改名结果覆盖回去，破坏 spec P0 的"脚本可复现"要求。
+`specs/mocks/build_mock.py` 仍输出 `"businessObject": "expense"`（`:141`、`:161`），而仓库里已提交的 `specs/mocks/property.mock.json` / `property.demo.json` 已被改成 `"modelId"`。重跑该脚本会把改名结果覆盖回去，破坏 spec P0 的"脚本可复现"要求。
 
 ### 7.13 `previewWidgets` 的复制按钮与 spec 一致，但删除两模式都有
 

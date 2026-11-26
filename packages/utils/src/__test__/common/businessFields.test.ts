@@ -5,7 +5,7 @@ import {
   collectComponentRefIds,
   getFieldPresets,
   hasFieldInScope,
-  mapFieldDataType,
+  mapPropertyType,
   resolveScopeNode,
   rewriteComponentRefs,
   validateControlledPage,
@@ -21,18 +21,18 @@ function makeNumberBase() {
   };
 }
 
-describe('mapFieldDataType 函数测试', () => {
+describe('mapPropertyType 函数测试', () => {
   it('按映射表转成组件层 type', () => {
-    expect(mapFieldDataType('text')).toBe('input');
-    expect(mapFieldDataType('number')).toBe('number');
-    expect(mapFieldDataType('money')).toBe('number');
-    expect(mapFieldDataType('date')).toBe('date');
-    expect(mapFieldDataType('boolean')).toBe('switch');
-    expect(mapFieldDataType('ref')).toBe('select');
+    expect(mapPropertyType('text')).toBe('input');
+    expect(mapPropertyType('number')).toBe('number');
+    expect(mapPropertyType('money')).toBe('number');
+    expect(mapPropertyType('date')).toBe('date');
+    expect(mapPropertyType('boolean')).toBe('switch');
+    expect(mapPropertyType('ref')).toBe('select');
   });
 
   it('list 暂不支持，返回 null', () => {
-    expect(mapFieldDataType('list')).toBe(null);
+    expect(mapPropertyType('list')).toBe(null);
   });
 });
 

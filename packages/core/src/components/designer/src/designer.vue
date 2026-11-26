@@ -348,17 +348,21 @@ function getData(): PageSchema {
 function handleSave() {
   // 受控模式：节点字段不在元数据中仅警告，不阻止保存（规格 §11.3 / D27）
   if (designMode === 'controlled') {
-    const knownFields = businessFields.fieldMap.value;
-    const unknownFields = new Set<string>();
+    const knownProperties = businessFields.propertyMap.value;
+    const unknownProperties = new Set<string>();
     findSchemas(getData().schemas, (node) => {
-      if (node.input === true && node.field && !knownFields.has(node.field)) {
-        unknownFields.add(node.field);
+      if (
+        node.input === true &&
+        node.field &&
+        !knownProperties.has(node.field)
+      ) {
+        unknownProperties.add(node.field);
       }
       return false;
     });
-    if (unknownFields.size > 0) {
+    if (unknownProperties.size > 0) {
       console.warn(
-        `[受控字段] 以下字段不在当前业务对象元数据中：${[...unknownFields].join('、')}`,
+        `[受控字段] 以下字段不在当前业务对象元数据中：${[...unknownProperties].join('、')}`,
       );
     }
   }

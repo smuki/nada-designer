@@ -10,7 +10,7 @@ import { pluginManager } from '@nada-designer/manager';
 import {
   findSchemaInfoById,
   generateNewSchema,
-  mapFieldDataType,
+  mapPropertyType,
 } from '@nada-designer/utils';
 import { useStorage } from '@vueuse/core';
 
@@ -68,13 +68,13 @@ const ALL_CATEGORY = '全部';
 const category = ref(ALL_CATEGORY);
 const categoryOptions = computed(() => {
   const titles: string[] = [];
-  businessFields.fields.value.forEach((meta) => {
+  businessFields.properties.value.forEach((meta) => {
     const title = meta.group?.trim() || FIELD_TYPE_LABELS[meta.type] || '其他';
     if (!titles.includes(title)) titles.push(title);
   });
   return [
     {
-      label: `全部（${businessFields.fields.value.length}）`,
+      label: `全部（${businessFields.properties.value.length}）`,
       value: ALL_CATEGORY,
     },
     ...titles.map((title) => ({ label: title, value: title })),
@@ -112,7 +112,7 @@ function toComponentItem(schema: ComponentSchema): PickerItem {
  * @param meta 业务字段元数据
  */
 function toFieldItem(meta: Property): PickerItem {
-  const componentType = mapFieldDataType(meta.type);
+  const componentType = mapPropertyType(meta.type);
   return {
     field: meta,
     icon: componentType ? pluginManager.component.getIcon(componentType) : '',
@@ -125,7 +125,7 @@ function toFieldItem(meta: Property): PickerItem {
 const fieldGroups = computed<PickerGroup[]>(() => {
   const groupMap = new Map<string, PickerItem[]>();
 
-  businessFields.fields.value.forEach((meta) => {
+  businessFields.properties.value.forEach((meta) => {
     if (!meta.label.includes(keyword.value)) return;
     const title = meta.group?.trim() || FIELD_TYPE_LABELS[meta.type] || '其他';
     if (category.value !== ALL_CATEGORY && title !== category.value) return;
@@ -191,7 +191,7 @@ const orderedSelectedKeys = computed(() => {
   const allKeys: string[] = [];
 
   if (isFieldMode.value) {
-    businessFields.fields.value.forEach((meta) => allKeys.push(meta.field));
+    businessFields.properties.value.forEach((meta) => allKeys.push(meta.field));
   } else {
     groups.value.forEach((group) => {
       group.list.forEach((item) => allKeys.push(item.type));
@@ -234,7 +234,7 @@ function toggleItem(item: PickerItem) {
 function cloneItem(item: PickerItem): ComponentSchema {
   if (item.field) {
     return {
-      __businessField: item.field,
+      __businessProperty: item.field,
       id: `__pending_${item.field.field}`,
       label: item.label,
       type: '__pending',
@@ -275,9 +275,9 @@ function handleConfirm() {
 
   if (isFieldMode.value) {
     orderedSelectedKeys.value.forEach((key) => {
-      const meta = businessFields.fieldMap.value.get(key);
+      const meta = businessFields.propertyMap.value.get(key);
       if (!meta) return;
-      const result = businessFields.insertField(meta, {
+      const result = businessFields.insertProperty(meta, {
         onInserted: (node) => {
           targetId = node.id;
           lastNode = node;

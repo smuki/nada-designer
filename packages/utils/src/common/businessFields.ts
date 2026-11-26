@@ -1,8 +1,8 @@
 import type { ActionsModel } from '@nada-designer/manager';
 import type {
   ComponentSchema,
-  FieldDataType,
   Property,
+  PropertyType,
 } from '@nada-designer/types';
 
 import { deepClone, findSchemas, getMatchedById } from './data';
@@ -16,7 +16,7 @@ const PRESET_WHITELIST_EXCEPTIONS = new Set(['entity']);
  * @description 见 specs/controlled-mode.md §6.3.1，暂不支持的类型返回 null
  * @param dataType 元数据数据类型
  */
-export function mapFieldDataType(dataType: FieldDataType): null | string {
+export function mapPropertyType(dataType: PropertyType): null | string {
   switch (dataType) {
     case 'boolean': {
       return 'switch';

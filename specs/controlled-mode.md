@@ -229,7 +229,7 @@ businessFieldLoader?: (modelId: string) => Promise<Property[]>;
 5. 成功 → 校验（6.4）→ 生成面板业务字段项；
 6. 按 `modelId` 做内存缓存（只读、可跨实例共享），避免重复打开闪烁；
 7. **并发切换**：以最后一次请求为准，用递增令牌丢弃过期响应；
-8. **loader 契约**：返回 `Property[]`。接口/mock 可能包一层 `{ modelId, fields, ... }`（见 `specs/mocks/*`），**解包由调用侧完成**，loader 自身返回数组。
+8. **loader 契约**：返回 `Property[]`。接口/mock 可能包一层 `{ modelId, properties, ... }`（见 `specs/mocks/*`），**解包由调用侧完成**，loader 自身返回数组。
 
 ### 6.3 元数据协议（Property，8 项）
 
@@ -260,7 +260,7 @@ businessFieldLoader?: (modelId: string) => Promise<Property[]>;
 **不写入元数据的属性**（放到表单级配置，见 10.3）：必填、默认值、占位、隐藏、可编辑、长度/范围、校验规则。
 **丢弃的属性**：`cnLabel`（与 label 重复）、`enLabel`（后续 i18n 再加）、`canAsDimension`（分析用）、`elemType`（明细/附件 v1 不支持）、专用业务类型（invoice/permitOrder 等，遇到跳过告警）。
 
-> **数据现状（v0.16 核对）**：`specs/mocks/field-meta.mock.json` 的 361 个字段只出现 7 个键，**没有任何 `active: false` 样本**（原始 406 条全为 true）。因此「`active === false` 不进面板」这条需要 P1 补一条 mock 样本（工程项，见 §17.2）。
+> **数据现状（v0.16 核对）**：`specs/mocks/property.mock.json` 的 361 个字段只出现 7 个键，**没有任何 `active: false` 样本**（原始 406 条全为 true）。因此「`active === false` 不进面板」这条需要 P1 补一条 mock 样本（工程项，见 §17.2）。
 
 #### 6.3.1 数据类型 → 组件层控件
 
@@ -542,7 +542,7 @@ interface PageSchema {
 
 | 文件 | 改动点 |
 |---|---|
-| `packages/types/src/designer.ts` | `DesignerProps` 增 `designMode` / `modelId` / `businessFieldLoader`；新增 `Property` 与 `FieldDataType` |
+| `packages/types/src/designer.ts` | `DesignerProps` 增 `designMode` / `modelId` / `businessFieldLoader`；新增 `Property` 与 `PropertyType` |
 | `packages/types/src/nada-designer.ts` | `PageSchema` 增 `modelId`（该接口无索引签名，必须显式加） |
 | `packages/core/.../designer/src/designer.vue` | props 默认值与模式冻结、`designMode` 快照下发、元数据 Loading/错误重试门控、受控根 form（UI `defaultSchema` 深拷贝）、`setData` 后回填 modelId、新增 `setDataAsync`、源码面板只读联动 |
 | `packages/core/.../designer/hooks/useDesigner.ts` | 装配 `useBusinessFields`、默认 schema 实例化、modelId 写入/回填、根 form、复制拦截参数 |
@@ -634,7 +634,7 @@ interface PageSchema {
 | 导入校验 | 受控重复 id/field → 拒绝并列出冲突 |
 | 大纲拖拽 | 受控下 `draggable` 关闭；自由模式不变 |
 | 源码只读 | 受控下源码面板只读 |
-| loader 契约 | 解包 `{modelId, fields}`；缓存命中不重复调用；令牌丢弃过期响应 |
+| loader 契约 | 解包 `{modelId, properties}`；缓存命中不重复调用；令牌丢弃过期响应 |
 | 模式冻结/双实例 | prop 变更只告警、行为不变；free + controlled 两实例互不影响 |
 | form 命名 | 根 form `default`；拖入 form 自动 `form_N`；重名被拒 |
 | 表单级配置 | required / defaultValue / placeholder / hidden / 长度 / min-max 落到节点 |

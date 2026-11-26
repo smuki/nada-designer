@@ -24,7 +24,7 @@ async function businessFieldLoader(
     `/api/univ/form-property?modelId=${encodeURIComponent(modelId)}`,
   );
   const data = await res.json();
-  return data.fields;
+  return data.properties;
 }
 
 function handleSave(pageSchema: any) {
@@ -87,8 +87,8 @@ function handleSave(pageSchema: any) {
 ## 后端接口约定
 
 - 业务对象标识使用**模型主键 id**（`modelId`），页面 JSON 只存 `modelId`，不存租户与业务 `code`；
-- 建议接口：`GET /api/univ/form-property?modelId={modelId}`（租户从登录态/网关注入），返回 `{ modelId, fields: Property[] }`；
-- 设计器要求 loader 返回 **数组**，接口若包了一层 `fields`，由适配层解包；
+- 建议接口：`GET /api/univ/form-property?modelId={modelId}`（租户从登录态/网关注入），返回 `{ modelId, properties: Property[] }`；
+- 设计器要求 loader 返回 **数组**，接口若包了一层 `properties`，由适配层解包；
 - `code` 仅用于展示/兼容旧数据，可改名，不影响已保存页面。
 
 ## 限制（v1）

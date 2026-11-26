@@ -37,7 +37,7 @@ describe('validateProperty 函数测试', () => {
   it('非数组返回空并记录问题', () => {
     const result = validateProperty({});
 
-    expect(result.fields).toEqual([]);
+    expect(result.properties).toEqual([]);
     expect(result.issues.length).toBe(1);
   });
 
@@ -54,7 +54,7 @@ describe('validateProperty 函数测试', () => {
       getComponentConfig,
     );
 
-    expect(result.fields.map((item) => item.field)).toEqual(['ok']);
+    expect(result.properties.map((item) => item.field)).toEqual(['ok']);
     expect(result.issues.length).toBeGreaterThanOrEqual(4);
   });
 });
@@ -72,9 +72,9 @@ describe('useBusinessFields 函数测试', () => {
 
     expect(await bf.load('单据A')).toBe(true);
     expect(bf.status.value).toBe('ready');
-    expect(bf.fields.value.map((item) => item.field)).toEqual(['ok']);
-    expect(bf.fields.value[0].label).toBe('OK');
-    expect(bf.fieldMap.value.get('ok')?.label).toBe('OK');
+    expect(bf.properties.value.map((item) => item.field)).toEqual(['ok']);
+    expect(bf.properties.value[0].label).toBe('OK');
+    expect(bf.propertyMap.value.get('ok')?.label).toBe('OK');
     expect(loader).toHaveBeenCalledTimes(1);
 
     const cached = useBusinessFields(makePageSchema(), {
@@ -95,7 +95,7 @@ describe('useBusinessFields 函数测试', () => {
     });
 
     await bf.load('单据B');
-    expect(bf.fields.value).toEqual([]);
+    expect(bf.properties.value).toEqual([]);
     expect(bf.issues.value[0]?.message).toContain('不存在组件');
   });
 
@@ -138,7 +138,7 @@ describe('useBusinessFields 函数测试', () => {
 
     resolveA([{ field: 'fromA', label: 'A', type: 'text' }]);
     expect(await first).toBe(false);
-    expect(bf.fields.value.map((item) => item.field)).toEqual(['fromB']);
+    expect(bf.properties.value.map((item) => item.field)).toEqual(['fromB']);
     expect(bf.modelId.value).toBe('B');
   });
 
@@ -174,7 +174,7 @@ describe('useBusinessFields 函数测试', () => {
     });
 
     expect(await bf.load('单据H')).toBe(true);
-    expect(bf.fields.value.map((item) => item.field)).toEqual(['static']);
+    expect(bf.properties.value.map((item) => item.field)).toEqual(['static']);
   });
 
   it('buildNode：按映射类型构造节点并过滤预设 props', () => {
@@ -202,27 +202,27 @@ describe('useBusinessFields 函数测试', () => {
     expect(bf.getPlacedFields('in_1')).toEqual(['placed']);
   });
 
-  it('checkField：重复字段与不支持的类型返回失败原因', () => {
+  it('checkProperty：重复字段与不支持的类型返回失败原因', () => {
     const bf = useBusinessFields(makePageSchema(), { getComponentConfig });
 
-    const duplicated = bf.checkField(
+    const duplicated = bf.checkProperty(
       { field: 'placed', label: '已存在', type: 'text' },
       'root',
     );
     expect(duplicated.ok).toBe(false);
     expect(duplicated.message).toContain('已存在');
 
-    const unsupported = bf.checkField(
+    const unsupported = bf.checkProperty(
       { field: 'listField', label: '列表', type: 'list' },
       'root',
     );
     expect(unsupported.ok).toBe(false);
   });
 
-  it('checkField：通过时返回按作用域构造的节点', () => {
+  it('checkProperty：通过时返回按作用域构造的节点', () => {
     const bf = useBusinessFields(makePageSchema(), { getComponentConfig });
 
-    const result = bf.checkField(
+    const result = bf.checkProperty(
       { field: '新字段', label: '新字段', type: 'text' },
       'root',
     );
@@ -231,12 +231,12 @@ describe('useBusinessFields 函数测试', () => {
     expect(result.node?.field).toBe('新字段');
   });
 
-  it('insertField：插入到作用域并回调，重复时拒绝', () => {
+  it('insertProperty：插入到作用域并回调，重复时拒绝', () => {
     const pageSchema: any = makePageSchema();
     const bf = useBusinessFields(pageSchema, { getComponentConfig });
     const inserted: any[] = [];
 
-    const first = bf.insertField(
+    const first = bf.insertProperty(
       { field: 'u_销售单号', label: '销售单号', type: 'text' },
       { onInserted: (node) => inserted.push(node), targetId: 'root' },
     );
@@ -245,7 +245,7 @@ describe('useBusinessFields 函数测试', () => {
     expect(pageSchema.schemas[0].children[1].id).toBe('root_u_销售单号');
     expect(inserted).toHaveLength(1);
 
-    const second = bf.insertField(
+    const second = bf.insertProperty(
       { field: 'u_销售单号', label: '销售单号', type: 'text' },
       { targetId: 'root' },
     );

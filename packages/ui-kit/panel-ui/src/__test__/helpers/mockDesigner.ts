@@ -84,7 +84,7 @@ export function registerMockComponents() {
 
 export interface MockDesignerContextOptions {
   designMode?: 'controlled' | 'free';
-  fields?: Property[];
+  properties?: Property[];
   pageSchema?: any;
   placedFields?: string[];
   selectedNode?: ComponentSchema;
@@ -98,12 +98,12 @@ export function makeDesignerContext(
 ): any {
   const pageSchema = options.pageSchema ?? makePageSchema();
   const selectedNode = options.selectedNode ?? pageSchema.schemas[0];
-  const fields = options.fields ?? makeProperties();
+  const properties = options.properties ?? makeProperties();
   const placedFields = options.placedFields ?? [];
 
-  const fieldMap = computed(() => {
+  const propertyMap = computed(() => {
     const map = new Map<string, Property>();
-    fields
+    properties
       .filter((item) => item.active !== false)
       .forEach((item) => map.set(item.field, item));
     return map;
@@ -112,10 +112,10 @@ export function makeDesignerContext(
   const businessFields = {
     buildNode: () => null,
     modelId: ref('销售单据'),
-    checkField: () => ({ ok: true }),
+    checkProperty: () => ({ ok: true }),
     error: ref(null),
-    fieldMap,
-    fields: ref(fields.filter((item) => item.active !== false)),
+    propertyMap,
+    properties: ref(properties.filter((item) => item.active !== false)),
     getPlacedFields: () => placedFields,
     isFieldPlaced: (field: string) => placedFields.includes(field),
     isLoading: ref(false),

@@ -15,7 +15,7 @@ export interface TableMeta {
 /**
  * 业务字段数据类型（受控模式元数据协议）
  */
-export type FieldDataType =
+export type PropertyType =
   | 'boolean'
   | 'date'
   | 'list'
@@ -42,14 +42,14 @@ export interface Property {
   /** 数值精度（小数位），number / money 使用 */
   scale?: number;
   /** 数据类型 */
-  type: FieldDataType;
+  type: PropertyType;
   /** 单位（%、张、元…）；v1 不写入节点 props */
   unit?: string;
 }
 
 export interface DesignerProps {
   /** 业务字段元数据 loader（受控模式使用；可直接返回静态数组，便于测试/离线） */
-  businessFieldLoader?: (modelId: string) => Property[] | Promise<Property[]>;
+  businessFieldLoader?: (modelId: string) => Promise<Property[]> | Property[];
   canvasMode?: 'desktop' | 'mobile' | 'tablet';
   canvasPadding?: number | string;
   defaultSchema?: PageSchema;

@@ -29,7 +29,7 @@ const businessFields = designer.businessFields;
 /** 受控模式下只读展示的业务字段信息（含元数据是否存在） */
 const businessProperty = computed(() => {
   const field = selectedNode.value?.field;
-  return field ? businessFields.fieldMap.value.get(field) : undefined;
+  return field ? businessFields.propertyMap.value.get(field) : undefined;
 });
 
 const tableMeta = useTableMeta(pluginManager);

@@ -10,7 +10,7 @@ import { pluginManager } from '@nada-designer/manager';
 import {
   findSchemaInfoById,
   generateNewSchema,
-  mapFieldDataType,
+  mapPropertyType,
 } from '@nada-designer/utils';
 import { useStorage } from '@vueuse/core';
 
@@ -40,9 +40,9 @@ const getSchemaTypeList = computed(() => {
 
 /** 受控模式：业务字段平铺 + 搜索（v1 不做分组，规格 D43） */
 const businessFieldList = computed(() => {
-  const fields = businessFields.fields.value;
-  if (!keyword.value) return fields;
-  return fields.filter((item) => item.label.includes(keyword.value));
+  const properties = businessFields.properties.value;
+  if (!keyword.value) return properties;
+  return properties.filter((item) => item.label.includes(keyword.value));
 });
 
 /** 业务字段拖拽列表（本地 ref 承接，clone 只产出占位节点） */
@@ -72,7 +72,7 @@ function isFieldPlaced(field: string): boolean {
  */
 function createBusinessPlaceholder(meta: Property): ComponentSchema {
   return {
-    __businessField: meta,
+    __businessProperty: meta,
     id: `__pending_${meta.field}`,
     label: meta.label,
     type: '__pending',
@@ -117,7 +117,7 @@ watchEffect(() => {
  * @param type 元数据类型
  */
 function getFieldIcon(type: Property['type']): string {
-  const componentType = mapFieldDataType(type);
+  const componentType = mapPropertyType(type);
   return componentType
     ? pluginManager.component.getIcon(componentType)
     : 'icon--nada--component';
@@ -133,7 +133,7 @@ function handleFieldClick(meta: Property) {
     return false;
   }
 
-  const result = businessFields.insertField(meta, {
+  const result = businessFields.insertProperty(meta, {
     onInserted: (node) => {
       designer.setSelectedNode(node);
       revoke.push('插入业务字段', true);

@@ -1,7 +1,7 @@
 import type {
   ComponentSchema,
-  Property,
   PageSchema,
+  Property,
 } from '@nada-designer/types';
 
 import { computed, ref } from 'vue';
@@ -13,7 +13,7 @@ import {
   findSchemas,
   hasFieldInScope,
   isValidSchemaName,
-  mapFieldDataType,
+  mapPropertyType,
   resolveScopeNode,
 } from '@nada-designer/utils';
 
@@ -45,7 +45,7 @@ export interface UseBusinessFieldsOptions {
   /** 取当前 UI 库的组件配置；由调用方注入（hooks 不运行时依赖 manager） */
   getComponentConfig?: (type: string) => ComponentConfigLike | undefined;
   /** 业务字段元数据加载器（可直接返回静态数组，便于测试/离线） */
-  loader?: (modelId: string) => Property[] | Promise<Property[]>;
+  loader?: (modelId: string) => Promise<Property[]> | Property[];
 }
 
 /** 支持的数据类型（规格 §6.3.1） */
@@ -60,7 +60,7 @@ const FIELD_TYPES = new Set([
 ]);
 
 /** 元数据内存缓存（只读、跨实例共享） */
-const fieldsCache = new Map<string, Property[]>();
+const propertiesCache = new Map<string, Property[]>();
 
 /**
  * 校验并规范化元数据
@@ -71,14 +71,14 @@ const fieldsCache = new Map<string, Property[]>();
 export function validateProperty(
   rawList: unknown,
   getComponentConfig?: (type: string) => ComponentConfigLike | undefined,
-): { fields: Property[]; issues: BusinessFieldIssue[] } {
+): { issues: BusinessFieldIssue[]; properties: Property[] } {
   const issues: BusinessFieldIssue[] = [];
 
   if (!Array.isArray(rawList)) {
-    return { fields: [], issues: [{ message: '元数据不是数组' }] };
+    return { issues: [{ message: '元数据不是数组' }], properties: [] };
   }
 
-  const fields: Property[] = [];
+  const properties: Property[] = [];
   const seen = new Set<string>();
 
   rawList.forEach((raw, index) => {
@@ -112,7 +112,7 @@ export function validateProperty(
       return;
     }
 
-    const componentType = mapFieldDataType(type);
+    const componentType = mapPropertyType(type);
     if (!componentType) {
       issues.push({ field, message: '该数据类型暂不支持，已跳过' });
       return;
@@ -141,7 +141,7 @@ export function validateProperty(
         ? meta.label.trim()
         : field;
 
-    fields.push({
+    properties.push({
       active: true,
       entity: meta.entity,
       field,
@@ -152,7 +152,7 @@ export function validateProperty(
     });
   });
 
-  return { fields, issues };
+  return { issues, properties };
 }
 
 /**
@@ -166,7 +166,7 @@ export function useBusinessFields(
 ) {
   const modelId = ref<null | string>(null);
   const error = ref<null | string>(null);
-  const fields = ref<Property[]>([]);
+  const properties = ref<Property[]>([]);
   const issues = ref<BusinessFieldIssue[]>([]);
   const status = ref<BusinessFieldsStatus>('empty');
 
@@ -175,9 +175,9 @@ export function useBusinessFields(
 
   const isLoading = computed(() => status.value === 'loading');
   const isReady = computed(() => status.value === 'ready');
-  const fieldMap = computed(() => {
+  const propertyMap = computed(() => {
     const map = new Map<string, Property>();
-    fields.value.forEach((item) => map.set(item.field, item));
+    properties.value.forEach((item) => map.set(item.field, item));
     return map;
   });
 
@@ -195,14 +195,14 @@ export function useBusinessFields(
     if (!nextModelId) {
       status.value = 'empty';
       error.value = '未指定业务对象';
-      fields.value = [];
+      properties.value = [];
       return false;
     }
 
-    const cached = fieldsCache.get(nextModelId);
+    const cached = propertiesCache.get(nextModelId);
     if (cached && !loadOptions.force) {
       modelId.value = nextModelId;
-      fields.value = cached;
+      properties.value = cached;
       issues.value = [];
       error.value = null;
       status.value = 'ready';
@@ -212,7 +212,7 @@ export function useBusinessFields(
     if (!options.loader) {
       status.value = 'empty';
       error.value = '未提供 businessFieldLoader';
-      fields.value = [];
+      properties.value = [];
       return false;
     }
 
@@ -226,8 +226,8 @@ export function useBusinessFields(
       if (currentToken !== token) return false;
 
       const result = validateProperty(raw, options.getComponentConfig);
-      fieldsCache.set(nextModelId, result.fields);
-      fields.value = result.fields;
+      propertiesCache.set(nextModelId, result.properties);
+      properties.value = result.properties;
       issues.value = result.issues;
       status.value = 'ready';
 
@@ -242,7 +242,7 @@ export function useBusinessFields(
     } catch (error_) {
       if (currentToken !== token) return false;
       error.value = error_ instanceof Error ? error_.message : String(error_);
-      fields.value = [];
+      properties.value = [];
       status.value = 'error';
       return false;
     }
@@ -289,7 +289,7 @@ export function useBusinessFields(
    * @param scopeId 作用域节点 id
    */
   function buildNode(meta: Property, scopeId: string): ComponentSchema | null {
-    const componentType = mapFieldDataType(meta.type);
+    const componentType = mapPropertyType(meta.type);
     if (!componentType) return null;
 
     const config = options.getComponentConfig?.(componentType);
@@ -317,7 +317,7 @@ export function useBusinessFields(
    * @param meta 业务字段元数据
    * @param scopeId 作用域节点 id
    */
-  function checkField(
+  function checkProperty(
     meta: Property,
     scopeId: string,
   ): { message?: string; node?: ComponentSchema; ok: boolean } {
@@ -363,7 +363,7 @@ export function useBusinessFields(
    * @param meta 业务字段元数据
    * @param insertOptions 插入选项
    */
-  function insertField(
+  function insertProperty(
     meta: Property,
     insertOptions: InsertFieldOptions = {},
   ): { message?: string; node?: ComponentSchema; ok: boolean } {
@@ -377,7 +377,7 @@ export function useBusinessFields(
       return { message: '未找到业务字段作用域', ok: false };
     }
 
-    const result = checkField(meta, scope.id);
+    const result = checkProperty(meta, scope.id);
     if (!result.ok || !result.node) return result;
 
     const data = findSchemaInfoById(pageSchema.schemas, targetId);
@@ -400,18 +400,18 @@ export function useBusinessFields(
 
   return {
     buildNode,
-    checkField,
+    checkProperty,
     error,
-    fieldMap,
-    fields,
     getPlacedFields,
-    insertField,
+    insertProperty,
     isFieldPlaced,
     isLoading,
     isReady,
     issues,
     load,
     modelId,
+    properties,
+    propertyMap,
     resolveScope,
     retry,
     status,
