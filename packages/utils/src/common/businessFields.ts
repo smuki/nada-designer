@@ -2,7 +2,7 @@ import type { ActionsModel } from '@nada-designer/manager';
 import type {
   ComponentSchema,
   FieldDataType,
-  FieldMeta,
+  Property,
 } from '@nada-designer/types';
 
 import { deepClone, findSchemas, getMatchedById } from './data';
@@ -45,7 +45,7 @@ export function mapFieldDataType(dataType: FieldDataType): null | string {
  * @description money / number 写 precision；ref 写 entity（白名单例外）；unit 不入 props
  * @param meta 业务字段元数据
  */
-export function getFieldPresets(meta: FieldMeta): Record<string, unknown> {
+export function getFieldPresets(meta: Property): Record<string, unknown> {
   const presets: Record<string, unknown> = {};
   if (
     (meta.type === 'money' || meta.type === 'number') &&
@@ -127,7 +127,7 @@ interface BuildFieldSchemaParams {
   /** 映射后组件类型的 defaultSchema */
   base: ComponentSchema;
   /** 业务字段元数据 */
-  meta: FieldMeta;
+  meta: Property;
   /** 作用域节点 id */
   scopeId: string;
 }

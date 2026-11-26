@@ -27,7 +27,7 @@ const isControlled = designer.designMode === 'controlled';
 const businessFields = designer.businessFields;
 
 /** 受控模式下只读展示的业务字段信息（含元数据是否存在） */
-const businessFieldMeta = computed(() => {
+const businessProperty = computed(() => {
   const field = selectedNode.value?.field;
   return field ? businessFields.fieldMap.value.get(field) : undefined;
 });
@@ -103,8 +103,8 @@ const componentAttributes = computed(() => {
       <div class="ep-attr-label">业务字段</div>
       <div class="bg-$ep-secondary rounded-1 h-full flex-1 px-2 leading-8">
         {{ selectedNode.field }}
-        <span v-if="businessFieldMeta" class="text-$ep-text-helper ml-2">
-          （{{ businessFieldMeta.type }}）
+        <span v-if="businessProperty" class="text-$ep-text-helper ml-2">
+          （{{ businessProperty.type }}）
         </span>
         <span v-else class="text-$ep-text-helper ml-2">（元数据中不存在）</span>
       </div>

@@ -12,7 +12,7 @@
 
 `designMode` 只做两件事：
 
-1. **换掉事实源**：自由模式的事实源是「组件注册表」（`pluginManager.component`）；受控模式的事实源是「业务对象元数据」（`FieldMeta[]`，宿主通过 `businessFieldLoader` 注入）。
+1. **换掉事实源**：自由模式的事实源是「组件注册表」（`pluginManager.component`）；受控模式的事实源是「业务对象元数据」（`Property[]`，宿主通过 `businessFieldLoader` 注入）。
 2. **在事实源之上加持约束**：字段身份只读、同一作用域内 `field` 唯一、禁止复制/剪切、结构落点可校验、导入可拒绝。
 
 渲染、拖拽、撤销栈、属性编辑、样式/事件、预览、画布缩放——**全部共用同一套实现**，没有任何一条通路是"受控专用设计器"。所以差异高度集中在 **入口选择 → 落点构造 → 权限收口 → 校验** 这四个环节。
@@ -234,9 +234,9 @@ empty ──load(modelId)──> loading ──成功──> ready
 
 几个值得注意的实现细节：
 
-- **跨实例内存缓存**：`const fieldsCache = new Map<string, FieldMeta[]>()`（`:62-63`），模块级、跨实例共享，只读。
+- **跨实例内存缓存**：`const fieldsCache = new Map<string, Property[]>()`（`:62-63`），模块级、跨实例共享，只读。
 - **请求令牌**：`let token = 0`（`:174`），切换业务对象时丢弃过期响应（`:219,226,243`）。
-- **单条失败不影响其余**：`validateFieldMeta`（`:71-156`）逐条校验，非法条目推 `issues` + `console.warn`，其余照常进入面板。
+- **单条失败不影响其余**：`validateProperty`（`:71-156`）逐条校验，非法条目推 `issues` + `console.warn`，其余照常进入面板。
 - **`active === false` 的字段**：不进入面板，但**不报 issue**（`:134-137`），意图是"仍记录在元数据中，用于漂移提示"。
 - **两段式解析**：挂载时先后解析 `props.defaultSchema?.modelId ?? props.modelId`（`:142-145`）；`schema` 晚到时由 `watch(() => pageSchema.modelId)` 补一次（`:132-139`）。这是为"打开已有页面时 schema 在 `onMounted` 之后才到"设计的。
 
@@ -387,7 +387,7 @@ if (meta.active === false) {
 
 ### 7.11 `group` 在归一化时被丢弃，类型下拉永远只有类型名
 
-`validateFieldMeta` 组装 `FieldMeta` 时（`useBusinessFields.ts:144-152`）只保留 `active/entity/field/label/scale/type/unit`——**没有 `group`**。而 picker 的分类逻辑是：
+`validateProperty` 组装 `Property` 时（`useBusinessFields.ts:144-152`）只保留 `active/entity/field/label/scale/type/unit`——**没有 `group`**。而 picker 的分类逻辑是：
 
 ```ts
 const title = meta.group?.trim() || FIELD_TYPE_LABELS[meta.type] || '其他';  // componentPicker.vue:130

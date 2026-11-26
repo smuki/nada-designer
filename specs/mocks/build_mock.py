@@ -3,7 +3,7 @@
 
 输入：propertySet.raw.json（原始接口响应，已随仓库保存）
 输出：
-  field-meta.mock.json   按规格书 6.3 精简后的 FieldMeta 列表（含统计与被跳过项）
+  field-meta.mock.json   按规格书 6.3 精简后的 Property 列表（含统计与被跳过项）
   field-meta.demo.json   用于快速验证设计器的一组报销单常用字段
   README.md              说明与统计
 
@@ -187,7 +187,7 @@ def main():
 | 文件 | 说明 |
 |---|---|
 | `propertySet.raw.json` | 接口原始响应（未改动） |
-| `field-meta.mock.json` | 全量精简后的 FieldMeta（含 skipped 明细与统计） |
+| `field-meta.mock.json` | 全量精简后的 Property（含 skipped 明细与统计） |
 | `field-meta.demo.json` | 报销单常用字段子集（约 {len(demo)} 个），用于快速验证 |
 | `build_mock.py` | 字段转换脚本，可重跑 |
 | `specificationGroups.raw.json` | 单据模板接口原始响应（35 个模板 / 748 个控件） |

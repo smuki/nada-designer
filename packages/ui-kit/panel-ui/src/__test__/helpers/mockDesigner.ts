@@ -1,4 +1,4 @@
-import type { ComponentSchema, FieldMeta } from '@nada-designer/types';
+import type { ComponentSchema, Property } from '@nada-designer/types';
 
 import { computed, reactive, ref } from 'vue';
 
@@ -24,7 +24,7 @@ export function makePageSchema(): any {
 }
 
 /** 测试用业务字段元数据 */
-export function makeFieldMetas(): FieldMeta[] {
+export function makeProperties(): Property[] {
   return [
     { field: 'u_销售单号', label: '销售单号', type: 'text' },
     { field: 'u_销售金额', label: '销售金额', scale: 2, type: 'money' },
@@ -84,7 +84,7 @@ export function registerMockComponents() {
 
 export interface MockDesignerContextOptions {
   designMode?: 'controlled' | 'free';
-  fields?: FieldMeta[];
+  fields?: Property[];
   pageSchema?: any;
   placedFields?: string[];
   selectedNode?: ComponentSchema;
@@ -98,11 +98,11 @@ export function makeDesignerContext(
 ): any {
   const pageSchema = options.pageSchema ?? makePageSchema();
   const selectedNode = options.selectedNode ?? pageSchema.schemas[0];
-  const fields = options.fields ?? makeFieldMetas();
+  const fields = options.fields ?? makeProperties();
   const placedFields = options.placedFields ?? [];
 
   const fieldMap = computed(() => {
-    const map = new Map<string, FieldMeta>();
+    const map = new Map<string, Property>();
     fields
       .filter((item) => item.active !== false)
       .forEach((item) => map.set(item.field, item));

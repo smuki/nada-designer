@@ -110,7 +110,7 @@
 | 基础组件 | UI 包注册的组件，提供 Vue 实现与属性/事件/样式/动作能力；三套 UI 库共享同一套 `type` 命名 |
 | 布局组件 | 面板中 `groupName === '布局'` 的容器组件（当前 `card` / `row` / `tabs`）；`col` / `tab-pane` / `modal` 由容器内部结构产生，不单独出现在面板 |
 | 业务对象 modelId | 一个表单业务对象（如报销单）的唯一标识 |
-| 元数据 FieldMeta | 业务对象返回的字段清单，每项描述一个业务字段 |
+| 元数据 Property | 业务对象返回的字段清单，每项描述一个业务字段 |
 | 业务字段 | 元数据中的一项；`field` 全局（业务对象内）唯一 |
 | 拖拽模板 | 面板里的业务字段项；拖入时把元数据套到基础组件默认 schema 上 |
 | 设计模式 designMode | `free`（自由）/ `controlled`（受控），EDesigner 实例级 |
@@ -159,7 +159,7 @@
 // packages/types/src/designer.ts → DesignerProps
 designMode?: 'free' | 'controlled';                          // 默认 'free'
 modelId?: string;                                     // 业务对象唯一标识
-businessFieldLoader?: (modelId: string) => Promise<FieldMeta[]>;
+businessFieldLoader?: (modelId: string) => Promise<Property[]>;
 ```
 
 - `free`：自由模式，现状行为，不加载元数据、无字段约束；
@@ -217,7 +217,7 @@ modelId?: string;   // 业务对象模型 id（主键；字符串传递，避免
 
 ```ts
 // DesignerProps
-businessFieldLoader?: (modelId: string) => Promise<FieldMeta[]>;
+businessFieldLoader?: (modelId: string) => Promise<Property[]>;
 ```
 
 流程：
@@ -229,9 +229,9 @@ businessFieldLoader?: (modelId: string) => Promise<FieldMeta[]>;
 5. 成功 → 校验（6.4）→ 生成面板业务字段项；
 6. 按 `modelId` 做内存缓存（只读、可跨实例共享），避免重复打开闪烁；
 7. **并发切换**：以最后一次请求为准，用递增令牌丢弃过期响应；
-8. **loader 契约**：返回 `FieldMeta[]`。接口/mock 可能包一层 `{ modelId, fields, ... }`（见 `specs/mocks/*`），**解包由调用侧完成**，loader 自身返回数组。
+8. **loader 契约**：返回 `Property[]`。接口/mock 可能包一层 `{ modelId, fields, ... }`（见 `specs/mocks/*`），**解包由调用侧完成**，loader 自身返回数组。
 
-### 6.3 元数据协议（FieldMeta，8 项）
+### 6.3 元数据协议（Property，8 项）
 
 **7 个业务属性 + `active` 开关**（参考易快报 `propertySet`，去掉设计器用不上的属性）：
 
@@ -542,7 +542,7 @@ interface PageSchema {
 
 | 文件 | 改动点 |
 |---|---|
-| `packages/types/src/designer.ts` | `DesignerProps` 增 `designMode` / `modelId` / `businessFieldLoader`；新增 `FieldMeta` 与 `FieldDataType` |
+| `packages/types/src/designer.ts` | `DesignerProps` 增 `designMode` / `modelId` / `businessFieldLoader`；新增 `Property` 与 `FieldDataType` |
 | `packages/types/src/nada-designer.ts` | `PageSchema` 增 `modelId`（该接口无索引签名，必须显式加） |
 | `packages/core/.../designer/src/designer.vue` | props 默认值与模式冻结、`designMode` 快照下发、元数据 Loading/错误重试门控、受控根 form（UI `defaultSchema` 深拷贝）、`setData` 后回填 modelId、新增 `setDataAsync`、源码面板只读联动 |
 | `packages/core/.../designer/hooks/useDesigner.ts` | 装配 `useBusinessFields`、默认 schema 实例化、modelId 写入/回填、根 form、复制拦截参数 |
@@ -760,7 +760,7 @@ interface PageSchema {
 | D27 | 保存缺字段 | 仅警告，不阻止保存（v0.16） |
 | D28 | 受控剪切 | Ctrl+X 与复制一并静默禁止（v0.16） |
 | D29 | 预设属性 | 按 UI 组件 `config.attribute` 白名单过滤；money 只写 `precision`（v0.16） |
-| D30 | loader 契约 | 返回 `FieldMeta[]`；包装由调用侧解包；令牌丢弃过期响应（v0.16） |
+| D30 | loader 契约 | 返回 `Property[]`；包装由调用侧解包；令牌丢弃过期响应（v0.16） |
 | D31 | 实现落点收口 | `useClipboard` 调用方判定、大纲独立收口、属性面板过滤 `field` 项、面板实例级过滤（v0.16） |
 | D32 | 测试基建 | typecheck/lint 不覆盖测试 → 新测试必须本地跑 vitest；clipboard 补受控用例（v0.16） |
 | D33 | 落点实现 | 占位节点已被库插入目标列表，`@add` **就地重建/替换或摘除回滚**，不再插入（v0.17） |

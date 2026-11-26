@@ -1,10 +1,10 @@
-import type { FieldMeta } from '@nada-designer/types';
+import type { Property } from '@nada-designer/types';
 
 /**
  * 受控模式演示用业务字段元数据
  * @description 模拟后端返回：一个业务对象「销售单据」，覆盖 text/number/money/date/boolean/ref
  */
-export const salesOrderFields: FieldMeta[] = [
+export const salesOrderProperties: Property[] = [
   { field: 'u_销售单号', label: '销售单号', type: 'text' },
   { field: 'u_销售日期', label: '销售日期', type: 'date' },
   { field: 'u_备注', label: '备注', type: 'text' },
@@ -32,10 +32,10 @@ export const salesOrderFields: FieldMeta[] = [
  * 模拟后端加载业务字段元数据
  * @param modelId 业务对象模型 id
  */
-export function businessFieldLoader(modelId: string): Promise<FieldMeta[]> {
+export function businessFieldLoader(modelId: string): Promise<Property[]> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(modelId === '1001' ? salesOrderFields : []);
+      resolve(modelId === '1001' ? salesOrderProperties : []);
     }, 300);
   });
 }

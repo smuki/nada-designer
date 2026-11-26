@@ -2,7 +2,7 @@
 // 循环依赖会导致 hooks 内部模块初始化不完整）
 import '@nada-designer/manager';
 
-import { useBusinessFields, validateFieldMeta } from '@nada-designer/hooks';
+import { useBusinessFields, validateProperty } from '@nada-designer/hooks';
 
 import { describe, expect, it, vi } from 'vitest';
 
@@ -33,16 +33,16 @@ function makeConfig(type: string): any {
 
 const getComponentConfig = (type: string) => makeConfig(type);
 
-describe('validateFieldMeta 函数测试', () => {
+describe('validateProperty 函数测试', () => {
   it('非数组返回空并记录问题', () => {
-    const result = validateFieldMeta({});
+    const result = validateProperty({});
 
     expect(result.fields).toEqual([]);
     expect(result.issues.length).toBe(1);
   });
 
   it('单条失败只影响该字段', () => {
-    const result = validateFieldMeta(
+    const result = validateProperty(
       [
         { field: 'ok', label: '正常', type: 'text' },
         { field: '1bad', label: '非法', type: 'text' },

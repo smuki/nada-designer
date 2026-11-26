@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentSchema, FieldMeta } from '@nada-designer/types';
+import type { ComponentSchema, Property } from '@nada-designer/types';
 
 import { computed, ref } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
@@ -139,7 +139,7 @@ function scopeIdFromContainer(container: any): string | undefined {
 
 /**
  * 是否为「已有业务字段节点」的跨列表移动
- * @description 面板拖入时 data 是 FieldMeta（无 id），这里用 id + 元数据存在性区分
+ * @description 面板拖入时 data 是 Property（无 id），这里用 id + 元数据存在性区分
  */
 function isBusinessFieldMove(event: any): boolean {
   const data = event?.data;
@@ -216,7 +216,7 @@ function handleBusinessFieldMove(event: any) {
  * @param event Sortable add 事件
  */
 function handleBusinessFieldDrop(event: any) {
-  const meta = event.clonedData?.__businessField as FieldMeta | undefined;
+  const meta = event.clonedData?.__businessField as Property | undefined;
   const list = getTargetList();
   const index = list.findIndex(
     (item: any) =>

@@ -12,14 +12,14 @@
 
 ```vue
 <script setup lang="ts">
-import type { FieldMeta } from '@nada-designer/types';
+import type { Property } from '@nada-designer/types';
 
 import { EDesigner } from '@nada-designer/core';
 
 // 由业务应用提供：按业务对象模型 id 返回字段元数据
 async function businessFieldLoader(
   modelId: string,
-): Promise<FieldMeta[]> {
+): Promise<Property[]> {
   const res = await fetch(
     `/api/univ/form-property?modelId=${encodeURIComponent(modelId)}`,
   );
@@ -49,11 +49,11 @@ function handleSave(pageSchema: any) {
 | --- | --- | --- | --- |
 | designMode | 设计模式：`free` 自由 / `controlled` 受控；**实例级，初始化后不可切换** | `'free' \| 'controlled'` | `'free'` |
 | modelId | 业务对象模型 id（主键）；受控模式新建页面必填，打开已有页面以页面 JSON 为准 | string | - |
-| businessFieldLoader | 业务字段元数据加载器；未提供时受控模式显示错误态并可重试 | `(modelId: string) => Promise<FieldMeta[]>` | - |
+| businessFieldLoader | 业务字段元数据加载器；未提供时受控模式显示错误态并可重试 | `(modelId: string) => Promise<Property[]>` | - |
 
 ## 元数据协议
 
-`FieldMeta` 共 8 项（`specs/controlled-mode.md` §6.3）：
+`Property` 共 8 项（`specs/controlled-mode.md` §6.3）：
 
 | 字段 | 必填 | 说明 |
 | --- | --- | --- |
@@ -87,7 +87,7 @@ function handleSave(pageSchema: any) {
 ## 后端接口约定
 
 - 业务对象标识使用**模型主键 id**（`modelId`），页面 JSON 只存 `modelId`，不存租户与业务 `code`；
-- 建议接口：`GET /api/univ/form-property?modelId={modelId}`（租户从登录态/网关注入），返回 `{ modelId, fields: FieldMeta[] }`；
+- 建议接口：`GET /api/univ/form-property?modelId={modelId}`（租户从登录态/网关注入），返回 `{ modelId, fields: Property[] }`；
 - 设计器要求 loader 返回 **数组**，接口若包了一层 `fields`，由适配层解包；
 - `code` 仅用于展示/兼容旧数据，可改名，不影响已保存页面。
 

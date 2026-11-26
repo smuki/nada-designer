@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentSchema, FieldMeta } from '@nada-designer/types';
+import type { ComponentSchema, Property } from '@nada-designer/types';
 
 import { computed, ref, watch, watchEffect } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
@@ -16,7 +16,7 @@ import { useStorage } from '@vueuse/core';
 
 /** 选择器条目：输入/布局组件用 schema，业务字段用 field */
 interface PickerItem {
-  field?: FieldMeta;
+  field?: Property;
   icon: string;
   key: string;
   label: string;
@@ -49,7 +49,7 @@ const groups = pluginManager.component.getComponentSchemaGroups();
 /** 布局类组件（其余归为输入类） */
 const LAYOUT_TYPES = new Set(['card', 'form', 'row', 'tabs']);
 
-const FIELD_TYPE_LABELS: Record<FieldMeta['type'], string> = {
+const FIELD_TYPE_LABELS: Record<Property['type'], string> = {
   boolean: '开关',
   date: '日期',
   money: '金额',
@@ -111,7 +111,7 @@ function toComponentItem(schema: ComponentSchema): PickerItem {
  * 业务字段 → 选择器条目
  * @param meta 业务字段元数据
  */
-function toFieldItem(meta: FieldMeta): PickerItem {
+function toFieldItem(meta: Property): PickerItem {
   const componentType = mapFieldDataType(meta.type);
   return {
     field: meta,

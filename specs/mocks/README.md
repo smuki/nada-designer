@@ -8,7 +8,7 @@
 | 文件 | 说明 |
 |---|---|
 | `propertySet.raw.json` | 接口原始响应（未改动） |
-| `field-meta.mock.json` | 全量精简后的 FieldMeta（含 skipped 明细与统计） |
+| `field-meta.mock.json` | 全量精简后的 Property（含 skipped 明细与统计） |
 | `field-meta.demo.json` | 报销单常用字段子集（约 30 个），用于快速验证 |
 | `build_mock.py` | 字段转换脚本，可重跑 |
 | `specificationGroups.raw.json` | 单据模板接口原始响应（35 个模板 / 748 个控件） |

@@ -99,7 +99,7 @@ background: white;
 | canvasPadding | 画布内边距 | number \| string | 16 | 1.1.10 |
 | designMode | 设计模式：`free` 自由（默认）/ `controlled` 受控；实例级，初始化后不可切换 | `'free'` \| `'controlled'` | `'free'` | 1.1.18 |
 | modelId | 业务对象模型 id（主键），受控模式新建页面必填，随页面保存 | string | - | 1.1.18 |
-| businessFieldLoader | 受控模式的业务字段元数据加载器 | `(modelId: string) => Promise<FieldMeta[]>` | - | 1.1.18 |
+| businessFieldLoader | 受控模式的业务字段元数据加载器 | `(modelId: string) => Promise<Property[]>` | - | 1.1.18 |
 
 :::tip 属性更名（v1.1.18）
 原 `businessObject` 属性已更名为 **`modelId`**（值为业务对象模型主键 id）；页面 JSON 顶层字段名同为 `modelId`。

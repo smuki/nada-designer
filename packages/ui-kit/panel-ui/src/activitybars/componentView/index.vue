@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ComponentSchema, FieldMeta } from '@nada-designer/types';
+import type { ComponentSchema, Property } from '@nada-designer/types';
 
 import { computed, ref, watchEffect } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
@@ -46,7 +46,7 @@ const businessFieldList = computed(() => {
 });
 
 /** 业务字段拖拽列表（本地 ref 承接，clone 只产出占位节点） */
-const fieldDragItems = ref<FieldMeta[]>([]);
+const fieldDragItems = ref<Property[]>([]);
 watchEffect(() => {
   fieldDragItems.value = businessFieldList.value;
 });
@@ -70,7 +70,7 @@ function isFieldPlaced(field: string): boolean {
  * 业务字段拖拽占位节点：落点处再按作用域构造真实节点（规格 D33）
  * @param meta 业务字段元数据
  */
-function createBusinessPlaceholder(meta: FieldMeta): ComponentSchema {
+function createBusinessPlaceholder(meta: Property): ComponentSchema {
   return {
     __businessField: meta,
     id: `__pending_${meta.field}`,
@@ -116,7 +116,7 @@ watchEffect(() => {
  * 业务字段图标：按映射后的组件类型取图标
  * @param type 元数据类型
  */
-function getFieldIcon(type: FieldMeta['type']): string {
+function getFieldIcon(type: Property['type']): string {
   const componentType = mapFieldDataType(type);
   return componentType
     ? pluginManager.component.getIcon(componentType)
@@ -127,7 +127,7 @@ function getFieldIcon(type: FieldMeta['type']): string {
  * 点击插入业务字段
  * @param meta 业务字段元数据
  */
-function handleFieldClick(meta: FieldMeta) {
+function handleFieldClick(meta: Property) {
   if (isFieldPlaced(meta.field)) {
     pluginManager.global.$message.info(`字段「${meta.label}」已放置`);
     return false;

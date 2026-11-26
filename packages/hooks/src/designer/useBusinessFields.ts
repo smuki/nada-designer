@@ -1,6 +1,6 @@
 import type {
   ComponentSchema,
-  FieldMeta,
+  Property,
   PageSchema,
 } from '@nada-designer/types';
 
@@ -45,7 +45,7 @@ export interface UseBusinessFieldsOptions {
   /** 取当前 UI 库的组件配置；由调用方注入（hooks 不运行时依赖 manager） */
   getComponentConfig?: (type: string) => ComponentConfigLike | undefined;
   /** 业务字段元数据加载器（可直接返回静态数组，便于测试/离线） */
-  loader?: (modelId: string) => FieldMeta[] | Promise<FieldMeta[]>;
+  loader?: (modelId: string) => Property[] | Promise<Property[]>;
 }
 
 /** 支持的数据类型（规格 §6.3.1） */
@@ -60,7 +60,7 @@ const FIELD_TYPES = new Set([
 ]);
 
 /** 元数据内存缓存（只读、跨实例共享） */
-const fieldsCache = new Map<string, FieldMeta[]>();
+const fieldsCache = new Map<string, Property[]>();
 
 /**
  * 校验并规范化元数据
@@ -68,17 +68,17 @@ const fieldsCache = new Map<string, FieldMeta[]>();
  * @param rawList 原始元数据
  * @param getComponentConfig 取组件配置，用于校验当前 UI 库是否存在映射后的组件
  */
-export function validateFieldMeta(
+export function validateProperty(
   rawList: unknown,
   getComponentConfig?: (type: string) => ComponentConfigLike | undefined,
-): { fields: FieldMeta[]; issues: BusinessFieldIssue[] } {
+): { fields: Property[]; issues: BusinessFieldIssue[] } {
   const issues: BusinessFieldIssue[] = [];
 
   if (!Array.isArray(rawList)) {
     return { fields: [], issues: [{ message: '元数据不是数组' }] };
   }
 
-  const fields: FieldMeta[] = [];
+  const fields: Property[] = [];
   const seen = new Set<string>();
 
   rawList.forEach((raw, index) => {
@@ -87,7 +87,7 @@ export function validateFieldMeta(
       return;
     }
 
-    const meta = raw as Partial<FieldMeta>;
+    const meta = raw as Partial<Property>;
     const field = typeof meta.field === 'string' ? meta.field.trim() : '';
 
     if (!field) {
@@ -106,7 +106,7 @@ export function validateFieldMeta(
     }
     seen.add(field);
 
-    const type = meta.type as FieldMeta['type'];
+    const type = meta.type as Property['type'];
     if (!FIELD_TYPES.has(type)) {
       issues.push({ field, message: `不支持的数据类型：${String(meta.type)}` });
       return;
@@ -166,7 +166,7 @@ export function useBusinessFields(
 ) {
   const modelId = ref<null | string>(null);
   const error = ref<null | string>(null);
-  const fields = ref<FieldMeta[]>([]);
+  const fields = ref<Property[]>([]);
   const issues = ref<BusinessFieldIssue[]>([]);
   const status = ref<BusinessFieldsStatus>('empty');
 
@@ -176,7 +176,7 @@ export function useBusinessFields(
   const isLoading = computed(() => status.value === 'loading');
   const isReady = computed(() => status.value === 'ready');
   const fieldMap = computed(() => {
-    const map = new Map<string, FieldMeta>();
+    const map = new Map<string, Property>();
     fields.value.forEach((item) => map.set(item.field, item));
     return map;
   });
@@ -225,7 +225,7 @@ export function useBusinessFields(
       const raw = await options.loader(nextModelId);
       if (currentToken !== token) return false;
 
-      const result = validateFieldMeta(raw, options.getComponentConfig);
+      const result = validateProperty(raw, options.getComponentConfig);
       fieldsCache.set(nextModelId, result.fields);
       fields.value = result.fields;
       issues.value = result.issues;
@@ -288,7 +288,7 @@ export function useBusinessFields(
    * @param meta 业务字段元数据
    * @param scopeId 作用域节点 id
    */
-  function buildNode(meta: FieldMeta, scopeId: string): ComponentSchema | null {
+  function buildNode(meta: Property, scopeId: string): ComponentSchema | null {
     const componentType = mapFieldDataType(meta.type);
     if (!componentType) return null;
 
@@ -318,7 +318,7 @@ export function useBusinessFields(
    * @param scopeId 作用域节点 id
    */
   function checkField(
-    meta: FieldMeta,
+    meta: Property,
     scopeId: string,
   ): { message?: string; node?: ComponentSchema; ok: boolean } {
     const node = buildNode(meta, scopeId);
@@ -364,7 +364,7 @@ export function useBusinessFields(
    * @param insertOptions 插入选项
    */
   function insertField(
-    meta: FieldMeta,
+    meta: Property,
     insertOptions: InsertFieldOptions = {},
   ): { message?: string; node?: ComponentSchema; ok: boolean } {
     const targetId = insertOptions.targetId ?? pageSchema.schemas[0]?.id;

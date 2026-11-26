@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 import { EDesigner } from '@nada-designer/core';
 
-import { businessFieldLoader } from './fieldMeta';
+import { businessFieldLoader } from './property';
 
 const designerRef = ref<InstanceType<typeof EDesigner>>();
 
