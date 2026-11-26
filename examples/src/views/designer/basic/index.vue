@@ -5,6 +5,8 @@ import { ref } from 'vue';
 
 import { EDesigner } from '@nada-designer/core';
 
+import { businessFieldLoader, DEMO_MODEL_ID } from '../shared/propertyCatalog';
+
 const designerRef = ref<InstanceType<typeof EDesigner>>();
 /**
  * 点击保存按钮操作
@@ -17,11 +19,13 @@ function handleSubmit(e: PageSchema) {
 <template>
   <EDesigner
     ref="designerRef"
-    title="nadaDesigner基础用法示例"
+    :business-field-loader="businessFieldLoader"
+    :model-id="DEMO_MODEL_ID"
+    title="nadaDesigner基础用法示例（受控模式）"
     @save="handleSubmit"
   >
     <template #header-prefix>
-      <div>欢迎使用nadaDesigner设计器</div>
+      <div>字段来自业务对象元数据，从左侧「业务字段」拖入即可</div>
     </template>
   </EDesigner>
 </template>

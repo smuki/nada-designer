@@ -1,3 +1,4 @@
+> **历史文档（2.0 起）**：自由模式已从产品中删除，`designMode` prop 同时移除；本文仅保留为架构演进记录，当前行为见 [受控模式](guide/components/controlledMode.md) 与 `specs/controlled-only.md`。
 # 受控模式 vs 自由模式 —— 代码层与逻辑层完整对照
 
 > 基于当前仓库 `393f527`（spec v0.36；`modelId` = 业务对象模型主键 id）逐文件阅读整理。

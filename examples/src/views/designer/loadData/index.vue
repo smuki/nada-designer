@@ -5,12 +5,16 @@ import { onMounted, ref } from 'vue';
 
 import { EDesigner } from '@nada-designer/core';
 
+import { businessFieldLoader, DEMO_MODEL_ID } from '../shared/propertyCatalog';
+
 const designerRef = ref<InstanceType<typeof EDesigner>>();
 
-const pageSchema = {
+/** 受控页面数据：字段必须来自业务对象元数据，根节点为 form */
+const pageSchema: PageSchema = {
   canvas: {
     mode: 'desktop',
   },
+  modelId: DEMO_MODEL_ID,
   schemas: [
     {
       id: 'root',
@@ -18,39 +22,25 @@ const pageSchema = {
       props: {
         colon: true,
         labelAlign: 'right',
-        labelCol: {
-          span: 5,
-        },
         labelLayout: 'fixed',
-        labelPlacement: 'left',
         labelWidth: 100,
         layout: 'horizontal',
         name: 'default',
-
-        wrapperCol: {
-          span: 19,
-        },
       },
       type: 'form',
       children: [
         {
-          label: '栅格布局',
-          type: 'row',
           children: [
             {
-              type: 'col',
               children: [
                 {
-                  field: 'name',
+                  field: 'u_姓名',
+                  id: 'input_name',
                   input: true,
                   label: '姓名',
                   props: {
-                    defaultValue: '',
                     placeholder: '请输入',
-                    type: 'text',
                   },
-                  type: 'input',
-                  id: 'input_9620',
                   rules: [
                     {
                       message: '必填项',
@@ -59,29 +49,28 @@ const pageSchema = {
                       type: 'string',
                     },
                   ],
+                  type: 'input',
                 },
               ],
+              id: 'col_name',
               props: {
                 span: 12,
               },
-              id: 'col_3000',
+              type: 'col',
             },
             {
-              type: 'col',
               children: [
                 {
-                  field: 'age',
+                  field: 'u_年龄',
+                  id: 'number_age',
                   input: true,
                   label: '年龄',
                   props: {
-                    defaultValue: null,
                     placeholder: '请输入',
                     style: {
                       width: '100%',
                     },
                   },
-                  type: 'number',
-                  id: 'number_9353',
                   rules: [
                     {
                       message: '必填项',
@@ -90,90 +79,29 @@ const pageSchema = {
                       type: 'number',
                     },
                   ],
+                  type: 'number',
                 },
               ],
+              id: 'col_age',
               props: {
                 span: 12,
               },
-              id: 'col_9258',
+              type: 'col',
             },
           ],
-          id: 'row_5000',
+          id: 'row_main',
+          label: '栅格布局',
+          type: 'row',
         },
         {
-          field: 'gender',
-          input: true,
-          label: '性别',
-          props: {
-            defaultValue: '男',
-            options: [
-              {
-                label: '男',
-                value: '男',
-              },
-              {
-                label: '女',
-                value: '女',
-              },
-            ],
-          },
-          type: 'radio',
-          id: 'radio_5723',
-          rules: [
-            {
-              message: '必填项',
-              required: true,
-              trigger: ['change'],
-              type: 'string',
-            },
-          ],
-        },
-        {
-          field: 'interests',
-          input: true,
-          label: '兴趣',
-          props: {
-            defaultValue: ['跳', '唱'],
-            options: [
-              {
-                label: '唱',
-                value: '唱',
-              },
-              {
-                label: '跳',
-                value: '跳',
-              },
-              {
-                label: 'rap',
-                value: 'rap',
-              },
-              {
-                label: '篮球',
-                value: '篮球',
-              },
-            ],
-          },
-          type: 'checkbox',
-          id: 'checkbox_8622',
-          rules: [
-            {
-              message: '必填项',
-              required: true,
-              trigger: ['change'],
-              type: 'array',
-            },
-          ],
-        },
-        {
-          field: 'about',
+          field: 'u_个人简介',
+          id: 'input_about',
           input: true,
           label: '个人简介',
           props: {
-            defaultValue: '',
             placeholder: '请输入',
           },
-          type: 'textarea',
-          id: 'textarea_6128',
+          type: 'input',
         },
       ],
     },
@@ -197,11 +125,13 @@ function handleSubmit(e: PageSchema) {
 <template>
   <EDesigner
     ref="designerRef"
-    title="nadaDesigner数据回显示例"
+    :business-field-loader="businessFieldLoader"
+    :model-id="DEMO_MODEL_ID"
+    title="nadaDesigner数据回显示例（受控模式）"
     @save="handleSubmit"
   >
     <template #header-prefix>
-      <div>欢迎使用nadaDesigner设计器</div>
+      <div>通过 setData 回显一份受控页面（字段来自业务对象元数据）</div>
     </template>
   </EDesigner>
 </template>

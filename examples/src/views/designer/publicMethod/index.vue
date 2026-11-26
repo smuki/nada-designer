@@ -6,6 +6,8 @@ import { onMounted, ref } from 'vue';
 import { EDesigner } from '@nada-designer/core';
 import { pluginManager } from '@nada-designer/manager';
 
+import { businessFieldLoader, DEMO_MODEL_ID } from '../shared/propertyCatalog';
+
 // 模拟器api返回数据
 const fetchData = () => {
   return new Promise((resolve) => {
@@ -27,92 +29,89 @@ pluginManager.publicMethods.add({
 
 const designerRef = ref<InstanceType<typeof EDesigner>>();
 
-const pageSchema = {
+/** 受控页面数据：字段来自业务对象元数据，根节点为 form */
+const pageSchema: PageSchema = {
   canvas: {
     mode: 'desktop',
   },
+  modelId: DEMO_MODEL_ID,
   schemas: [
     {
       id: 'root',
-      label: '页面',
-      props: {},
-      type: 'page',
+      label: '表单',
+      props: {
+        labelLayout: 'fixed',
+        labelWidth: 100,
+        name: 'default',
+      },
+      type: 'form',
       children: [
         {
-          label: '表单',
-          type: 'form',
-          children: [
-            {
-              type: 'input',
-              props: {
-                placeholder: '请输入',
-              },
-              id: 'input_4314',
-              field: 'name',
-              input: true,
-              label: '姓名',
-            },
-            {
-              type: 'number',
-              props: {
-                placeholder: '请输入',
-                style: {
-                  width: '100%',
-                },
-              },
-              id: 'number_9807',
-              field: 'age',
-              input: true,
-              label: '年龄',
-            },
-            {
-              field: 'about',
-              input: true,
-              label: '个人简介',
-              props: {
-                placeholder: '请输入',
-              },
-              type: 'textarea',
-              id: 'textarea_9941',
-            },
-            {
-              field: 'button_4338',
-              input: false,
-              label: '调用API回显数据',
-              type: 'button',
-              id: 'button_4338',
-              props: {
-                type: 'primary',
-              },
-              on: {
-                click: [
-                  {
-                    componentId: null,
-                    methodName: 'test',
-                    type: 'custom',
-                  },
-                ],
-              },
-            },
-          ],
-          id: 'form_2002',
+          field: 'u_姓名',
+          id: 'input_name',
+          input: true,
+          label: '姓名',
           props: {
-            labelCol: {
-              span: 5,
-            },
-            labelLayout: 'fixed',
-            labelWidth: '100px',
-            name: 'default',
-            wrapperCol: {
-              span: 19,
+            placeholder: '请输入',
+          },
+          type: 'input',
+        },
+        {
+          field: 'u_年龄',
+          id: 'number_age',
+          input: true,
+          label: '年龄',
+          props: {
+            placeholder: '请输入',
+            style: {
+              width: '100%',
             },
           },
+          type: 'number',
+        },
+        {
+          field: 'u_个人简介',
+          id: 'input_about',
+          input: true,
+          label: '个人简介',
+          props: {
+            placeholder: '请输入',
+          },
+          type: 'input',
+        },
+        {
+          id: 'button_4338',
+          label: '调用API回显数据',
+          on: {
+            click: [
+              {
+                componentId: null,
+                methodName: 'test',
+                type: 'custom',
+              },
+            ],
+          },
+          props: {
+            type: 'primary',
+          },
+          type: 'button',
         },
       ],
     },
   ],
-  script:
-    "const { defineExpose, find } = nada;\n\nasync function test (){\n    const data = await nada.publicMethods.fetchData()\n    find('name','field').setValue(data.name)\n    find('age','field').setValue(data.age)\n    find('about','field').setValue(data.about)\n}\n\n// 通过defineExpose暴露的函数或者属性\ndefineExpose({\n test\n})",
+  script: `const { defineExpose, find } = nada;
+
+async function test (){
+    const data = await nada.publicMethods.fetchData()
+    find('u_姓名','field').setValue(data.name)
+    find('u_年龄','field').setValue(data.age)
+    find('u_个人简介','field').setValue(data.about)
+}
+
+// 通过defineExpose暴露的函数或者属性
+defineExpose({
+ test
+})`,
 };
 
 onMounted(() => {
@@ -130,11 +129,13 @@ function handleSubmit(e: PageSchema) {
 <template>
   <EDesigner
     ref="designerRef"
-    title="nadaDesigner数据回显示例"
+    :business-field-loader="businessFieldLoader"
+    :model-id="DEMO_MODEL_ID"
+    title="nadaDesigner公共方法示例（受控模式）"
     @save="handleSubmit"
   >
     <template #header-prefix>
-      <div>欢迎使用nadaDesigner设计器</div>
+      <div>点击画布中的按钮，通过公共方法拉取数据并回填字段</div>
     </template>
   </EDesigner>
 </template>

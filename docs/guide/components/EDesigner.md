@@ -97,7 +97,6 @@ background: white;
 | hidePreviewConfirm    | 隐藏预览页面`表单数据`按钮                                 | boolean                            | false     | 0.9.26 |
 | showHiddenItems | 控制设计区隐藏组件的是否保持显示状态 | boolean | true | 1.1.0 |
 | canvasPadding | 画布内边距 | number \| string | 16 | 1.1.10 |
-| designMode | 设计模式：`free` 自由（默认）/ `controlled` 受控；实例级，初始化后不可切换 | `'free'` \| `'controlled'` | `'free'` | 1.1.18 |
 | modelId | 业务对象模型 id（主键），受控模式新建页面必填，随页面保存 | string | - | 1.1.18 |
 | businessFieldLoader | 受控模式的业务字段元数据加载器 | `(modelId: string) => Promise<Property[]>` | - | 1.1.18 |
 

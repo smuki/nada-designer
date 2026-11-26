@@ -6,6 +6,8 @@ import { ref } from 'vue';
 import { EDesigner } from '@nada-designer/core';
 import { pluginManager } from '@nada-designer/manager';
 
+import { businessFieldLoader, DEMO_MODEL_ID } from '../shared/propertyCatalog';
+
 pluginManager.panel.hideActivitybar('源码');
 pluginManager.panel.hideRightSidebar('样式');
 
@@ -26,11 +28,13 @@ function handleSubmit(e: PageSchema) {
 <template>
   <EDesigner
     ref="designerRef"
-    title="nadaDesigner基础用法示例"
+    :business-field-loader="businessFieldLoader"
+    :model-id="DEMO_MODEL_ID"
+    title="nadaDesigner面板控制示例（受控模式）"
     @save="handleSubmit"
   >
     <template #header-prefix>
-      <div>欢迎使用nadaDesigner设计器</div>
+      <div>8 秒后自动显示「源码」面板</div>
     </template>
   </EDesigner>
 </template>

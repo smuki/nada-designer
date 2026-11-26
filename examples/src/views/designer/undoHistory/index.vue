@@ -6,6 +6,8 @@ import { ref } from 'vue';
 import { EDesigner } from '@nada-designer/core';
 import { Button } from 'ant-design-vue';
 
+import { businessFieldLoader, DEMO_MODEL_ID } from '../shared/propertyCatalog';
+
 const designerRef = ref<InstanceType<typeof EDesigner>>();
 /**
  * 点击保存按钮操作
@@ -57,11 +59,13 @@ function importUndoHistory() {
 <template>
   <EDesigner
     ref="designerRef"
-    title="nadaDesigner基础用法示例"
+    :business-field-loader="businessFieldLoader"
+    :model-id="DEMO_MODEL_ID"
+    title="nadaDesigner历史操作管理示例（受控模式）"
     @save="handleSubmit"
   >
     <template #header-prefix>
-      <div>欢迎使用nadaDesigner设计器</div>
+      <div>受控模式下的撤销/重做与历史导入导出</div>
     </template>
     <template #header-right-suffix>
       <Button

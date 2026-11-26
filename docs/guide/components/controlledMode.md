@@ -37,7 +37,6 @@ function handleSave(pageSchema: any) {
   <EDesigner
     model-id="1001"
     :business-field-loader="businessFieldLoader"
-    design-mode="controlled"
     @save="handleSave"
   />
 </template>
@@ -47,7 +46,6 @@ function handleSave(pageSchema: any) {
 
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| designMode | 设计模式：`free` 自由 / `controlled` 受控；**实例级，初始化后不可切换** | `'free' \| 'controlled'` | `'free'` |
 | modelId | 业务对象模型 id（主键）；受控模式新建页面必填，打开已有页面以页面 JSON 为准 | string | - |
 | businessFieldLoader | 业务字段元数据加载器；未提供时受控模式显示错误态并可重试 | `(modelId: string) => Promise<Property[]>` | - |
 

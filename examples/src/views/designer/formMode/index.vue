@@ -5,6 +5,8 @@ import { ref } from 'vue';
 
 import { EDesigner } from '@nada-designer/core';
 
+import { businessFieldLoader, DEMO_MODEL_ID } from '../shared/propertyCatalog';
+
 const designerRef = ref<InstanceType<typeof EDesigner>>();
 /**
  * 点击保存按钮操作
@@ -17,12 +19,13 @@ function handleSubmit(e: PageSchema) {
 <template>
   <EDesigner
     ref="designerRef"
-    form-mode
-    title="表单模式示例"
+    :business-field-loader="businessFieldLoader"
+    :model-id="DEMO_MODEL_ID"
+    title="表单模式示例（受控模式：根节点即表单）"
     @save="handleSubmit"
   >
     <template #header-prefix>
-      <div>欢迎使用nadaDesigner设计器</div>
+      <div>受控模式的根节点固定为 form，不再需要额外开启表单模式</div>
     </template>
   </EDesigner>
 </template>

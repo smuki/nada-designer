@@ -11,6 +11,7 @@ import {
 
 import { EDesigner } from '@nada-designer/core';
 
+import { businessFieldLoader, DEMO_MODEL_ID } from '../shared/propertyCatalog';
 import {
   hideCustomValidateComponent,
   showCustomValidateComponent,
@@ -18,52 +19,40 @@ import {
 
 const designerRef = ref<InstanceType<typeof EDesigner>>();
 
+/** 受控页面数据：字段来自业务对象元数据，根节点为 form */
 const pageSchema: PageSchema = {
   canvas: {
     mode: 'desktop',
   },
+  modelId: DEMO_MODEL_ID,
   schemas: [
     {
       id: 'root',
-      label: '页面',
-      props: {},
-      type: 'page',
+      label: '表单',
+      props: {
+        labelLayout: 'fixed',
+        labelWidth: 120,
+        name: 'default',
+      },
+      type: 'form',
       children: [
         {
-          label: '表单',
-          type: 'form',
-          children: [
+          field: 'customCheck',
+          id: 'custom_validate_1',
+          input: true,
+          label: '自定义校验组件',
+          props: {
+            placeholder: '输入 ok 则校验通过',
+          },
+          rules: [
             {
-              field: 'customCheck',
-              id: 'custom_validate_1',
-              input: true,
-              label: '自定义校验组件',
-              props: {
-                placeholder: '输入 ok 则校验通过',
-              },
-              rules: [
-                {
-                  isValidator: true,
-                  message: '请输入 ok，其他内容 check 不通过',
-                  trigger: ['change', 'blur'],
-                  validator: 'validateCustomCheck',
-                },
-              ],
-              type: 'custom-validate-input',
+              isValidator: true,
+              message: '请输入 ok，其他内容 check 不通过',
+              trigger: ['change', 'blur'],
+              validator: 'validateCustomCheck',
             },
           ],
-          id: 'form_custom_validate',
-          props: {
-            labelCol: {
-              span: 5,
-            },
-            labelLayout: 'fixed',
-            labelWidth: '120px',
-            name: 'default',
-            wrapperCol: {
-              span: 19,
-            },
-          },
+          type: 'custom-validate-input',
         },
       ],
     },
@@ -117,9 +106,15 @@ function handleSubmit(e: PageSchema) {
 }
 </script>
 <template>
-  <EDesigner ref="designerRef" title="自定义校验组件示例" @save="handleSubmit">
+  <EDesigner
+    ref="designerRef"
+    :business-field-loader="businessFieldLoader"
+    :model-id="DEMO_MODEL_ID"
+    title="自定义校验组件示例（受控模式）"
+    @save="handleSubmit"
+  >
     <template #header-prefix>
-      <div>欢迎使用nadaDesigner设计器</div>
+      <div>自定义校验组件通过脚本 validator 生效</div>
     </template>
   </EDesigner>
 </template>

@@ -1,3 +1,22 @@
+## 2.0.0（未发布）
+
+【注意】本次为 **breaking** 变更：移除自由模式与 `designMode` prop；升级前请确认所有页面均为受控模式（`modelId` + `businessFieldLoader`）。
+
+### 💥 Breaking
+
+- 移除自由模式：设计器只支持受控模式（业务对象字段 + 版式组件白名单），不再允许自由添加输入类组件
+- 移除 `designMode` prop；传值不再生效，实例级模式概念不存在
+- 自由模式页面**拒绝导入**：`setData` / `setDataAsync` / `importSchema` / `defaultSchema` 均校验 `validateControlledPage`，不合法直接拒绝
+- 复制 / 粘贴 / 剪切 / 重复、大纲拖拽、源码编辑在全部实例中保持禁用（原受控模式行为成为唯一行为）
+
+### ✨ Feat
+
+- 新增展示类组件 `text-block`（说明文字）与 `divider`（分隔线），四个适配包同步（`element-plus` / `antd` / `naive-ui` / `tdesign`）
+- 受控模式白名单集中到 `@nada-designer/utils` 的 `CONTROLLED_COMPONENT_TYPES`（布局 / 展示 / 动作），组件面板与选择器共用
+
+### 📖 Docs
+
+- 设计器示例全部改为受控模式；文档移除 `designMode` 与自由模式说明
 ## 1.1.19（未发布）
 
 ### ✨ Feat
