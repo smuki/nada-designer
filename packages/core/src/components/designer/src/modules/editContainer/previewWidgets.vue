@@ -17,7 +17,6 @@ import { useResizeObserver } from '@vueuse/core';
 const pageManager = usePageManager();
 const designer = useDesignerContext();
 const designerProps = designer.props;
-const isControlled = designer.designMode === 'controlled';
 const pageSchema = designer.pageSchema;
 const selectorRef = ref<HTMLDivElement | null>(null);
 const hoverWidgetRef = ref<HTMLDivElement | null>(null);
@@ -379,14 +378,6 @@ defineExpose({
           @click="handleSelectParentNode"
         >
           <NadaIcon name="icon--nada--upward" />
-        </div>
-        <div
-          v-if="!isControlled"
-          title="复制"
-          class="ep-widget-action-item pointer-events-auto"
-          @click="designer.handleDuplicate"
-        >
-          <NadaIcon name="icon--nada--copy-all-outline-rounded" />
         </div>
         <div
           title="删除"

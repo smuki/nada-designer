@@ -23,7 +23,6 @@ const selectedNode = computed(() => {
   return designer.state.selectedNode;
 });
 
-const isControlled = designer.designMode === 'controlled';
 const businessFields = designer.businessFields;
 
 /** 受控模式下只读展示的业务字段信息（含元数据是否存在） */
@@ -61,18 +60,14 @@ const componentAttributes = computed(() => {
     );
   }
 
-  // 受控模式下 field 只读：统一过滤各组件配置里的「数据字段」项（不改 40+ 处配置）
-  if (isControlled) {
-    const isRoot = selectedNode.value.id === pageSchema.schemas[0]?.id;
-    return allAttributes.filter((item) => {
-      if (item.field === 'field') return false;
-      // 根表单名称固定 default，不允许修改
-      if (isRoot && item.field === 'props.name') return false;
-      return true;
-    });
-  }
-
-  return allAttributes;
+  // field 只读：统一过滤各组件配置里的「数据字段」项（不改 40+ 处配置）
+  const isRoot = selectedNode.value.id === pageSchema.schemas[0]?.id;
+  return allAttributes.filter((item) => {
+    if (item.field === 'field') return false;
+    // 根表单名称固定 default，不允许修改
+    if (isRoot && item.field === 'props.name') return false;
+    return true;
+  });
 });
 </script>
 <template>
@@ -97,7 +92,7 @@ const componentAttributes = computed(() => {
     <!-- 组件id展示 end -->
     <!-- 业务字段只读信息 start -->
     <div
-      v-if="isControlled && selectedNode?.field"
+      v-if="selectedNode?.field"
       class="ep-attr-item mb-2 flex h-8 items-center px-4"
     >
       <div class="ep-attr-label">业务字段</div>

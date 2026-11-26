@@ -54,7 +54,6 @@ function makeInputNode() {
 describe('属性面板 · 受控模式', () => {
   it('隐藏「数据字段」编辑项并展示业务字段只读信息', () => {
     const { wrapper } = mountAttribute({
-      designMode: 'controlled',
       selectedNode: makeInputNode(),
     });
     const text = wrapper.text();
@@ -67,7 +66,6 @@ describe('属性面板 · 受控模式', () => {
 
   it('元数据中不存在该字段时给出提示', () => {
     const { wrapper } = mountAttribute({
-      designMode: 'controlled',
       selectedNode: { ...makeInputNode(), field: 'u_未知字段' },
     });
 
@@ -77,7 +75,6 @@ describe('属性面板 · 受控模式', () => {
   it('根表单名称不可修改（隐藏 Name 项）', () => {
     const pageSchema = makePageSchema();
     const { wrapper } = mountAttribute({
-      designMode: 'controlled',
       pageSchema,
       selectedNode: pageSchema.schemas[0],
     });
@@ -86,18 +83,5 @@ describe('属性面板 · 受控模式', () => {
     expect(text).not.toContain('Name');
     // 根节点仍可配置画布宽高
     expect(text).toContain('画布宽度');
-  });
-});
-
-describe('属性面板 · 自由模式', () => {
-  it('保留「数据字段」编辑项，无业务字段只读行', () => {
-    const { wrapper } = mountAttribute({
-      designMode: 'free',
-      selectedNode: makeInputNode(),
-    });
-    const text = wrapper.text();
-
-    expect(text).toContain('数据字段');
-    expect(text).not.toContain('业务字段');
   });
 });

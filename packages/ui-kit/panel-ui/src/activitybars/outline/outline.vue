@@ -4,11 +4,10 @@ import { computed } from 'vue';
 import { NadaIcon, NadaTree } from '@nada-designer/base-ui';
 import { useDesignerContext } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
-import { findSchemaInfoById, generateNewSchema } from '@nada-designer/utils';
+import { findSchemaInfoById } from '@nada-designer/utils';
 
 const designer = useDesignerContext();
 const pageSchema = designer.pageSchema;
-const isControlled = designer.designMode === 'controlled';
 
 // 计算选中节点值
 const selectedKeys = computed(() => {
@@ -42,24 +41,6 @@ function handleLock(schema) {
 }
 
 /**
- * 复制选中节点元素
- */
-function handleCopy(schema) {
-  // 受控模式整体禁止节点复制（静默无反应）
-  if (isControlled || !schema) return;
-  const data = findSchemaInfoById(pageSchema.schemas, schema.id);
-  if (!data) {
-    return false;
-  }
-  const { index, schema: newSchema, list } = data;
-  const node = generateNewSchema(newSchema, pageSchema.schemas);
-  list.splice(index + 1, 0, node);
-  designer.setSelectedNode(node);
-
-  designer.revoke.push('复制组件');
-}
-
-/**
  * 删除元素
  */
 function handleDelete(schema) {
@@ -81,7 +62,7 @@ function handleDelete(schema) {
   <div class="ep-outline">
     <NadaTree
       :options="pageSchema.schemas"
-      :draggable="!isControlled"
+      :draggable="false"
       :selected-keys="selectedKeys"
       :hover-key="designer.state.hoverNode?.id ?? ''"
       @node-click="handleNodeClick"
@@ -143,14 +124,6 @@ function handleDelete(schema) {
                   : 'icon--nada--visibility-outline-rounded'
               "
               @click="handleShow(schema)"
-            />
-            <NadaIcon
-              v-if="
-                !isControlled && !schema.status?.lock && !schema.props?.hidden
-              "
-              class="mr-2"
-              name="icon--nada--copy-all-outline-rounded"
-              @click="handleCopy(schema)"
             />
             <NadaIcon
               v-if="!schema.status?.lock && !schema.props?.hidden"

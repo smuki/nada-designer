@@ -36,7 +36,6 @@ import NadaPreview from './modules/preview/index.vue';
 const props = withDefaults(defineProps<DesignerProps>(), {
   canvasMode: 'desktop',
   canvasPadding: 16,
-  designMode: 'free',
   disabledZoom: false,
   draggable: true,
   formMode: false,
@@ -65,8 +64,6 @@ const epBuilderSlot = pluginManager.component.get('epBuilderSlot');
 
 const previewRef = ref<InstanceType<typeof NadaPreview> | null>(null);
 
-const designMode: 'controlled' = 'controlled';
-
 const {
   applyModelId,
   handleDelete,
@@ -80,7 +77,7 @@ const {
   setHoverNode,
   setSelectedNode,
   state,
-} = useDesigner(props, emit, designMode);
+} = useDesigner(props, emit);
 
 /**
  * 业务字段元数据（受控模式）
@@ -116,16 +113,14 @@ const {
 watch(
   () => pageSchema.modelId,
   (next) => {
-    if (designMode !== 'controlled' || !next) return;
+    if (!next) return;
     if (next === businessFields.modelId.value) return;
     void switchModelId(next);
   },
 );
 
-if (designMode === 'controlled') {
-  const initialModelId = props.defaultSchema?.modelId ?? props.modelId;
-  void businessFields.load(initialModelId ?? '');
-}
+const initialModelId = props.defaultSchema?.modelId ?? props.modelId;
+void businessFields.load(initialModelId ?? '');
 
 /** 首屏门控：UI 初始化中，或受控元数据首次加载中 */
 const initLoading = computed(
@@ -137,7 +132,6 @@ const initLoading = computed(
 /** 首屏被元数据阻塞（error / empty），显示提示 + 重试 */
 const metaBlocked = computed(
   () =>
-    designMode === 'controlled' &&
     !ready.value &&
     metaStatus.value !== 'loading' &&
     metaStatus.value !== 'ready',
@@ -149,7 +143,6 @@ const metaBlockedMessage = computed(
 );
 
 const { setTarget } = useHotkeys({
-  designMode,
   emit,
   handleDelete,
   pageSchema,
@@ -169,7 +162,6 @@ createEventBus();
 
 provide(DESIGNER_CONTEXT_KEY, {
   businessFields,
-  designMode,
   handleDelete,
   handleDuplicate,
   handleImported,
@@ -235,23 +227,21 @@ function applyPageSchemaData(schema: PageSchema) {
 async function importSchema(data: PageSchema): Promise<boolean> {
   const nextModelId = data.modelId ?? props.modelId;
 
-  if (designMode === 'controlled') {
-    const issues = validateControlledPage(data.schemas);
-    if (issues.length > 0) {
+  const issues = validateControlledPage(data.schemas);
+  if (issues.length > 0) {
+    pluginManager.global.$message.error(
+      `导入校验未通过：${issues[0]?.message ?? ''}`,
+    );
+    return false;
+  }
+
+  if (nextModelId && nextModelId !== businessFields.modelId.value) {
+    const ok = await switchModelId(nextModelId);
+    if (!ok) {
       pluginManager.global.$message.error(
-        `导入校验未通过：${issues[0]?.message ?? ''}`,
+        '业务字段元数据加载失败，未应用本次导入',
       );
       return false;
-    }
-
-    if (nextModelId && nextModelId !== businessFields.modelId.value) {
-      const ok = await switchModelId(nextModelId);
-      if (!ok) {
-        pluginManager.global.$message.error(
-          '业务字段元数据加载失败，未应用本次导入',
-        );
-        return false;
-      }
     }
   }
 
@@ -266,13 +256,16 @@ async function importSchema(data: PageSchema): Promise<boolean> {
  * @param schema 页面数据
  */
 function setData(schema: PageSchema) {
-  // 自由模式或业务对象未变化：同步应用
+  const issues = validateControlledPage(schema.schemas);
+  if (issues.length > 0) {
+    pluginManager.global.$message.error(
+      `页面不符合受控模式规范：${issues[0]?.message ?? ''}，已拒绝加载`,
+    );
+    return;
+  }
+
   const nextModelId = schema.modelId ?? props.modelId;
-  if (
-    designMode !== 'controlled' ||
-    !nextModelId ||
-    nextModelId === businessFields.modelId.value
-  ) {
+  if (!nextModelId || nextModelId === businessFields.modelId.value) {
     applyPageSchemaData(schema);
     return;
   }
@@ -300,11 +293,7 @@ function setData(schema: PageSchema) {
 async function setDataAsync(schema: PageSchema): Promise<boolean> {
   const nextModelId = schema.modelId ?? props.modelId;
 
-  if (
-    designMode === 'controlled' &&
-    nextModelId &&
-    nextModelId !== businessFields.modelId.value
-  ) {
+  if (nextModelId && nextModelId !== businessFields.modelId.value) {
     const ok = await switchModelId(nextModelId);
     if (!ok) {
       pluginManager.global.$message.error(
@@ -330,25 +319,19 @@ function getData(): PageSchema {
  * 保存数据
  */
 function handleSave() {
-  // 受控模式：节点字段不在元数据中仅警告，不阻止保存（规格 §11.3 / D27）
-  if (designMode === 'controlled') {
-    const knownProperties = businessFields.propertyMap.value;
-    const unknownProperties = new Set<string>();
-    findSchemas(getData().schemas, (node) => {
-      if (
-        node.input === true &&
-        node.field &&
-        !knownProperties.has(node.field)
-      ) {
-        unknownProperties.add(node.field);
-      }
-      return false;
-    });
-    if (unknownProperties.size > 0) {
-      console.warn(
-        `[受控字段] 以下字段不在当前业务对象元数据中：${[...unknownProperties].join('、')}`,
-      );
+  // 节点字段不在元数据中仅警告，不阻止保存（规格 §11.3 / D27）
+  const knownProperties = businessFields.propertyMap.value;
+  const unknownProperties = new Set<string>();
+  findSchemas(getData().schemas, (node) => {
+    if (node.input === true && node.field && !knownProperties.has(node.field)) {
+      unknownProperties.add(node.field);
     }
+    return false;
+  });
+  if (unknownProperties.size > 0) {
+    console.warn(
+      `[受控字段] 以下字段不在当前业务对象元数据中：${[...unknownProperties].join('、')}`,
+    );
   }
 
   emit('save', getData());

@@ -87,7 +87,6 @@ export function registerMockComponents() {
 }
 
 export interface MockDesignerContextOptions {
-  designMode?: 'controlled' | 'free';
   properties?: Property[];
   pageSchema?: any;
   placedFields?: string[];
@@ -134,7 +133,6 @@ export function makeDesignerContext(
 
   return {
     businessFields,
-    designMode: options.designMode ?? 'controlled',
     handleDelete: () => undefined,
     handleDuplicate: () => undefined,
     handleImported: () => undefined,

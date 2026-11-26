@@ -20,6 +20,7 @@ import {
   findSchemaInfoById,
   findSchemas,
   getMatchedById,
+  validateControlledPage,
 } from '@nada-designer/utils';
 
 /** 默认页面脚本 */
@@ -67,25 +68,30 @@ function createControlledFormRoot(): ComponentSchema {
   };
 }
 
-export function useDesigner(
-  props,
-  emit,
-  designMode: 'controlled' | 'free' = 'free',
-) {
+export function useDesigner(props, emit) {
   const ready = ref<boolean>(false);
   const pageManager = createPageManager();
   const pageSchema = pageManager.pageSchema;
 
+  /** 默认页面不符合受控规范时拒绝加载（产品只支持受控模式） */
+  const defaultSchemaIssues = props.defaultSchema
+    ? validateControlledPage(props.defaultSchema.schemas)
+    : [];
+  if (defaultSchemaIssues.length > 0) {
+    pluginManager.global.$message?.error(
+      `页面不符合受控模式规范：${defaultSchemaIssues[0]?.message ?? ''}，已拒绝加载默认页面`,
+    );
+  }
+
   /** 默认页面数据（实例级，避免多实例互相污染） */
-  let innerDefaultSchema: PageSchema =
-    props.defaultSchema ??
-    (designMode === 'controlled'
-      ? {
-          modelId: props.modelId,
-          schemas: [createControlledFormRoot()],
-          script: DEFAULT_SCRIPT,
-        }
-      : { schemas: [createPageRoot()], script: DEFAULT_SCRIPT });
+  const innerDefaultSchema: PageSchema = (props.defaultSchema &&
+  defaultSchemaIssues.length === 0
+    ? props.defaultSchema
+    : undefined) ?? {
+    modelId: props.modelId,
+    schemas: [createControlledFormRoot()],
+    script: DEFAULT_SCRIPT,
+  };
 
   const state = reactive<DesignerState>({
     disabledHover: false,
@@ -102,7 +108,7 @@ export function useDesigner(
     pageSchema,
     setSelectedNode,
     (message) => revoke.push(message),
-    { canMutate: () => designMode === 'free' },
+    { canMutate: () => false },
   );
 
   const canvasConfigs = {
@@ -119,19 +125,6 @@ export function useDesigner(
 
   // 更新初始化数据
   watchEffect(() => {
-    if (designMode !== 'controlled') {
-      // 如果props.defaultSchema有值，则优先使用props.defaultSchema
-      if (props.defaultSchema) {
-        innerDefaultSchema = props.defaultSchema;
-      } else if (props.formMode) {
-        // 切换表单模式默认schema数据
-        innerDefaultSchema.schemas = pluginManager.designer.formSchema;
-        pluginManager.component.hide('form');
-      }
-      if (!props.formMode) {
-        pluginManager.component.show('form');
-      }
-    }
     const canvasMode = props.canvasMode ?? 'desktop';
     // 根据canvasMode设置对应的画布属性
     pageSchema.canvas = {

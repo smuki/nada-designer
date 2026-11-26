@@ -155,7 +155,6 @@ function isBusinessFieldMove(event: any): boolean {
  * @param event Sortable move 事件
  */
 function handleDragMove(event: any): boolean {
-  if (designer.designMode !== 'controlled') return true;
   if (!isBusinessFieldMove(event)) return true;
 
   const draggedId = event?.dragged?.dataset?.nadaId;
@@ -270,28 +269,18 @@ function nextFormName(): string {
  * 拖入也会导致 change 被触发，Add 应该设置 isDrageChange 标识为 false
  */
 function handleDragAdd(event: any) {
-  if (
-    designer.designMode === 'controlled' &&
-    !event.clonedData?.__businessProperty &&
-    isBusinessFieldMove(event)
-  ) {
+  if (!event.clonedData?.__businessProperty && isBusinessFieldMove(event)) {
     handleBusinessFieldMove(event);
     return;
   }
 
-  if (
-    designer.designMode === 'controlled' &&
-    event.clonedData?.__businessProperty
-  ) {
+  if (event.clonedData?.__businessProperty) {
     handleBusinessFieldDrop(event);
     return;
   }
 
   // 受控模式：拖入的 form 自动命名，保证名称唯一
-  if (
-    designer.designMode === 'controlled' &&
-    event.clonedData?.type === 'form'
-  ) {
+  if (event.clonedData?.type === 'form') {
     event.clonedData.props = {
       ...event.clonedData.props,
       name: nextFormName(),

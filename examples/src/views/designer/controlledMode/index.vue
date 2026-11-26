@@ -22,7 +22,6 @@ function handleSave(data: PageSchema) {
     ref="designerRef"
     model-id="1001"
     :business-field-loader="businessFieldLoader"
-    design-mode="controlled"
     title="受控字段模式示例（销售单据）"
     @save="handleSave"
   >

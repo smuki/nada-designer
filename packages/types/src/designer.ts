@@ -53,8 +53,6 @@ export interface DesignerProps {
   canvasMode?: 'desktop' | 'mobile' | 'tablet';
   canvasPadding?: number | string;
   defaultSchema?: PageSchema;
-  /** 设计模式：free 自由（默认）/ controlled 受控 */
-  designMode?: 'controlled' | 'free';
   disabledZoom?: boolean;
   draggable?: boolean;
   formMode?: boolean;

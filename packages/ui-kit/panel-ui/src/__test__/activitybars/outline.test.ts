@@ -19,8 +19,8 @@ beforeAll(async () => {
   ));
 });
 
-function mountOutline(designMode: 'controlled' | 'free') {
-  const context = makeDesignerContext({ designMode });
+function mountOutline() {
+  const context = makeDesignerContext();
   return mount(OutlineView, {
     global: {
       provide: { [DESIGNER_CONTEXT_KEY as any]: context },
@@ -28,22 +28,12 @@ function mountOutline(designMode: 'controlled' | 'free') {
   });
 }
 
-describe('大纲 · 受控模式', () => {
+describe('大纲（受控单轨）', () => {
   it('禁用大纲拖拽', () => {
-    const wrapper = mountOutline('controlled');
+    const wrapper = mountOutline();
     const tree = wrapper.findComponent({ name: 'ETree' });
 
     expect(tree.exists()).toBe(true);
     expect(tree.props('draggable')).toBe(false);
-  });
-});
-
-describe('大纲 · 自由模式', () => {
-  it('允许大纲拖拽', () => {
-    const wrapper = mountOutline('free');
-    const tree = wrapper.findComponent({ name: 'ETree' });
-
-    expect(tree.exists()).toBe(true);
-    expect(tree.props('draggable')).toBe(true);
   });
 });

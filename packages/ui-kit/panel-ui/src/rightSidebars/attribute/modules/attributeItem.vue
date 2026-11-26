@@ -18,7 +18,6 @@ const props = defineProps<{
 const designer = useDesignerContext();
 const pageSchema = designer.pageSchema;
 const revoke = designer.revoke;
-const isControlled = designer.designMode === 'controlled';
 
 const selectedNode = computed(() => {
   return designer.state.selectedNode;
@@ -86,7 +85,6 @@ function handleSetValue(
 ) {
   // 受控模式：表单名称唯一校验（根表单名称固定 default，已在属性面板隐藏该项）
   if (
-    isControlled &&
     field === 'props.name' &&
     (editData as ComponentSchema)?.type === 'form'
   ) {

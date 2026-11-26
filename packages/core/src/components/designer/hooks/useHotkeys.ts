@@ -6,7 +6,6 @@ import { onUnmounted } from 'vue';
 import { useClipboard } from '@nada-designer/hooks';
 
 interface DesignerHotkeysDeps {
-  designMode: 'controlled' | 'free';
   emit: (event: string, ...args: any[]) => void;
   handleDelete: () => false | undefined;
   pageSchema: PageSchema;
@@ -17,22 +16,15 @@ interface DesignerHotkeysDeps {
 
 export function useHotkeys(deps: DesignerHotkeysDeps) {
   let target: Document | HTMLElement = document;
-  const {
-    designMode,
-    emit,
-    handleDelete,
-    pageSchema,
-    revoke,
-    setSelectedNode,
-    state,
-  } = deps;
+  const { emit, handleDelete, pageSchema, revoke, setSelectedNode, state } =
+    deps;
 
   // 使用封装的clipboard hook（受控模式整体禁止复制/剪切/粘贴）
   const { copy, cut, duplicate, paste } = useClipboard(
     pageSchema,
     setSelectedNode,
     (message) => revoke.push(message),
-    { canMutate: () => designMode === 'free' },
+    { canMutate: () => false },
   );
 
   // 判断是否在可编辑元素中
