@@ -41,6 +41,14 @@ export const frameworkRoutes = [
         },
       },
       {
+        path: 'controlledMode',
+        name: 'controlledMode',
+        component: () => import('@/views/designer/controlledMode/index.vue'),
+        meta: {
+          title: '受控模式',
+        },
+      },
+      {
         path: 'undoHistory',
         name: 'undoHistory',
         component: () => import('@/views/designer/undoHistory/index.vue'),

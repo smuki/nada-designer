@@ -1,13 +1,17 @@
 <script lang="ts" setup>
-import type { ComponentSchema } from '@nada-designer/types';
+import type { ComponentSchema, FieldMeta } from '@nada-designer/types';
 
-import { computed, ref } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 
 import { EpCollapse, EpCollapsePanel, NadaIcon } from '@nada-designer/base-ui';
 import { useDesignerContext } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
-import { findSchemaInfoById, generateNewSchema } from '@nada-designer/utils';
+import {
+  findSchemaInfoById,
+  generateNewSchema,
+  mapFieldDataType,
+} from '@nada-designer/utils';
 import { useStorage } from '@vueuse/core';
 
 const Input = pluginManager.component.get('input');
@@ -18,9 +22,13 @@ const groups = pluginManager.component.getComponentSchemaGroups();
 const keyword = ref('');
 const activeKeys = useStorage('ep-component-view-keys', []);
 
-/**
- * 计算组件分类列表
- */
+/** 受控模式允许拖入的布局组件白名单（规格 D24） */
+const LAYOUT_WHITELIST = new Set(['card', 'form', 'row', 'tabs']);
+
+const isControlled = designer.designMode === 'controlled';
+const businessFields = designer.businessFields;
+
+/** 自由模式：按注册表分组渲染（现状） */
 const getSchemaTypeList = computed(() => {
   return groups.value
     .map((item) => ({
@@ -30,8 +38,116 @@ const getSchemaTypeList = computed(() => {
     .filter((item) => item.list.length > 0);
 });
 
+/** 受控模式：业务字段平铺 + 搜索（v1 不做分组，规格 D43） */
+const businessFieldList = computed(() => {
+  const fields = businessFields.fields.value;
+  if (!keyword.value) return fields;
+  return fields.filter((item) => item.label.includes(keyword.value));
+});
+
+/** 业务字段拖拽列表（本地 ref 承接，clone 只产出占位节点） */
+const fieldDragItems = ref<FieldMeta[]>([]);
+watchEffect(() => {
+  fieldDragItems.value = businessFieldList.value;
+});
+
+/** 当前作用域内已放置的字段（用于面板置灰，规格 §10.2） */
+const placedFields = computed(() => {
+  return new Set(
+    businessFields.getPlacedFields(designer.state.selectedNode?.id),
+  );
+});
+
 /**
- * 点击添加节点
+ * 字段是否已在当前作用域放置
+ * @param field 业务字段标识
+ */
+function isFieldPlaced(field: string): boolean {
+  return placedFields.value.has(field);
+}
+
+/**
+ * 业务字段拖拽占位节点：落点处再按作用域构造真实节点（规格 D33）
+ * @param meta 业务字段元数据
+ */
+function createBusinessPlaceholder(meta: FieldMeta): ComponentSchema {
+  return {
+    __businessField: meta,
+    id: `__pending_${meta.field}`,
+    label: meta.label,
+    type: '__pending',
+  };
+}
+
+/** 受控模式：布局白名单（用本地 ref 承接拖拽组件，避免直接改注册表数据） */
+const layoutItems = ref<ComponentSchema[]>([]);
+
+/**
+ * 收集受控模式下允许出现的布局组件
+ */
+function collectLayoutItems(): ComponentSchema[] {
+  const seen = new Set<string>();
+  const list: ComponentSchema[] = [];
+
+  groups.value.forEach((group) => {
+    group.list.forEach((item) => {
+      if (!LAYOUT_WHITELIST.has(item.type) || seen.has(item.type)) return;
+      seen.add(item.type);
+      list.push(item);
+    });
+  });
+
+  // form 可能被其他实例的 formMode 全局隐藏，兜底从注册表补上
+  if (!seen.has('form')) {
+    const formSchema =
+      pluginManager.component.getComponentConfigByType('form')?.defaultSchema;
+    if (formSchema) {
+      list.unshift(formSchema);
+    }
+  }
+  return list;
+}
+
+watchEffect(() => {
+  layoutItems.value = collectLayoutItems();
+});
+
+/**
+ * 业务字段图标：按映射后的组件类型取图标
+ * @param type 元数据类型
+ */
+function getFieldIcon(type: FieldMeta['type']): string {
+  const componentType = mapFieldDataType(type);
+  return componentType
+    ? pluginManager.component.getIcon(componentType)
+    : 'icon--nada--component';
+}
+
+/**
+ * 点击插入业务字段
+ * @param meta 业务字段元数据
+ */
+function handleFieldClick(meta: FieldMeta) {
+  if (isFieldPlaced(meta.field)) {
+    pluginManager.global.$message.info(`字段「${meta.label}」已放置`);
+    return false;
+  }
+
+  const result = businessFields.insertField(meta, {
+    onInserted: (node) => {
+      designer.setSelectedNode(node);
+      revoke.push('插入业务字段', true);
+    },
+    targetId: designer.state.selectedNode?.id ?? pageSchema.schemas[0]?.id,
+  });
+  if (!result.ok && result.message) {
+    pluginManager.global.$message.warning(result.message);
+  }
+  return result.ok;
+}
+
+/**
+ * 点击添加节点（布局组件走注册表 defaultSchema）
  */
 function handleClick(schema: ComponentSchema) {
   const data = findSchemaInfoById(
@@ -82,9 +198,81 @@ function handleClick(schema: ComponentSchema) {
     <!-- 搜素框 end -->
     <div class="flex flex-1 overflow-auto">
       <!-- 分类选项 start  -->
-
       <div class="box-border h-full flex-1 overflow-auto">
+        <!-- 受控模式 start -->
         <EpCollapse
+          v-if="isControlled"
+          :default-expand-all="!activeKeys.length"
+          v-model="activeKeys"
+        >
+          <EpCollapsePanel name="业务字段" title="业务字段">
+            <VueDraggable
+              v-model="fieldDragItems"
+              :group="{ name: 'edit-draggable', pull: 'clone', put: false }"
+              :sort="false"
+              :animation="180"
+              ghost-class="moving"
+              :clone="createBusinessPlaceholder"
+              filter=".is-placed"
+              item-key="field"
+              class="grid grid-cols-[auto_auto] gap-2 px-2 pb-2 pt-1"
+            >
+              <div
+                v-for="item in fieldDragItems"
+                :key="item.field"
+                class="ep-component-item flex items-center truncate"
+                :class="{ 'is-placed': isFieldPlaced(item.field) }"
+                :title="isFieldPlaced(item.field) ? '已放置' : item.field"
+                @click="handleFieldClick(item)"
+              >
+                <NadaIcon :name="getFieldIcon(item.type)" />
+                <div class="ep-component-label w-0 flex-1 truncate">
+                  {{ item.label }}
+                </div>
+              </div>
+            </VueDraggable>
+            <div
+              v-if="businessFieldList.length === 0"
+              class="pt-4 text-center text-gray-400"
+            >
+              没有匹配的字段
+            </div>
+          </EpCollapsePanel>
+          <EpCollapsePanel name="布局" title="布局">
+            <VueDraggable
+              v-model="layoutItems"
+              :group="{ name: 'edit-draggable', pull: 'clone', put: false }"
+              :sort="false"
+              :animation="180"
+              ghost-class="moving"
+              :clone="generateNewSchema"
+              item-key="id"
+              class="grid grid-cols-[auto_auto] gap-2 px-2 pb-2 pt-1"
+            >
+              <div
+                v-for="item in layoutItems"
+                :key="item.type"
+                class="ep-component-item flex items-center truncate"
+                @click="handleClick(item)"
+              >
+                <NadaIcon
+                  :name="
+                    pluginManager.component.getConfigByType(item.type).icon ??
+                    ''
+                  "
+                />
+                <div class="ep-component-label w-0 flex-1 truncate">
+                  {{ item.label }}
+                </div>
+              </div>
+            </VueDraggable>
+          </EpCollapsePanel>
+        </EpCollapse>
+        <!-- 受控模式 end -->
+
+        <!-- 自由模式（现状） start -->
+        <EpCollapse
+          v-else
           :default-expand-all="!activeKeys.length"
           v-model="activeKeys"
         >
@@ -123,8 +311,10 @@ function handleClick(schema: ComponentSchema) {
             </VueDraggable>
           </EpCollapsePanel>
         </EpCollapse>
+        <!-- 自由模式 end -->
+
         <div
-          v-show="getSchemaTypeList.length === 0"
+          v-show="!isControlled && getSchemaTypeList.length === 0"
           class="pt-42px text-center text-gray-400"
         >
           没有查询到的组件

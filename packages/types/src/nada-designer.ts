@@ -70,6 +70,8 @@ export interface PageSchema {
     mode?: 'desktop' | 'mobile' | 'pad' | 'pc' | 'tablet'; // 支持新旧模式  'pad' | 'pc' 为旧数据
     width?: string;
   };
+  /** 业务对象模型 id（主键；受控模式随页面保存） */
+  modelId?: string;
   schemas: ComponentSchema[];
   script?: string;
 }

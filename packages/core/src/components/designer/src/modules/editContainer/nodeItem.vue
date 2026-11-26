@@ -70,6 +70,7 @@ function isDraggable() {
       <NadaNodes
         v-if="props.schema.children"
         v-model:schemas="props.schema.children"
+        :parent-schema="props.schema"
       />
     </template>
   </NadaNode>

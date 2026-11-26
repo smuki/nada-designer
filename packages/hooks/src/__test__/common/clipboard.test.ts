@@ -69,7 +69,10 @@ describe('useClipboard', () => {
 
     const children = pageSchema.schemas[0].children;
     expect(children).toHaveLength(4);
-    expect(children.map((item: any) => item.id).slice(0, 2)).toEqual(['a', 'b']);
+    expect(children.map((item: any) => item.id).slice(0, 2)).toEqual([
+      'a',
+      'b',
+    ]);
     expect(children[2].id).not.toBe('b');
     expect(revokePush).toHaveBeenCalledWith('复制组件');
   });
@@ -115,5 +118,33 @@ describe('useClipboard', () => {
     const pasted = children[1];
     expect(pasted.id).not.toBe('b');
     expect(pasted.type).toBe('input');
+  });
+
+  it('canMutate 返回 false 时四个 API 都静默失败且不写撤销栈', () => {
+    const pageSchema = makePageSchema();
+    const setSelectedNode = vi.fn();
+    const revokePush = vi.fn();
+    const clipboard = useClipboard(pageSchema, setSelectedNode, revokePush, {
+      canMutate: () => false,
+    });
+    const before = JSON.stringify(pageSchema);
+
+    expect(clipboard.copy({ id: 'a', type: 'input' })).toBe(false);
+    expect(clipboard.cut({ id: 'b', type: 'input' })).toBe(false);
+    expect(clipboard.paste('a')).toBe(false);
+    expect(clipboard.duplicate('a')).toBe(false);
+
+    expect(JSON.stringify(pageSchema)).toBe(before);
+    expect(clipboard.clipboardNode.value).toBe(null);
+    expect(revokePush).not.toHaveBeenCalled();
+    expect(setSelectedNode).not.toHaveBeenCalled();
+  });
+
+  it('canMutate 默认允许（旧的三参调用不受影响）', () => {
+    const pageSchema = makePageSchema();
+    const clipboard = useClipboard(pageSchema, vi.fn(), vi.fn());
+
+    expect(clipboard.copy({ id: 'a', type: 'input' })).toBe(true);
+    expect(clipboard.clipboardNode.value?.id).toBe('a');
   });
 });

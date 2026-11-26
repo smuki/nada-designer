@@ -8,26 +8,40 @@ import {
   generateNewSchema,
 } from '@nada-designer/utils';
 
+export interface UseClipboardOptions {
+  /** 是否允许变更（受控模式返回 false 时整体静默禁止）；默认允许 */
+  canMutate?: () => boolean;
+}
+
 /**
  * 提供组件复制粘贴功能的Hook
  * @param pageSchema 页面Schema数据
  * @param setSelectedNode 设置选中节点的函数
  * @param revokePush 撤销栈推送函数
+ * @param options 额外限制：例如受控模式下整体禁止复制/剪切/粘贴
  */
 export function useClipboard(
   pageSchema: any,
   setSelectedNode: (schema?: ComponentSchema) => void,
   revokePush: (message: string) => void,
+  options: UseClipboardOptions = {},
 ) {
   // 剪贴板节点
   const clipboardNode = ref<ComponentSchema | null>(null);
+
+  /**
+   * 是否允许变更（默认允许）
+   */
+  function canMutate(): boolean {
+    return options.canMutate ? options.canMutate() : true;
+  }
 
   /**
    * 复制选中节点到剪贴板
    * @param selectedNode 当前选中的节点
    */
   function copy(selectedNode: ComponentSchema | null): boolean {
-    if (!selectedNode?.id) return false;
+    if (!canMutate() || !selectedNode?.id) return false;
     clipboardNode.value = deepClone(selectedNode);
     return true;
   }
@@ -37,7 +51,7 @@ export function useClipboard(
    * @param selectedNodeId 当前选中节点ID
    */
   function paste(selectedNodeId: null | string | undefined): boolean {
-    if (!clipboardNode.value) return false;
+    if (!canMutate() || !clipboardNode.value) return false;
 
     const data = findSchemaInfoById(
       pageSchema.schemas,
@@ -59,6 +73,7 @@ export function useClipboard(
    * @param selectedNodeId 当前选中节点ID
    */
   function duplicate(selectedNodeId: null | string | undefined): boolean {
+    if (!canMutate()) return false;
     const data = findSchemaInfoById(
       pageSchema.schemas,
       selectedNodeId ?? 'root',
@@ -79,7 +94,7 @@ export function useClipboard(
    * @param selectedNode 当前选中的节点
    */
   function cut(selectedNode: ComponentSchema | null): boolean {
-    if (!selectedNode?.id) return false;
+    if (!canMutate() || !selectedNode?.id) return false;
 
     // 复制节点到剪贴板
     clipboardNode.value = deepClone(selectedNode);

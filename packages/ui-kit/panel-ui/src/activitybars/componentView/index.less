@@ -24,6 +24,23 @@
         color: var(--ep-primary);
       }
     }
+
+    // 受控模式：字段已在当前表单放置，置灰且不可拖拽/点击
+    &.is-placed {
+      cursor: not-allowed;
+      opacity: 0.45;
+      border-color: transparent;
+
+      &:hover {
+        border-color: transparent;
+        color: inherit;
+        background-color: var(--ep-secondary);
+
+        .iconfont {
+          color: var(--ep-text-secondary);
+        }
+      }
+    }
   }
 
   .ep-search-box {

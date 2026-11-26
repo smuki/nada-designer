@@ -1,0 +1,2393 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#（说明性，非严格 schema）",
+  "description": "易快报单据模板字段控件的配置项字典（从模板接口实时抽取），用于新系统设计参考",
+  "meta": {
+    "source": {
+      "endpoint": "https://app.ekuaibao.com/api/form/v2/specificationGroups",
+      "params": {
+        "corpId": "ID01PH4Q5CJboX",
+        "accessToken": "<token>"
+      },
+      "capturedAt": "2026-11-22",
+      "note": "token 不入库，使用前请替换/重新获取"
+    },
+    "scale": {
+      "specificationGroups": 4,
+      "specifications": 35,
+      "components": 748,
+      "fieldComponents": 697,
+      "widgetTypes": 18,
+      "configOptions": 84
+    }
+  },
+  "categories": [
+    {
+      "name": "基础标识",
+      "count": 5,
+      "options": [
+        "label",
+        "cnLabel",
+        "enLabel",
+        "type",
+        "field"
+      ]
+    },
+    {
+      "name": "显示与占位",
+      "count": 5,
+      "options": [
+        "showInDetails",
+        "placeholder",
+        "cnPlaceholder",
+        "enPlaceholder",
+        "url"
+      ]
+    },
+    {
+      "name": "编辑、必填与复制",
+      "count": 6,
+      "options": [
+        "editable",
+        "optional",
+        "readonly",
+        "copyable",
+        "defaultField",
+        "onlyEditVisible"
+      ]
+    },
+    {
+      "name": "显隐与权限",
+      "count": 5,
+      "options": [
+        "hide",
+        "hideVisibility",
+        "hideBlacklistVisibility",
+        "visibility",
+        "visibleStaffSelection"
+      ]
+    },
+    {
+      "name": "默认值与动态配置",
+      "count": 3,
+      "options": [
+        "defaultValue",
+        "priority",
+        "configs"
+      ]
+    },
+    {
+      "name": "依赖与联动",
+      "count": 16,
+      "options": [
+        "dependence",
+        "dependenceCondition",
+        "allowCancelDependence",
+        "autoDependence",
+        "rangeOnlyOneAutomaticAssignment",
+        "isLinkageAssignment",
+        "assignmentRule",
+        "filterId",
+        "filterRules",
+        "inheritedFieldDependency",
+        "valueRangeFilter",
+        "editStatePathRule",
+        "readStatePathRule",
+        "autoFillByFilterDataOnlyOne",
+        "enableExactSearchAllData",
+        "subTypeId"
+      ]
+    },
+    {
+      "name": "文本 / 数字 / 金额 / 日期",
+      "count": 13,
+      "options": [
+        "maxLength",
+        "minLength",
+        "exceedConfigs",
+        "max",
+        "min",
+        "countRuleCheck",
+        "countRule",
+        "isShowThousandsSeparator",
+        "hiddenRate",
+        "withTime",
+        "specificTime",
+        "dateTimeType",
+        "defaultWorkingTime"
+      ]
+    },
+    {
+      "name": "选择器",
+      "count": 13,
+      "options": [
+        "selectRange",
+        "multiple",
+        "onlyBelongDepartment",
+        "allowExternalStaff",
+        "isShowFullPath",
+        "hideCode",
+        "allowUseDeactivatedData",
+        "automaticImport",
+        "canNotBeApportioned",
+        "canNotBeApportionedFields",
+        "isAllowExcelImport",
+        "allowUseDeactivateDepartment",
+        "allowInteriorStaff"
+      ]
+    },
+    {
+      "name": "城市",
+      "count": 3,
+      "options": [
+        "hasForbiddenCityGroup",
+        "cityGroupId",
+        "cityOptions"
+      ]
+    },
+    {
+      "name": "附件",
+      "count": 2,
+      "options": [
+        "checkDetailInvoiceType",
+        "detailInvoiceTypes"
+      ]
+    },
+    {
+      "name": "明细表格",
+      "count": 11,
+      "options": [
+        "orderByType",
+        "showType",
+        "showTypeNew",
+        "feeTypeImportRuleId",
+        "isFeeTypeEmpty",
+        "mustAllFeeTypeCurrencyEqual",
+        "requisitionCanBindInvoice",
+        "batchApportionDisabled",
+        "showTypeByRole",
+        "showDetailNo",
+        "realtimeCalculateBudget"
+      ]
+    },
+    {
+      "name": "业务对象 / 公司卡 / 其它",
+      "count": 2,
+      "options": [
+        "referenceData",
+        "eCardOptionalRange"
+      ]
+    }
+  ],
+  "options": [
+    {
+      "key": "cnLabel",
+      "category": "基础标识",
+      "meaning": "中文标签（可为 null）",
+      "present": 748,
+      "presentRate": 1,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "annotation": 19,
+        "group": 19,
+        "payeeInfo": 17,
+        "details": 14,
+        "separator": 13,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "string": 722,
+        "null": 26
+      },
+      "observed": {
+        "null": 26,
+        "distinctStrings": 185,
+        "sampleValues": [
+          {
+            "value": "申请人",
+            "count": 32
+          },
+          {
+            "value": "内部备注",
+            "count": 29
+          },
+          {
+            "value": "申请日期",
+            "count": 29
+          },
+          {
+            "value": "标题",
+            "count": 25
+          },
+          {
+            "value": "以下为员工基础信息",
+            "count": 23
+          },
+          {
+            "value": "申请人部门",
+            "count": 23
+          }
+        ]
+      }
+    },
+    {
+      "key": "enLabel",
+      "category": "基础标识",
+      "meaning": "英文标签（可为 null / 空串）",
+      "present": 748,
+      "presentRate": 1,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "annotation": 19,
+        "group": 19,
+        "payeeInfo": 17,
+        "details": 14,
+        "separator": 13,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "string": 694,
+        "null": 54
+      },
+      "observed": {
+        "null": 54,
+        "emptyString": 209,
+        "distinctStrings": 119,
+        "sampleValues": [
+          {
+            "value": "Subject",
+            "count": 34
+          },
+          {
+            "value": "Submitter",
+            "count": 34
+          },
+          {
+            "value": "Legal Entity",
+            "count": 16
+          },
+          {
+            "value": "Payee/Account Information",
+            "count": 15
+          },
+          {
+            "value": "Expense Lines",
+            "count": 14
+          },
+          {
+            "value": "Reimbursement Date",
+            "count": 14
+          }
+        ]
+      }
+    },
+    {
+      "key": "label",
+      "category": "基础标识",
+      "meaning": "显示名称（模板内可覆盖字段名）",
+      "present": 748,
+      "presentRate": 1,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "annotation": 19,
+        "group": 19,
+        "payeeInfo": 17,
+        "details": 14,
+        "separator": 13,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "string": 748
+      },
+      "observed": {
+        "emptyString": 13,
+        "distinctStrings": 185,
+        "sampleValues": [
+          {
+            "value": "申请人",
+            "count": 32
+          },
+          {
+            "value": "内部备注",
+            "count": 29
+          },
+          {
+            "value": "申请日期",
+            "count": 29
+          },
+          {
+            "value": "标题",
+            "count": 25
+          },
+          {
+            "value": "费用明细",
+            "count": 25
+          },
+          {
+            "value": "以下为员工基础信息",
+            "count": 23
+          }
+        ]
+      }
+    },
+    {
+      "key": "readonly",
+      "category": "编辑、必填与复制",
+      "meaning": "是否只读（本数据全 false，实际只读由 editable/hide 表达）",
+      "present": 748,
+      "presentRate": 1,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "annotation": 19,
+        "group": 19,
+        "payeeInfo": 17,
+        "details": 14,
+        "separator": 13,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "boolean": 748
+      },
+      "observed": {
+        "true": 0,
+        "false": 748
+      }
+    },
+    {
+      "key": "showInDetails",
+      "category": "显示与占位",
+      "meaning": "是否在明细中展示（本数据全 false，保留字段）",
+      "present": 748,
+      "presentRate": 1,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "annotation": 19,
+        "group": 19,
+        "payeeInfo": 17,
+        "details": 14,
+        "separator": 13,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "boolean": 748
+      },
+      "observed": {
+        "true": 0,
+        "false": 748
+      }
+    },
+    {
+      "key": "type",
+      "category": "基础标识",
+      "meaning": "控件类型（18 种之一）",
+      "present": 748,
+      "presentRate": 1,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "annotation": 19,
+        "group": 19,
+        "payeeInfo": 17,
+        "details": 14,
+        "separator": 13,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "string": 748
+      },
+      "observed": {
+        "distinctStrings": 18,
+        "sampleValues": [
+          {
+            "value": "select",
+            "count": 276
+          },
+          {
+            "value": "text",
+            "count": 168
+          },
+          {
+            "value": "date",
+            "count": 46
+          },
+          {
+            "value": "textarea",
+            "count": 41
+          },
+          {
+            "value": "attachments",
+            "count": 40
+          },
+          {
+            "value": "money",
+            "count": 40
+          }
+        ]
+      }
+    },
+    {
+      "key": "cnPlaceholder",
+      "category": "显示与占位",
+      "meaning": "中文占位提示",
+      "present": 697,
+      "presentRate": 0.932,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "string": 573,
+        "null": 124
+      },
+      "observed": {
+        "null": 124,
+        "distinctStrings": 152,
+        "sampleValues": [
+          {
+            "value": "请输入标题",
+            "count": 26
+          },
+          {
+            "value": "请选择申请人部门",
+            "count": 23
+          },
+          {
+            "value": "请输入OA文本",
+            "count": 20
+          },
+          {
+            "value": "请选择提交人",
+            "count": 19
+          },
+          {
+            "value": "请选择申请人成本中心",
+            "count": 18
+          },
+          {
+            "value": "请输入内部备注",
+            "count": 17
+          }
+        ]
+      }
+    },
+    {
+      "key": "configs",
+      "category": "默认值与动态配置",
+      "meaning": "运行时动态属性规则（hide/optional/setip，公式驱动）",
+      "present": 697,
+      "presentRate": 0.932,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "array": 685,
+        "null": 12
+      },
+      "observed": {
+        "null": 12,
+        "arrayLengths": {
+          "0": 624,
+          "1": 24,
+          "2": 37
+        }
+      }
+    },
+    {
+      "key": "copyable",
+      "category": "编辑、必填与复制",
+      "meaning": "是否允许复制（本数据全 true）",
+      "present": 697,
+      "presentRate": 0.932,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "boolean": 697
+      },
+      "observed": {
+        "true": 697,
+        "false": 0
+      }
+    },
+    {
+      "key": "defaultField",
+      "category": "编辑、必填与复制",
+      "meaning": "是否默认字段（本数据全 false）",
+      "present": 697,
+      "presentRate": 0.932,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "boolean": 697
+      },
+      "observed": {
+        "true": 0,
+        "false": 697
+      }
+    },
+    {
+      "key": "defaultValue",
+      "category": "默认值与动态配置",
+      "meaning": "默认值配置（none/predefine/formula/constant/sum）",
+      "present": 697,
+      "presentRate": 0.932,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "object": 697
+      },
+      "observed": {
+        "objectKeys": [
+          "assignValueTo",
+          "customRuleId",
+          "type",
+          "value"
+        ]
+      }
+    },
+    {
+      "key": "editable",
+      "category": "编辑、必填与复制",
+      "meaning": "是否可编辑（false 表示只读展示）",
+      "present": 697,
+      "presentRate": 0.932,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "boolean": 697
+      },
+      "observed": {
+        "true": 517,
+        "false": 180
+      }
+    },
+    {
+      "key": "enPlaceholder",
+      "category": "显示与占位",
+      "meaning": "英文占位提示",
+      "present": 697,
+      "presentRate": 0.932,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "string": 342,
+        "null": 355
+      },
+      "observed": {
+        "null": 355,
+        "distinctStrings": 90,
+        "sampleValues": [
+          {
+            "value": "Please input the subject.",
+            "count": 34
+          },
+          {
+            "value": "Please select the submitter.",
+            "count": 34
+          },
+          {
+            "value": "Please select the payee/account.",
+            "count": 14
+          },
+          {
+            "value": "Applicant Cost Center",
+            "count": 13
+          },
+          {
+            "value": "Applicant Department",
+            "count": 12
+          },
+          {
+            "value": "Direct Supervisor",
+            "count": 11
+          }
+        ]
+      }
+    },
+    {
+      "key": "field",
+      "category": "基础标识",
+      "meaning": "绑定的业务字段名（= propertySet.name）",
+      "present": 697,
+      "presentRate": 0.932,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "string": 697
+      },
+      "observed": {
+        "distinctStrings": 150,
+        "sampleValues": [
+          {
+            "value": "title",
+            "count": 35
+          },
+          {
+            "value": "submitterId",
+            "count": 35
+          },
+          {
+            "value": "u_内部备注",
+            "count": 29
+          },
+          {
+            "value": "attachments",
+            "count": 27
+          },
+          {
+            "value": "法人实体",
+            "count": 25
+          },
+          {
+            "value": "details",
+            "count": 25
+          }
+        ]
+      }
+    },
+    {
+      "key": "hide",
+      "category": "显隐与权限",
+      "meaning": "默认是否隐藏",
+      "present": 697,
+      "presentRate": 0.932,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "boolean": 697
+      },
+      "observed": {
+        "true": 280,
+        "false": 417
+      }
+    },
+    {
+      "key": "hideBlacklistVisibility",
+      "category": "显隐与权限",
+      "meaning": "隐藏黑名单可见范围",
+      "present": 697,
+      "presentRate": 0.932,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "object": 697
+      },
+      "observed": {
+        "objectKeys": [
+          "departments",
+          "departmentsIncludeChildren",
+          "fullVisible",
+          "roles",
+          "staffs"
+        ]
+      }
+    },
+    {
+      "key": "hideVisibility",
+      "category": "显隐与权限",
+      "meaning": "隐藏时的例外可见范围（谁可以看见）",
+      "present": 697,
+      "presentRate": 0.932,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "object": 697
+      },
+      "observed": {
+        "objectKeys": [
+          "departments",
+          "departmentsIncludeChildren",
+          "fullVisible",
+          "roles",
+          "staffs"
+        ]
+      }
+    },
+    {
+      "key": "optional",
+      "category": "编辑、必填与复制",
+      "meaning": "是否非必填（true=非必填）",
+      "present": 697,
+      "presentRate": 0.932,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "boolean": 697
+      },
+      "observed": {
+        "true": 225,
+        "false": 472
+      }
+    },
+    {
+      "key": "placeholder",
+      "category": "显示与占位",
+      "meaning": "占位提示（默认/中文环境）",
+      "present": 697,
+      "presentRate": 0.932,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "string": 578,
+        "null": 119
+      },
+      "observed": {
+        "null": 119,
+        "distinctStrings": 153,
+        "sampleValues": [
+          {
+            "value": "请输入标题",
+            "count": 26
+          },
+          {
+            "value": "请选择申请人部门",
+            "count": 23
+          },
+          {
+            "value": "请输入OA文本",
+            "count": 20
+          },
+          {
+            "value": "请选择提交人",
+            "count": 19
+          },
+          {
+            "value": "请选择申请人成本中心",
+            "count": 18
+          },
+          {
+            "value": "请输入内部备注",
+            "count": 17
+          }
+        ]
+      }
+    },
+    {
+      "key": "priority",
+      "category": "默认值与动态配置",
+      "meaning": "取值来源优先级（4 类来源 + 数值）",
+      "present": 672,
+      "presentRate": 0.898,
+      "widgets": {
+        "select": 276,
+        "text": 168,
+        "date": 46,
+        "textarea": 41,
+        "attachments": 40,
+        "money": 40,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "dateRange": 7,
+        "city": 6,
+        "switcher": 5,
+        "number": 1,
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "array": 629,
+        "null": 43
+      },
+      "observed": {
+        "null": 43,
+        "arrayLengths": {
+          "4": 629
+        }
+      }
+    },
+    {
+      "key": "allowCancelDependence",
+      "category": "依赖与联动",
+      "meaning": "允许取消依赖",
+      "present": 342,
+      "presentRate": 0.457,
+      "widgets": {
+        "select": 276,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "boolean": 342
+      },
+      "observed": {
+        "true": 6,
+        "false": 336
+      }
+    },
+    {
+      "key": "autoDependence",
+      "category": "依赖与联动",
+      "meaning": "自动依赖（本数据全 null）",
+      "present": 342,
+      "presentRate": 0.457,
+      "widgets": {
+        "select": 276,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "null": 342
+      },
+      "observed": {
+        "null": 342
+      }
+    },
+    {
+      "key": "dependence",
+      "category": "依赖与联动",
+      "meaning": "值依赖：本字段可选范围由指定字段约束",
+      "present": 342,
+      "presentRate": 0.457,
+      "widgets": {
+        "select": 276,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "null": 266,
+        "array": 76
+      },
+      "observed": {
+        "null": 266,
+        "arrayLengths": {
+          "0": 6,
+          "1": 70
+        }
+      }
+    },
+    {
+      "key": "dependenceCondition",
+      "category": "依赖与联动",
+      "meaning": "多个依赖的组合条件（AND）",
+      "present": 342,
+      "presentRate": 0.457,
+      "widgets": {
+        "select": 276,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "null": 266,
+        "string": 76
+      },
+      "observed": {
+        "null": 266,
+        "distinctStrings": 1,
+        "sampleValues": [
+          {
+            "value": "AND",
+            "count": 76
+          }
+        ]
+      }
+    },
+    {
+      "key": "rangeOnlyOneAutomaticAssignment",
+      "category": "依赖与联动",
+      "meaning": "范围内仅一条时自动赋值（全 false）",
+      "present": 342,
+      "presentRate": 0.457,
+      "widgets": {
+        "select": 276,
+        "dataLink": 24,
+        "payeeInfo": 17,
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "boolean": 342
+      },
+      "observed": {
+        "true": 0,
+        "false": 342
+      }
+    },
+    {
+      "key": "assignmentRule",
+      "category": "依赖与联动",
+      "meaning": "联动赋值规则 ID（引用外部规则配置）",
+      "present": 300,
+      "presentRate": 0.401,
+      "widgets": {
+        "select": 276,
+        "dataLink": 24
+      },
+      "kinds": {
+        "string": 79,
+        "null": 221
+      },
+      "observed": {
+        "null": 221,
+        "distinctStrings": 11,
+        "sampleValues": [
+          {
+            "value": "ID01RU5pGfV9y7",
+            "count": 58
+          },
+          {
+            "value": "ID01RU74DIQvV5",
+            "count": 7
+          },
+          {
+            "value": "ID01RU74HBwT8z",
+            "count": 5
+          },
+          {
+            "value": "ID01XZ8isowAaj",
+            "count": 2
+          },
+          {
+            "value": "ID01TRWvYFAulh",
+            "count": 1
+          },
+          {
+            "value": "ID01TsFa25DA2X",
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "key": "filterId",
+      "category": "依赖与联动",
+      "meaning": "数据过滤规则 ID（引用外部过滤器配置）",
+      "present": 300,
+      "presentRate": 0.401,
+      "widgets": {
+        "select": 276,
+        "dataLink": 24
+      },
+      "kinds": {
+        "string": 15,
+        "null": 285
+      },
+      "observed": {
+        "null": 285,
+        "emptyString": 6,
+        "distinctStrings": 9,
+        "sampleValues": [
+          {
+            "value": "ID01TxgBdQkp8b",
+            "count": 1
+          },
+          {
+            "value": "ID01Xltk8iw4PR",
+            "count": 1
+          },
+          {
+            "value": "ID01SIoNroabg3",
+            "count": 1
+          },
+          {
+            "value": "ID01RUqQHbAGNp",
+            "count": 1
+          },
+          {
+            "value": "ID01WgP2Le6M0f",
+            "count": 1
+          },
+          {
+            "value": "ID01RU7MqXNSDt",
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "key": "isLinkageAssignment",
+      "category": "依赖与联动",
+      "meaning": "是否启用联动赋值",
+      "present": 300,
+      "presentRate": 0.401,
+      "widgets": {
+        "select": 276,
+        "dataLink": 24
+      },
+      "kinds": {
+        "boolean": 300
+      },
+      "observed": {
+        "true": 25,
+        "false": 275
+      }
+    },
+    {
+      "key": "multiple",
+      "category": "选择器",
+      "meaning": "是否多选（select 与 city）",
+      "present": 282,
+      "presentRate": 0.377,
+      "widgets": {
+        "select": 276,
+        "city": 6
+      },
+      "kinds": {
+        "boolean": 282
+      },
+      "observed": {
+        "true": 3,
+        "false": 279
+      }
+    },
+    {
+      "key": "allowExternalStaff",
+      "category": "选择器",
+      "meaning": "允许选择外部人员（全 false）",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "boolean": 276
+      },
+      "observed": {
+        "true": 0,
+        "false": 276
+      }
+    },
+    {
+      "key": "allowInteriorStaff",
+      "category": "选择器",
+      "meaning": "允许选择内部员工（全 true）",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "boolean": 276
+      },
+      "observed": {
+        "true": 276,
+        "false": 0
+      }
+    },
+    {
+      "key": "allowUseDeactivatedData",
+      "category": "选择器",
+      "meaning": "允许使用已停用数据（全 false）",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "boolean": 276
+      },
+      "observed": {
+        "true": 0,
+        "false": 276
+      }
+    },
+    {
+      "key": "allowUseDeactivateDepartment",
+      "category": "选择器",
+      "meaning": "允许使用停用部门（全 false）",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "boolean": 276
+      },
+      "observed": {
+        "true": 0,
+        "false": 276
+      }
+    },
+    {
+      "key": "automaticImport",
+      "category": "选择器",
+      "meaning": "自动导入（全 false）",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "boolean": 276
+      },
+      "observed": {
+        "true": 0,
+        "false": 276
+      }
+    },
+    {
+      "key": "canNotBeApportioned",
+      "category": "选择器",
+      "meaning": "不可分摊（全 null）",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "null": 276
+      },
+      "observed": {
+        "null": 276
+      }
+    },
+    {
+      "key": "canNotBeApportionedFields",
+      "category": "选择器",
+      "meaning": "不可分摊字段（全 null）",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "null": 276
+      },
+      "observed": {
+        "null": 276
+      }
+    },
+    {
+      "key": "editStatePathRule",
+      "category": "依赖与联动",
+      "meaning": "编辑态层级显示规则（choosePath）",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "string": 276
+      },
+      "observed": {
+        "distinctStrings": 2,
+        "sampleValues": [
+          {
+            "value": "choosePath",
+            "count": 273
+          },
+          {
+            "value": "fullPath",
+            "count": 3
+          }
+        ]
+      }
+    },
+    {
+      "key": "hideCode",
+      "category": "选择器",
+      "meaning": "选择时隐藏编码",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "boolean": 276
+      },
+      "observed": {
+        "true": 115,
+        "false": 161
+      }
+    },
+    {
+      "key": "inheritedFieldDependency",
+      "category": "依赖与联动",
+      "meaning": "是否继承字段依赖（全 false）",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "boolean": 276
+      },
+      "observed": {
+        "true": 0,
+        "false": 276
+      }
+    },
+    {
+      "key": "isAllowExcelImport",
+      "category": "选择器",
+      "meaning": "允许 Excel 导入（全 false）",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "boolean": 276
+      },
+      "observed": {
+        "true": 0,
+        "false": 276
+      }
+    },
+    {
+      "key": "isShowFullPath",
+      "category": "选择器",
+      "meaning": "是否显示完整层级路径（全 false）",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "boolean": 276
+      },
+      "observed": {
+        "true": 0,
+        "false": 276
+      }
+    },
+    {
+      "key": "onlyBelongDepartment",
+      "category": "选择器",
+      "meaning": "仅允许选择本部门",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "boolean": 276
+      },
+      "observed": {
+        "true": 3,
+        "false": 273
+      }
+    },
+    {
+      "key": "readStatePathRule",
+      "category": "依赖与联动",
+      "meaning": "只读态层级显示规则（fullPath）",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "string": 276
+      },
+      "observed": {
+        "distinctStrings": 1,
+        "sampleValues": [
+          {
+            "value": "fullPath",
+            "count": 276
+          }
+        ]
+      }
+    },
+    {
+      "key": "selectRange",
+      "category": "选择器",
+      "meaning": "可选数据范围（all=全部 / leaf=叶子节点）",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "string": 276
+      },
+      "observed": {
+        "distinctStrings": 2,
+        "sampleValues": [
+          {
+            "value": "all",
+            "count": 208
+          },
+          {
+            "value": "leaf",
+            "count": 68
+          }
+        ]
+      }
+    },
+    {
+      "key": "valueRangeFilter",
+      "category": "依赖与联动",
+      "meaning": "值域过滤表达式/标记",
+      "present": 276,
+      "presentRate": 0.369,
+      "widgets": {
+        "select": 276
+      },
+      "kinds": {
+        "null": 271,
+        "string": 5
+      },
+      "observed": {
+        "null": 271,
+        "distinctStrings": 1,
+        "sampleValues": [
+          {
+            "value": "false",
+            "count": 5
+          }
+        ]
+      }
+    },
+    {
+      "key": "maxLength",
+      "category": "文本 / 数字 / 金额 / 日期",
+      "meaning": "最大长度",
+      "present": 228,
+      "presentRate": 0.305,
+      "widgets": {
+        "text": 168,
+        "textarea": 41,
+        "annotation": 19
+      },
+      "kinds": {
+        "number": 228
+      },
+      "observed": {
+        "min": 14,
+        "max": 2000
+      }
+    },
+    {
+      "key": "exceedConfigs",
+      "category": "文本 / 数字 / 金额 / 日期",
+      "meaning": "超限配置（金额/发票校验）",
+      "present": 209,
+      "presentRate": 0.279,
+      "widgets": {
+        "text": 168,
+        "textarea": 41
+      },
+      "kinds": {
+        "null": 207,
+        "object": 2
+      },
+      "observed": {
+        "null": 207,
+        "objectKeys": [
+          "amountChecked",
+          "invoiceAmount"
+        ]
+      }
+    },
+    {
+      "key": "minLength",
+      "category": "文本 / 数字 / 金额 / 日期",
+      "meaning": "最小长度",
+      "present": 209,
+      "presentRate": 0.279,
+      "widgets": {
+        "text": 168,
+        "textarea": 41
+      },
+      "kinds": {
+        "number": 209
+      },
+      "observed": {
+        "min": 0,
+        "max": 0
+      }
+    },
+    {
+      "key": "dateTimeType",
+      "category": "文本 / 数字 / 金额 / 日期",
+      "meaning": "日期时间格式（YEAR_MONTH_DAY / YEAR_MONTH_DAY_TIME / YEAR_MONTH）",
+      "present": 53,
+      "presentRate": 0.071,
+      "widgets": {
+        "date": 46,
+        "dateRange": 7
+      },
+      "kinds": {
+        "null": 42,
+        "string": 11
+      },
+      "observed": {
+        "null": 42,
+        "distinctStrings": 3,
+        "sampleValues": [
+          {
+            "value": "YEAR_MONTH_DAY",
+            "count": 6
+          },
+          {
+            "value": "YEAR_MONTH_DAY_TIME",
+            "count": 4
+          },
+          {
+            "value": "YEAR_MONTH",
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "key": "specificTime",
+      "category": "文本 / 数字 / 金额 / 日期",
+      "meaning": "是否指定具体时间（全 false）",
+      "present": 53,
+      "presentRate": 0.071,
+      "widgets": {
+        "date": 46,
+        "dateRange": 7
+      },
+      "kinds": {
+        "boolean": 53
+      },
+      "observed": {
+        "true": 0,
+        "false": 53
+      }
+    },
+    {
+      "key": "withTime",
+      "category": "文本 / 数字 / 金额 / 日期",
+      "meaning": "是否带时间",
+      "present": 53,
+      "presentRate": 0.071,
+      "widgets": {
+        "date": 46,
+        "dateRange": 7
+      },
+      "kinds": {
+        "boolean": 53
+      },
+      "observed": {
+        "true": 4,
+        "false": 49
+      }
+    },
+    {
+      "key": "max",
+      "category": "文本 / 数字 / 金额 / 日期",
+      "meaning": "最大值（字符串数字）",
+      "present": 41,
+      "presentRate": 0.055,
+      "widgets": {
+        "money": 40,
+        "number": 1
+      },
+      "kinds": {
+        "string": 41
+      },
+      "observed": {
+        "distinctStrings": 4,
+        "sampleValues": [
+          {
+            "value": "10000000000.00",
+            "count": 38
+          },
+          {
+            "value": "10000000000",
+            "count": 1
+          },
+          {
+            "value": "1000000000.00",
+            "count": 1
+          },
+          {
+            "value": "9999999999",
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "key": "min",
+      "category": "文本 / 数字 / 金额 / 日期",
+      "meaning": "最小值（字符串数字）",
+      "present": 41,
+      "presentRate": 0.055,
+      "widgets": {
+        "money": 40,
+        "number": 1
+      },
+      "kinds": {
+        "string": 41
+      },
+      "observed": {
+        "distinctStrings": 6,
+        "sampleValues": [
+          {
+            "value": "0.01",
+            "count": 31
+          },
+          {
+            "value": "0",
+            "count": 4
+          },
+          {
+            "value": "0.00",
+            "count": 3
+          },
+          {
+            "value": "-1000000000",
+            "count": 1
+          },
+          {
+            "value": "-9020100000",
+            "count": 1
+          },
+          {
+            "value": "-10000000000",
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "key": "checkDetailInvoiceType",
+      "category": "附件",
+      "meaning": "是否校验明细发票类型（全 false）",
+      "present": 40,
+      "presentRate": 0.053,
+      "widgets": {
+        "attachments": 40
+      },
+      "kinds": {
+        "boolean": 40
+      },
+      "observed": {
+        "true": 0,
+        "false": 40
+      }
+    },
+    {
+      "key": "detailInvoiceTypes",
+      "category": "附件",
+      "meaning": "允许的明细发票类型（空数组）",
+      "present": 40,
+      "presentRate": 0.053,
+      "widgets": {
+        "attachments": 40
+      },
+      "kinds": {
+        "array": 37,
+        "null": 3
+      },
+      "observed": {
+        "null": 3,
+        "arrayLengths": {
+          "0": 37
+        }
+      }
+    },
+    {
+      "key": "hiddenRate",
+      "category": "文本 / 数字 / 金额 / 日期",
+      "meaning": "隐藏汇率",
+      "present": 40,
+      "presentRate": 0.053,
+      "widgets": {
+        "money": 40
+      },
+      "kinds": {
+        "boolean": 40
+      },
+      "observed": {
+        "true": 1,
+        "false": 39
+      }
+    },
+    {
+      "key": "isShowThousandsSeparator",
+      "category": "文本 / 数字 / 金额 / 日期",
+      "meaning": "显示千分位（全 false）",
+      "present": 40,
+      "presentRate": 0.053,
+      "widgets": {
+        "money": 40
+      },
+      "kinds": {
+        "boolean": 40
+      },
+      "observed": {
+        "true": 0,
+        "false": 40
+      }
+    },
+    {
+      "key": "batchApportionDisabled",
+      "category": "明细表格",
+      "meaning": "是否禁用批量分摊（全 false）",
+      "present": 25,
+      "presentRate": 0.033,
+      "widgets": {
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "boolean": 25
+      },
+      "observed": {
+        "true": 0,
+        "false": 25
+      }
+    },
+    {
+      "key": "feeTypeImportRuleId",
+      "category": "明细表格",
+      "meaning": "费用类型导入规则（DEFAULT_ID）",
+      "present": 25,
+      "presentRate": 0.033,
+      "widgets": {
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "string": 14,
+        "null": 11
+      },
+      "observed": {
+        "null": 11,
+        "distinctStrings": 1,
+        "sampleValues": [
+          {
+            "value": "DEFAULT_ID",
+            "count": 14
+          }
+        ]
+      }
+    },
+    {
+      "key": "isFeeTypeEmpty",
+      "category": "明细表格",
+      "meaning": "是否必须选择费用类型",
+      "present": 25,
+      "presentRate": 0.033,
+      "widgets": {
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "boolean": 25
+      },
+      "observed": {
+        "true": 13,
+        "false": 12
+      }
+    },
+    {
+      "key": "mustAllFeeTypeCurrencyEqual",
+      "category": "明细表格",
+      "meaning": "明细币种是否必须一致",
+      "present": 25,
+      "presentRate": 0.033,
+      "widgets": {
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "boolean": 25
+      },
+      "observed": {
+        "true": 7,
+        "false": 18
+      }
+    },
+    {
+      "key": "orderByType",
+      "category": "明细表格",
+      "meaning": "明细排序方式（INPUT=录入顺序）",
+      "present": 25,
+      "presentRate": 0.033,
+      "widgets": {
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "string": 25
+      },
+      "observed": {
+        "distinctStrings": 1,
+        "sampleValues": [
+          {
+            "value": "INPUT",
+            "count": 25
+          }
+        ]
+      }
+    },
+    {
+      "key": "realtimeCalculateBudget",
+      "category": "明细表格",
+      "meaning": "是否实时计算预算（全 false）",
+      "present": 25,
+      "presentRate": 0.033,
+      "widgets": {
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "boolean": 25
+      },
+      "observed": {
+        "true": 0,
+        "false": 25
+      }
+    },
+    {
+      "key": "requisitionCanBindInvoice",
+      "category": "明细表格",
+      "meaning": "申请单是否可绑定发票（全 false）",
+      "present": 25,
+      "presentRate": 0.033,
+      "widgets": {
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "boolean": 25
+      },
+      "observed": {
+        "true": 0,
+        "false": 25
+      }
+    },
+    {
+      "key": "showDetailNo",
+      "category": "明细表格",
+      "meaning": "是否显示明细序号（全 null）",
+      "present": 25,
+      "presentRate": 0.033,
+      "widgets": {
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "null": 25
+      },
+      "observed": {
+        "null": 25
+      }
+    },
+    {
+      "key": "showType",
+      "category": "明细表格",
+      "meaning": "明细展示样式（LIST）",
+      "present": 25,
+      "presentRate": 0.033,
+      "widgets": {
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "string": 22,
+        "null": 3
+      },
+      "observed": {
+        "null": 3,
+        "distinctStrings": 1,
+        "sampleValues": [
+          {
+            "value": "LIST",
+            "count": 22
+          }
+        ]
+      }
+    },
+    {
+      "key": "showTypeByRole",
+      "category": "明细表格",
+      "meaning": "按角色展示样式（全 null）",
+      "present": 25,
+      "presentRate": 0.033,
+      "widgets": {
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "null": 25
+      },
+      "observed": {
+        "null": 25
+      }
+    },
+    {
+      "key": "showTypeNew",
+      "category": "明细表格",
+      "meaning": "新版明细展示样式（TABLE_P/TABLE、LIST_P/LIST、TABLE2）",
+      "present": 25,
+      "presentRate": 0.033,
+      "widgets": {
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "array": 24,
+        "null": 1
+      },
+      "observed": {
+        "null": 1,
+        "arrayLengths": {
+          "2": 24
+        }
+      }
+    },
+    {
+      "key": "visibility",
+      "category": "显隐与权限",
+      "meaning": "组件级整体可见范围（本数据仅 details，且为 null）",
+      "present": 25,
+      "presentRate": 0.033,
+      "widgets": {
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "null": 25
+      },
+      "observed": {
+        "null": 25
+      }
+    },
+    {
+      "key": "visibleStaffSelection",
+      "category": "显隐与权限",
+      "meaning": "可见人员选择范围（details，null）",
+      "present": 25,
+      "presentRate": 0.033,
+      "widgets": {
+        "details": 14,
+        "requisitionDetails": 11
+      },
+      "kinds": {
+        "null": 25
+      },
+      "observed": {
+        "null": 25
+      }
+    },
+    {
+      "key": "autoFillByFilterDataOnlyOne",
+      "category": "依赖与联动",
+      "meaning": "过滤结果唯一时自动填充",
+      "present": 24,
+      "presentRate": 0.032,
+      "widgets": {
+        "dataLink": 24
+      },
+      "kinds": {
+        "boolean": 24
+      },
+      "observed": {
+        "true": 5,
+        "false": 19
+      }
+    },
+    {
+      "key": "enableExactSearchAllData",
+      "category": "依赖与联动",
+      "meaning": "允许精确搜索全量数据",
+      "present": 24,
+      "presentRate": 0.032,
+      "widgets": {
+        "dataLink": 24
+      },
+      "kinds": {
+        "boolean": 24
+      },
+      "observed": {
+        "true": 3,
+        "false": 21
+      }
+    },
+    {
+      "key": "referenceData",
+      "category": "业务对象 / 公司卡 / 其它",
+      "meaning": "业务对象模板 ID（dataLink 引用）",
+      "present": 24,
+      "presentRate": 0.032,
+      "widgets": {
+        "dataLink": 24
+      },
+      "kinds": {
+        "string": 24
+      },
+      "observed": {
+        "distinctStrings": 7,
+        "sampleValues": [
+          {
+            "value": "af15be9234f71a3703c0",
+            "count": 10
+          },
+          {
+            "value": "fc15be911db53f66d3c0",
+            "count": 8
+          },
+          {
+            "value": "b916a54e6f55a6f3c3c0",
+            "count": 2
+          },
+          {
+            "value": "e816139ba5e1cd4ae3c0",
+            "count": 1
+          },
+          {
+            "value": "e416248e37f157934fc0",
+            "count": 1
+          },
+          {
+            "value": "f115c692626825e38bc0",
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "key": "subTypeId",
+      "category": "依赖与联动",
+      "meaning": "业务对象子类型（全 null）",
+      "present": 24,
+      "presentRate": 0.032,
+      "widgets": {
+        "dataLink": 24
+      },
+      "kinds": {
+        "null": 24
+      },
+      "observed": {
+        "null": 24
+      }
+    },
+    {
+      "key": "onlyEditVisible",
+      "category": "编辑、必填与复制",
+      "meaning": "仅编辑态可见（annotation，全 true）",
+      "present": 19,
+      "presentRate": 0.025,
+      "widgets": {
+        "annotation": 19
+      },
+      "kinds": {
+        "boolean": 19
+      },
+      "observed": {
+        "true": 19,
+        "false": 0
+      }
+    },
+    {
+      "key": "url",
+      "category": "显示与占位",
+      "meaning": "说明链接（annotation）",
+      "present": 19,
+      "presentRate": 0.025,
+      "widgets": {
+        "annotation": 19
+      },
+      "kinds": {
+        "string": 19
+      },
+      "observed": {
+        "emptyString": 18,
+        "distinctStrings": 1,
+        "sampleValues": [
+          {
+            "value": "https://www.hosecloud.com",
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "key": "filterRules",
+      "category": "依赖与联动",
+      "meaning": "过滤规则（payeeInfo 用于限定收款对象类型）",
+      "present": 17,
+      "presentRate": 0.023,
+      "widgets": {
+        "payeeInfo": 17
+      },
+      "kinds": {
+        "array": 9,
+        "null": 8
+      },
+      "observed": {
+        "null": 8,
+        "arrayLengths": {
+          "1": 9
+        }
+      }
+    },
+    {
+      "key": "defaultWorkingTime",
+      "category": "文本 / 数字 / 金额 / 日期",
+      "meaning": "默认工作时间（全 null）",
+      "present": 7,
+      "presentRate": 0.009,
+      "widgets": {
+        "dateRange": 7
+      },
+      "kinds": {
+        "null": 7
+      },
+      "observed": {
+        "null": 7
+      }
+    },
+    {
+      "key": "cityGroupId",
+      "category": "城市",
+      "meaning": "城市组 ID（全 null）",
+      "present": 6,
+      "presentRate": 0.008,
+      "widgets": {
+        "city": 6
+      },
+      "kinds": {
+        "null": 6
+      },
+      "observed": {
+        "null": 6
+      }
+    },
+    {
+      "key": "cityOptions",
+      "category": "城市",
+      "meaning": "城市可选项（全 null）",
+      "present": 6,
+      "presentRate": 0.008,
+      "widgets": {
+        "city": 6
+      },
+      "kinds": {
+        "null": 6
+      },
+      "observed": {
+        "null": 6
+      }
+    },
+    {
+      "key": "hasForbiddenCityGroup",
+      "category": "城市",
+      "meaning": "是否有禁用城市组（全 false）",
+      "present": 6,
+      "presentRate": 0.008,
+      "widgets": {
+        "city": 6
+      },
+      "kinds": {
+        "boolean": 6
+      },
+      "observed": {
+        "true": 0,
+        "false": 6
+      }
+    },
+    {
+      "key": "countRule",
+      "category": "文本 / 数字 / 金额 / 日期",
+      "meaning": "数量规则（null）",
+      "present": 1,
+      "presentRate": 0.001,
+      "widgets": {
+        "number": 1
+      },
+      "kinds": {
+        "null": 1
+      },
+      "observed": {
+        "null": 1
+      }
+    },
+    {
+      "key": "countRuleCheck",
+      "category": "文本 / 数字 / 金额 / 日期",
+      "meaning": "数量规则校验开关",
+      "present": 1,
+      "presentRate": 0.001,
+      "widgets": {
+        "number": 1
+      },
+      "kinds": {
+        "boolean": 1
+      },
+      "observed": {
+        "true": 0,
+        "false": 1
+      }
+    },
+    {
+      "key": "eCardOptionalRange",
+      "category": "业务对象 / 公司卡 / 其它",
+      "meaning": "易商卡可申请卡种范围",
+      "present": 1,
+      "presentRate": 0.001,
+      "widgets": {
+        "corporateExpenseCard": 1
+      },
+      "kinds": {
+        "object": 1
+      },
+      "observed": {
+        "objectKeys": [
+          "domestic",
+          "international"
+        ]
+      }
+    }
+  ]
+}

@@ -6,7 +6,11 @@ import { computed, nextTick, ref, watchEffect } from 'vue';
 import { NadaNode } from '@nada-designer/base-ui';
 import { useDesignerContext, useTableMeta } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
-import { getValueByPath, setValueByPath } from '@nada-designer/utils';
+import {
+  findSchemas,
+  getValueByPath,
+  setValueByPath,
+} from '@nada-designer/utils';
 
 const props = defineProps<{
   schema: ComponentSchema;
@@ -14,6 +18,7 @@ const props = defineProps<{
 const designer = useDesignerContext();
 const pageSchema = designer.pageSchema;
 const revoke = designer.revoke;
+const isControlled = designer.designMode === 'controlled';
 
 const selectedNode = computed(() => {
   return designer.state.selectedNode;
@@ -68,6 +73,8 @@ const componentAttributes = computed(() => {
   return allAttributes;
 });
 
+const modelValue = ref();
+
 /**
  * 设置属性值
  */
@@ -77,6 +84,33 @@ function handleSetValue(
   item: ComponentSchema,
   editData: null | object = selectedNode.value,
 ) {
+  // 受控模式：表单名称唯一校验（根表单名称固定 default，已在属性面板隐藏该项）
+  if (
+    isControlled &&
+    field === 'props.name' &&
+    (editData as ComponentSchema)?.type === 'form'
+  ) {
+    const name = String(value ?? '').trim();
+    const duplicated = name
+      ? findSchemas(
+          pageSchema.schemas,
+          (node) =>
+            node !== editData &&
+            node.type === 'form' &&
+            (node.props?.name ?? 'default') === name,
+          true,
+        )
+      : true;
+
+    if (duplicated) {
+      pluginManager.global.$message.warning(
+        name ? '表单名称已存在' : '表单名称不能为空',
+      );
+      modelValue.value = getValueByPath(editData!, field);
+      return;
+    }
+  }
+
   if (typeof item.onChange === 'function') {
     item.onChange({
       componentAttributes,
@@ -96,8 +130,6 @@ function handleSetValue(
   // 将修改过的组件属性推入撤销操作的栈中
   revoke.push('属性编辑');
 }
-
-const modelValue = ref();
 
 watchEffect(() => {
   modelValue.value = getValueByPath(

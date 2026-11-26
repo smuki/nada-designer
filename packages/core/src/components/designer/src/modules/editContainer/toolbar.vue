@@ -4,11 +4,7 @@ import { computed, ref } from 'vue';
 import { EpTooltip, NadaIcon } from '@nada-designer/base-ui';
 import { useDesignerContext, useStore } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
-import {
-  convertKFormData,
-  deepCompareAndModify,
-  migrateComponentProps,
-} from '@nada-designer/utils';
+import { convertKFormData, migrateComponentProps } from '@nada-designer/utils';
 
 import NadaPreviewJson from './previewJson.vue';
 
@@ -228,13 +224,21 @@ function handleFileSelected(e) {
 /**
  * 导入数据
  */
-function handleImportData(content?: string) {
+async function handleImportData(content?: string) {
   // 导入JSON
   try {
     let schema = JSON.parse(content ?? '');
+
+    // k-form 旧数据转换会丢 modelId，先取出再透传
+    const modelId =
+      typeof schema?.modelId === 'string' ? schema.modelId : undefined;
+
     if (!schema.schemas) {
       // 兼容 处理kform表单数据
       schema = convertKFormData(schema);
+    }
+    if (modelId && !schema.modelId) {
+      schema.modelId = modelId;
     }
 
     // 迁移旧的 canvas mode 数据
@@ -246,17 +250,14 @@ function handleImportData(content?: string) {
       }
     }
 
-    // 调用 deepCompareAndModify 函数比较 pageSchema 和传入的 schema，进行修改
     // 迁移旧的 componentProps 数据
     migrateComponentProps(schema);
-    deepCompareAndModify(pageSchema, schema);
 
-    designer.handleImported(schema);
-
-    // 选中根节点
-    designer.setSelectedNode(pageSchema.schemas[0]);
+    // 受控模式会先校验并加载元数据，失败不应用（规格 §11.3）
+    await designer.importSchema(schema);
   } catch (error) {
     console.error(error);
+    pluginManager.global.$message.error('导入失败：数据格式异常');
   }
 }
 
@@ -282,7 +283,7 @@ function handleSetCanvas(type: string) {
         <EpTooltip :content="action.title">
           <div
             v-if="isShow(action.show)"
-            class="ep-action-item h-90% px-10px flex cursor-pointer items-center text-base"
+            class="ep-action-item h-90% px-10px flex cursor-pointer items-center text-[20px]"
             :class="{ disabled: action.disabled }"
             @click="action.on"
           >
@@ -321,7 +322,7 @@ function handleSetCanvas(type: string) {
         <template v-for="item in deviceOptions" :key="item.key">
           <div
             :title="item.title"
-            class="ep-device-item rounded-$ep-radius flex h-full cursor-pointer items-center px-1 text-base transition-colors"
+            class="ep-device-item rounded-$ep-radius flex h-full cursor-pointer items-center px-1 text-[20px] transition-colors"
             :class="{ checked: item.key === selectedKey }"
             @click="handleSetCanvas(item.key)"
           >

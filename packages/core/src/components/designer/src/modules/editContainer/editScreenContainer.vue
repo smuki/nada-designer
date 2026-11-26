@@ -20,7 +20,7 @@ import { useElementSize, useResizeObserver, watchOnce } from '@vueuse/core';
 
 import Toolbar from './toolbar.vue';
 
-const { pageSchema, props } = useDesignerContext();
+const { pageSchema, props, setSelectedNode } = useDesignerContext();
 
 const editScreenContainerRef = ref<HTMLDivElement | null>(null);
 const draggableElRef = ref<HTMLDivElement | null>(null);
@@ -161,6 +161,24 @@ function setScroll() {
   });
 }
 
+/**
+ * 点击画布空白处：选中页面根节点（属性面板显示页面属性）
+ * @param event 鼠标事件
+ */
+function handleBlankClick(event: MouseEvent) {
+  const target = event.target as HTMLElement | null;
+  if (!target) return;
+  if (
+    target.closest('.ep-node-item') ||
+    target.closest('.ep-selected-widget') ||
+    target.closest('.ep-widget-action-box') ||
+    target.closest('.ep-edit-toolbar')
+  ) {
+    return;
+  }
+  setSelectedNode(undefined);
+}
+
 // 使用 ResizeObserver 监听editScreenContainerRef编辑屏幕容器尺寸变化
 useResizeObserver(editScreenContainerRef, computedScale);
 useResizeObserver(draggableElRef, computedScale);
@@ -225,6 +243,7 @@ function computedScale() {
       class="ep-edit-screen-container flex-1 overflow-auto overflow-y-hidden"
       :class="{ 'cursor-grab': draggableComputed }"
       :draggable="draggableComputed"
+      @click="handleBlankClick"
       @wheel.passive="handleZoom"
       @dragstart="handleElementDragStart($event, draggableComputed)"
       @drag="handleElementDrag($event, draggableComputed)"

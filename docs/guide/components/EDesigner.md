@@ -97,6 +97,13 @@ background: white;
 | hidePreviewConfirm    | 隐藏预览页面`表单数据`按钮                                 | boolean                            | false     | 0.9.26 |
 | showHiddenItems | 控制设计区隐藏组件的是否保持显示状态 | boolean | true | 1.1.0 |
 | canvasPadding | 画布内边距 | number \| string | 16 | 1.1.10 |
+| designMode | 设计模式：`free` 自由（默认）/ `controlled` 受控；实例级，初始化后不可切换 | `'free'` \| `'controlled'` | `'free'` | 1.1.18 |
+| modelId | 业务对象模型 id（主键），受控模式新建页面必填，随页面保存 | string | - | 1.1.18 |
+| businessFieldLoader | 受控模式的业务字段元数据加载器 | `(modelId: string) => Promise<FieldMeta[]>` | - | 1.1.18 |
+
+:::tip 属性更名（v1.1.18）
+原 `businessObject` 属性已更名为 **`modelId`**（值为业务对象模型主键 id）；页面 JSON 顶层字段名同为 `modelId`。
+:::
 
 
 
@@ -105,6 +112,7 @@ background: white;
 | 函数名称 | 说明                                           | 参数 | 回调参数                                                     | 版本   |
 | -------- | ---------------------------------------------- | ---- | ------------------------------------------------------------ | ------ |
 | setData  | 导入 json 数据，继续编辑                       | json | Boolean                                                      | 0.0.36 |
+| setDataAsync | 异步导入 json（受控模式先加载业务对象元数据，失败返回 false 且不应用） | json | `Promise<boolean>` | 1.1.18 |
 | getData  | 获取 json 数据                                 | -    | Object                                                       | 0.0.36 |
 | reset    | 清除表单                                       | -    | Boolean                                                      | 0.0.36 |
 | preview  | 预览组件，与点击设计器头部预览按钮效果一致     | -    | x ​// 设置 name 字段禁用  const fieldStates = [  {    field: 'name',    state: 'DISABLED'  }]​// 当 name 字段的值为 '张三' 时，将 name 字段设为必填并禁用const fieldStates = [  {    field: 'name',    condition: (data) => data.name === '张三',    state: 'DISABLED'  }]javascript | 0.9.15 |

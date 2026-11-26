@@ -1,11 +1,17 @@
 <script lang="ts" setup>
-import type { ComponentSchema } from '@nada-designer/types';
+import type { ComponentSchema, FieldMeta } from '@nada-designer/types';
 
 import { computed, ref } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 
 import { useDesignerContext, usePageManager } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
+import {
+  findSchemaById,
+  findSchemas,
+  getMatchedById,
+  rewriteComponentRefs,
+} from '@nada-designer/utils';
 
 import NadaNodeItem from './nodeItem.vue';
 
@@ -13,11 +19,14 @@ defineOptions({
   name: 'EditNodeItem',
 });
 const props = defineProps<{
+  /** 落点所在列表的父节点；根列表为 undefined */
+  parentSchema?: ComponentSchema;
   schemas: ComponentSchema[];
 }>();
 const emit = defineEmits(['update:schemas']);
 const designer = useDesignerContext();
 const revoke = designer.revoke;
+const pageSchema = designer.pageSchema;
 const pageManager = usePageManager();
 
 const modelSchemas = computed({
@@ -79,10 +88,216 @@ function setHoverNode(event: Event) {
 }
 
 /**
+ * 落点所在的目标列表
+ */
+function getTargetList(): ComponentSchema[] {
+  return props.parentSchema?.children ?? pageSchema.schemas;
+}
+
+/**
+ * 落点作用域：父节点的最近 form 祖先，找不到回退页面根节点
+ */
+function getTargetScopeId(): string | undefined {
+  const rootId = pageSchema.schemas[0]?.id;
+  if (!props.parentSchema?.id) return rootId;
+
+  const path = getMatchedById(pageSchema.schemas, props.parentSchema.id);
+  for (let index = path.length - 1; index >= 0; index -= 1) {
+    if (path[index]?.type === 'form') {
+      return path[index]?.id;
+    }
+  }
+  return rootId;
+}
+
+/**
+ * 通过节点 id 解析作用域 id：最近 form 祖先，找不到回退页面根节点
+ * @param ownerId 父节点 id
+ */
+function resolveScopeIdByOwnerId(ownerId?: string): string | undefined {
+  const rootId = pageSchema.schemas[0]?.id;
+  if (!ownerId) return rootId;
+
+  const path = getMatchedById(pageSchema.schemas, ownerId);
+  for (let index = path.length - 1; index >= 0; index -= 1) {
+    if (path[index]?.type === 'form') {
+      return path[index]?.id;
+    }
+  }
+  return rootId;
+}
+
+/**
+ * 从拖拽容器 DOM 反查作用域 id
+ * @description 列表容器最近的 `.ep-node-item` 即其父节点；根列表回退页面根节点
+ * @param container 列表容器 DOM
+ */
+function scopeIdFromContainer(container: any): string | undefined {
+  const ownerEl = container?.closest?.('.ep-node-item');
+  return resolveScopeIdByOwnerId(ownerEl?.dataset?.nadaId);
+}
+
+/**
+ * 是否为「已有业务字段节点」的跨列表移动
+ * @description 面板拖入时 data 是 FieldMeta（无 id），这里用 id + 元数据存在性区分
+ */
+function isBusinessFieldMove(event: any): boolean {
+  const data = event?.data;
+  return Boolean(
+    data?.id &&
+      data?.field &&
+      designer.businessFields.fieldMap.value.has(data.field),
+  );
+}
+
+/**
+ * 跨 form 拖拽预判：目标作用域已存在同字段时拒绝（规格 §7.4）
+ * @param event Sortable move 事件
+ */
+function handleDragMove(event: any): boolean {
+  if (designer.designMode !== 'controlled') return true;
+  if (!isBusinessFieldMove(event)) return true;
+
+  const draggedId = event?.dragged?.dataset?.nadaId;
+  const sourceScopeId = scopeIdFromContainer(event?.from);
+  const targetScopeId = scopeIdFromContainer(event?.to);
+  if (!draggedId || !targetScopeId || sourceScopeId === targetScopeId) {
+    return true;
+  }
+
+  const draggedNode = findSchemaById(pageSchema.schemas, draggedId);
+  if (!draggedNode?.field) return true;
+
+  const targetScope = findSchemaById(pageSchema.schemas, targetScopeId);
+  const duplicated = findSchemas(
+    targetScope?.children ?? [],
+    (node) =>
+      node.input === true &&
+      node.field === draggedNode.field &&
+      node.id !== draggedId,
+    true,
+  );
+  if (duplicated) {
+    pluginManager.global.$message.warning(
+      `字段「${draggedNode.label ?? draggedNode.field}」在目标表单中已存在`,
+    );
+    return false;
+  }
+  return true;
+}
+
+/**
+ * 业务字段跨 form 移动：重算 id 并改写动作引用（规格 §7.4）
+ * @param event Sortable add 事件
+ */
+function handleBusinessFieldMove(event: any) {
+  const moved = event?.clonedData as ComponentSchema | undefined;
+  const scopeId = getTargetScopeId();
+  if (!moved?.id || !scopeId || !moved.field) return;
+
+  isDragChange.value = false;
+  const oldId = moved.id;
+  const newId = `${scopeId}_${moved.field}`;
+  if (oldId === newId) {
+    // 同作用域内移动：只记录撤销
+    designer.setSelectedNode(moved);
+    revoke.push('移动业务字段', true);
+    return;
+  }
+
+  moved.id = newId;
+  rewriteComponentRefs(pageSchema.schemas, oldId, newId);
+  designer.setSelectedNode(moved);
+  revoke.push('移动业务字段', true);
+}
+
+/**
+ * 业务字段拖入：占位节点已由库插入目标列表，这里就地重建或摘除（规格 D33）
+ * @param event Sortable add 事件
+ */
+function handleBusinessFieldDrop(event: any) {
+  const meta = event.clonedData?.__businessField as FieldMeta | undefined;
+  const list = getTargetList();
+  const index = list.findIndex(
+    (item: any) =>
+      item?.__businessField?.field === meta?.field &&
+      Boolean(item?.__businessField),
+  );
+  if (!meta || index === -1) return;
+
+  isDragChange.value = false;
+  const scopeId = getTargetScopeId();
+  const result: { message?: string; node?: ComponentSchema; ok: boolean } =
+    scopeId
+      ? designer.businessFields.checkField(meta, scopeId)
+      : { message: '未找到业务对象作用域', ok: false };
+
+  if (!result.ok || !result.node) {
+    // 落点校验失败：摘除占位节点，不写撤销记录
+    list.splice(index, 1);
+    if (result.message) {
+      pluginManager.global.$message.warning(result.message);
+    }
+    return;
+  }
+
+  list.splice(index, 1, result.node);
+  designer.setSelectedNode(result.node);
+  revoke.push('插入业务字段', true);
+}
+
+/**
+ * 生成下一个未被占用的表单名称（form_1、form_2…，规格 §8.3）
+ */
+function nextFormName(): string {
+  const used = new Set<string>();
+  findSchemas(pageSchema.schemas, (node) => {
+    if (node.type === 'form') {
+      used.add(node.props?.name ?? 'default');
+    }
+    return false;
+  });
+
+  let index = 1;
+  while (used.has(`form_${index}`)) {
+    index += 1;
+  }
+  return `form_${index}`;
+}
+
+/**
  * 从侧边栏拖入编辑区域，直接记录
  * 拖入也会导致 change 被触发，Add 应该设置 isDrageChange 标识为 false
  */
 function handleDragAdd(event: any) {
+  if (
+    designer.designMode === 'controlled' &&
+    !event.clonedData?.__businessField &&
+    isBusinessFieldMove(event)
+  ) {
+    handleBusinessFieldMove(event);
+    return;
+  }
+
+  if (
+    designer.designMode === 'controlled' &&
+    event.clonedData?.__businessField
+  ) {
+    handleBusinessFieldDrop(event);
+    return;
+  }
+
+  // 受控模式：拖入的 form 自动命名，保证名称唯一
+  if (
+    designer.designMode === 'controlled' &&
+    event.clonedData?.type === 'form'
+  ) {
+    event.clonedData.props = {
+      ...event.clonedData.props,
+      name: nextFormName(),
+    };
+  }
+
   designer.setSelectedNode(event.clonedData);
   isDragChange.value = false;
   // 从组件面板拖入画布时 SortableJS 只在源列表触发 end，画布侧 @end 不会执行，
@@ -120,6 +335,7 @@ function isInline(schema: ComponentSchema) {
     :animation="200"
     group="edit-draggable"
     ghost-class="ep-moveing"
+    :on-move="handleDragMove"
     @mouseover.stop="setHoverNode"
     @change="handleDragChange"
     @add="handleDragAdd"

@@ -17,6 +17,7 @@ import { useResizeObserver } from '@vueuse/core';
 const pageManager = usePageManager();
 const designer = useDesignerContext();
 const designerProps = designer.props;
+const isControlled = designer.designMode === 'controlled';
 const pageSchema = designer.pageSchema;
 const selectorRef = ref<HTMLDivElement | null>(null);
 const hoverWidgetRef = ref<HTMLDivElement | null>(null);
@@ -192,7 +193,7 @@ function setSeletorStyle() {
   } else if (selectorTop < 45) {
     // 判断actionBoxRef位置置于中间
     actionBoxRef.value.style.top = '0px';
-    actionBoxRef.value.style['border-radius'] = '0px 0px 4px 0';
+    actionBoxRef.value.style['border-radius'] = '0px 0px 0px 4px';
     selectorPosition.value = 'center';
   } else {
     // actionBoxRef位置置于顶部
@@ -364,6 +365,7 @@ defineExpose({
       <div class="ep-widget-action-item whitespace-nowrap">
         <!-- {{ designer.state.selectedNode?.type }} -->
         {{
+          designer.state.selectedNode?.label ??
           pluginManager.component.getConfigByType(
             designer.state.selectedNode?.type ?? '',
           )?.defaultSchema.label
@@ -379,6 +381,7 @@ defineExpose({
           <NadaIcon name="icon--nada--upward" />
         </div>
         <div
+          v-if="!isControlled"
           title="复制"
           class="ep-widget-action-item pointer-events-auto"
           @click="designer.handleDuplicate"

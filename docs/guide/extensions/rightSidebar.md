@@ -1,5 +1,9 @@
 # 右侧边栏扩展
 
+:::warning 位置变更（v1.1.18）
+属性 / 样式 / 事件已合并为**左侧单一「属性」面板**（底部页签切换），右侧边栏容器不再渲染；`registerRightSidebar` API 保留以兼容已有注册代码，但当前版本不会显示。
+:::
+
 :::tip 右侧边栏扩展
 `pluginManager` 提供了registerRightSidebar方法扩展右侧边栏功能模块
 :::

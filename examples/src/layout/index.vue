@@ -20,15 +20,15 @@ const { isDark } = useTheme();
       algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
     }"
   >
-    <Layout class="maximize ep-scoped">
+    <Layout class="maximize ep-scoped ep-demo-layout">
       <EHeader />
-      <Layout>
+      <Layout class="ep-demo-body">
         <LayoutSider>
           <div class="ep-demo-menu h-full">
             <EMenu />
           </div>
         </LayoutSider>
-        <LayoutContent>
+        <LayoutContent class="ep-demo-content">
           <Main />
         </LayoutContent>
       </Layout>

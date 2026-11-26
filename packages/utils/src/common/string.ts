@@ -48,3 +48,23 @@ export function getFileNameByUrl(url: string): string {
   const fileName = url.slice(lastSlashIndex + 1);
   return fileName;
 }
+
+/**
+ * 把组件类型中的中划线替换为下划线，用于生成节点 id 前缀
+ * @param type 组件类型，如 color-picker
+ * @returns 归一化后的类型，如 color_picker
+ */
+export function normalizeType(type: string): string {
+  return type.replaceAll('-', '_');
+}
+
+/** id / field 的字符集：中文、字母、数字、下划线，首字符不能是数字 */
+const SCHEMA_NAME_RE = /^[\u4E00-\u9FA5A-Z_][\u4E00-\u9FA5\w]*$/i;
+
+/**
+ * 校验 id / field 是否符合字符集要求
+ * @param name 待校验的标识
+ */
+export function isValidSchemaName(name?: string): boolean {
+  return typeof name === 'string' && SCHEMA_NAME_RE.test(name);
+}
