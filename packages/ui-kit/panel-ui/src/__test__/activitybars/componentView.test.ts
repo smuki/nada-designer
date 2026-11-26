@@ -33,9 +33,15 @@ function mountPanel(options: MockDesignerContextOptions = {}) {
   return { context, message, wrapper };
 }
 
-describe('组件面板 · 受控模式', () => {
-  it('只展示业务字段与布局白名单', () => {
-    const { wrapper } = mountPanel({ designMode: 'controlled' });
+/** 受控模式版式白名单（布局 / 展示 / 动作） */
+const LAYOUT_TYPES = ['card', 'row', 'tabs', 'form', 'button', 'divider', 'text-block'];
+
+/** 白名单外的输入类组件（不允许从面板直接放置） */
+const INPUT_TYPES = ['input', 'number', 'switch', 'select', 'slider'];
+
+describe('组件面板（受控单轨）', () => {
+  it('展示业务字段与版式白名单', () => {
+    const { wrapper } = mountPanel();
     const text = wrapper.text();
 
     expect(text).toContain('业务字段');
@@ -43,26 +49,23 @@ describe('组件面板 · 受控模式', () => {
     expect(text).toContain('销售金额');
     // active:false 的字段不出现
     expect(text).not.toContain('已废弃');
-    // 布局白名单
-    expect(text).toContain('组件-card');
-    expect(text).toContain('组件-row');
-    expect(text).toContain('组件-tabs');
-    expect(text).toContain('组件-form');
+
+    LAYOUT_TYPES.forEach((type) => {
+      expect(text).toContain(`组件-${type}`);
+    });
   });
 
-  it('不展示原始输入组件', () => {
-    const { wrapper } = mountPanel({ designMode: 'controlled' });
+  it('不展示白名单外的输入组件', () => {
+    const { wrapper } = mountPanel();
     const text = wrapper.text();
 
-    expect(text).not.toContain('组件-input');
-    expect(text).not.toContain('组件-number');
-    expect(text).not.toContain('组件-switch');
-    expect(text).not.toContain('组件-select');
+    INPUT_TYPES.forEach((type) => {
+      expect(text).not.toContain(`组件-${type}`);
+    });
   });
 
   it('已放置字段置灰且点击给出提示', async () => {
     const { message, wrapper } = mountPanel({
-      designMode: 'controlled',
       placedFields: ['u_销售单号'],
     });
 
@@ -72,21 +75,5 @@ describe('组件面板 · 受控模式', () => {
 
     await placed[0].trigger('click');
     expect(message.info).toHaveBeenCalled();
-  });
-});
-
-describe('组件面板 · 自由模式', () => {
-  it('展示注册组件、不展示业务字段', () => {
-    const { wrapper } = mountPanel({ designMode: 'free' });
-    const text = wrapper.text();
-
-    expect(text).toContain('组件-number');
-    expect(text).toContain('组件-switch');
-    expect(text).not.toContain('销售单号');
-  });
-
-  it('没有置灰项', () => {
-    const { wrapper } = mountPanel({ designMode: 'free' });
-    expect(wrapper.findAll('.is-placed').length).toBe(0);
   });
 });

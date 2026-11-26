@@ -47,10 +47,14 @@ export function registerMockComponents() {
     { groupName: '表单', type: 'number' },
     { groupName: '表单', type: 'switch' },
     { groupName: '表单', type: 'select' },
+    { groupName: '动作', type: 'button' },
+    { groupName: '展示', type: 'divider' },
+    { groupName: '展示', type: 'text-block' },
     { groupName: '布局', type: 'card' },
     { groupName: '布局', type: 'row' },
     { groupName: '布局', type: 'tabs' },
     { groupName: '表单', type: 'form' },
+    { groupName: '表单', type: 'slider' },
   ];
 
   specs.forEach(({ attribute, groupName, type }) => {

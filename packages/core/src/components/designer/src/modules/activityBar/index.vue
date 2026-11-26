@@ -13,7 +13,6 @@ defineOptions({
   name: 'EActivityBar',
 });
 const designer = useDesignerContext();
-const isControlled = designer.designMode === 'controlled';
 
 /** 布局组件入口（受控 / 自由模式通用，合成图标项） */
 const LAYOUT_ENTRY = {
@@ -29,23 +28,19 @@ const LAYOUT_ENTRY = {
 const activityBars = computed(() => {
   const items = pluginManager.panel.activityBars.value
     .filter((item) => item.visible)
-    .filter((item) => (isControlled ? item.id !== 'component_view' : true))
+    .filter((item) => item.id !== 'component_view')
     .sort((a, b) => {
       return a.sort! - b.sort!;
     });
 
-  items.push(LAYOUT_ENTRY);
-
-  if (isControlled) {
-    items.push({
-      component: null,
-      icon: 'icon--nada--extension-outline',
-      id: 'business_field_view',
-      sort: 100,
-      title: '添加字段',
-      visible: true,
-    } as unknown as ActivitybarModel);
-  }
+  items.push(LAYOUT_ENTRY, {
+    component: null,
+    icon: 'icon--nada--extension-outline',
+    id: 'business_field_view',
+    sort: 100,
+    title: '添加字段',
+    visible: true,
+  } as unknown as ActivitybarModel);
 
   return items.sort((a, b) => {
     return a.sort! - b.sort!;
@@ -68,7 +63,7 @@ const sidebarComponent = shallowRef<any>(
 const showInspector = ref(true);
 
 /** 组件选择弹出框：field 业务字段 / input 输入类 / layout 布局类 */
-const pickerMode = ref<'field' | 'input' | 'layout' | null>(null);
+const pickerMode = ref<'field' | 'layout' | null>(null);
 
 // 选中动作后展示属性面板；同时关闭组件弹出框
 watch(
@@ -95,7 +90,6 @@ const renderedComponent = computed(() => {
  */
 function isItemActive(item: ActivitybarModel, index: number): boolean {
   if (item.id === 'layout_view') return pickerMode.value === 'layout';
-  if (item.id === 'component_view') return pickerMode.value === 'input';
   if (item.id === 'business_field_view') return pickerMode.value === 'field';
   return (
     !showInspector.value &&
@@ -108,12 +102,6 @@ function handleClick(item: ActivitybarModel, index: number) {
   // 布局组件入口
   if (item.id === 'layout_view') {
     pickerMode.value = pickerMode.value === 'layout' ? null : 'layout';
-    return;
-  }
-
-  // 自由模式：输入类组件入口
-  if (item.id === 'component_view') {
-    pickerMode.value = pickerMode.value === 'input' ? null : 'input';
     return;
   }
 
@@ -163,7 +151,6 @@ function handleDocumentMousedown(event: MouseEvent) {
     target.closest('.ep-component-picker') ||
     target.closest(SELECT_POPUP_SELECTOR) ||
     target.closest('[data-activity-id="layout_view"]') ||
-    target.closest('[data-activity-id="component_view"]') ||
     target.closest('[data-activity-id="business_field_view"]')
   ) {
     return;

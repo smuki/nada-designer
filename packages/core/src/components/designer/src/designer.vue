@@ -65,23 +65,7 @@ const epBuilderSlot = pluginManager.component.get('epBuilderSlot');
 
 const previewRef = ref<InstanceType<typeof NadaPreview> | null>(null);
 
-/**
- * 冻结的设计模式：初始化读一次，之后 prop 变化仅告警（规格 §5.2）
- */
-const designMode: 'controlled' | 'free' =
-  props.designMode === 'controlled' ? 'controlled' : 'free';
-
-watch(
-  () => props.designMode,
-  (next) => {
-    const nextMode = next === 'controlled' ? 'controlled' : 'free';
-    if (nextMode !== designMode) {
-      console.warn(
-        `[受控字段] designMode 初始化后不可切换，已忽略 ${String(next)}`,
-      );
-    }
-  },
-);
+const designMode: 'controlled' = 'controlled';
 
 const {
   applyModelId,

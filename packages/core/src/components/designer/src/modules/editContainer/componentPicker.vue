@@ -4,17 +4,17 @@ import type { ComponentSchema, Property } from '@nada-designer/types';
 import { computed, ref, watch, watchEffect } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 
-import { EpCollapse, EpCollapsePanel, NadaIcon } from '@nada-designer/base-ui';
+import { NadaIcon } from '@nada-designer/base-ui';
 import { useDesignerContext } from '@nada-designer/hooks';
 import { pluginManager } from '@nada-designer/manager';
 import {
   findSchemaInfoById,
   generateNewSchema,
+  isControlledComponentType,
   mapPropertyType,
 } from '@nada-designer/utils';
-import { useStorage } from '@vueuse/core';
 
-/** 选择器条目：输入/布局组件用 schema，业务字段用 field */
+/** 选择器条目：版式组件用 schema，业务字段用 property */
 interface PickerItem {
   field?: Property;
   icon: string;
@@ -30,10 +30,10 @@ interface PickerGroup {
 
 const props = withDefaults(
   defineProps<{
-    /** input 输入类组件 / layout 布局类组件 / field 业务字段 */
-    mode?: 'field' | 'input' | 'layout';
+    /** field 业务字段 / layout 版式组件（受控模式只允许这两类） */
+    mode?: 'field' | 'layout';
   }>(),
-  { mode: 'input' },
+  { mode: 'field' },
 );
 
 const emit = defineEmits(['close']);
@@ -46,9 +46,6 @@ const pageSchema = designer.pageSchema;
 const businessFields = designer.businessFields;
 const groups = pluginManager.component.getComponentSchemaGroups();
 
-/** 布局类组件（其余归为输入类） */
-const LAYOUT_TYPES = new Set(['card', 'form', 'row', 'tabs']);
-
 const FIELD_TYPE_LABELS: Record<Property['type'], string> = {
   boolean: '开关',
   date: '日期',
@@ -60,7 +57,6 @@ const FIELD_TYPE_LABELS: Record<Property['type'], string> = {
 };
 
 const keyword = ref('');
-const activeKeys = useStorage('ep-component-view-keys', []);
 const selectedKeys = ref<string[]>([]);
 
 /** 字段类型下拉：全部 + 各分组 */
@@ -84,10 +80,9 @@ const categoryOptions = computed(() => {
 const isFieldMode = computed(() => props.mode === 'field');
 const isLayoutMode = computed(() => props.mode === 'layout');
 
-const pickerTitle = computed(() => {
-  if (isFieldMode.value) return '添加字段';
-  return isLayoutMode.value ? '添加布局组件' : '添加输入组件';
-});
+const pickerTitle = computed(() =>
+  isLayoutMode.value ? '添加版式组件' : '添加字段',
+);
 
 const placedFields = computed(
   () =>
@@ -137,37 +132,27 @@ const fieldGroups = computed<PickerGroup[]>(() => {
   return [...groupMap.entries()].map(([title, items]) => ({ title, items }));
 });
 
-/** 组件分组（按注册表分组；布局模式只保留布局类） */
+/** 版式组件分组（注册表 ∩ 受控白名单） */
 const componentGroups = computed<PickerGroup[]>(() => {
   return groups.value
     .map((group) => ({
       title: group.title,
       items: group.list
-        .filter((item) => {
-          if (!item.label?.includes(keyword.value)) return false;
-          const isLayout = LAYOUT_TYPES.has(item.type);
-          return isLayoutMode.value ? isLayout : !isLayout;
-        })
+        .filter(
+          (item) =>
+            isControlledComponentType(item.type) &&
+            item.label?.includes(keyword.value),
+        )
         .map(toComponentItem),
     }))
     .filter((group) => group.items.length > 0);
 });
 
-/** 实际展示的分组；布局模式平铺（数量少，不分组） */
-const pickerGroups = computed<PickerGroup[]>(() => {
-  if (isFieldMode.value) return fieldGroups.value;
-  if (isLayoutMode.value) {
-    const items = componentGroups.value.flatMap((group) => group.items);
-    return items.length > 0 ? [{ title: '布局', items }] : [];
-  }
-  return componentGroups.value;
-});
-
-/** 布局模式平铺列表 */
+/** 版式组件平铺列表（数量少，不分组） */
 const layoutFlatItems = ref<PickerItem[]>([]);
 watchEffect(() => {
   layoutFlatItems.value = isLayoutMode.value
-    ? (pickerGroups.value[0]?.items ?? [])
+    ? componentGroups.value.flatMap((group) => group.items)
     : [];
 });
 
@@ -180,11 +165,11 @@ watchEffect(() => {
 });
 
 /** 当前是否有可展示条目 */
-const hasItems = computed(() => {
-  if (isLayoutMode.value) return layoutFlatItems.value.length > 0;
-  if (isFieldMode.value) return fieldFlatItems.value.length > 0;
-  return pickerGroups.value.length > 0;
-});
+const hasItems = computed(() =>
+  isFieldMode.value
+    ? fieldFlatItems.value.length > 0
+    : layoutFlatItems.value.length > 0,
+);
 
 /** 按面板顺序排列的已选 key */
 const orderedSelectedKeys = computed(() => {
@@ -193,8 +178,8 @@ const orderedSelectedKeys = computed(() => {
   if (isFieldMode.value) {
     businessFields.properties.value.forEach((meta) => allKeys.push(meta.field));
   } else {
-    groups.value.forEach((group) => {
-      group.list.forEach((item) => allKeys.push(item.type));
+    componentGroups.value.forEach((group) => {
+      group.items.forEach((item) => allKeys.push(item.key));
     });
   }
 
@@ -228,7 +213,7 @@ function toggleItem(item: PickerItem) {
 }
 
 /**
- * 拖拽克隆：业务字段产出落点占位节点，组件产出新节点
+ * 拖拽克隆：业务字段产出落点占位节点，版式组件产出新节点
  * @param item 选择器条目
  */
 function cloneItem(item: PickerItem): ComponentSchema {
@@ -306,7 +291,7 @@ function handleConfirm() {
 
   if (lastNode) {
     designer.setSelectedNode(lastNode);
-    revoke.push(isFieldMode.value ? '插入业务字段' : '插入组件', true);
+    revoke.push(isFieldMode.value ? '插入业务字段' : '插入版式组件', true);
   }
 
   if (failures.length > 0) {
@@ -351,7 +336,7 @@ watch(
       </div>
     </div>
     <div class="ep-component-picker-body">
-      <!-- 布局组件：数量少，平铺不分组 -->
+      <!-- 版式组件：数量少，平铺不分组 -->
       <VueDraggable
         v-if="isLayoutMode"
         v-model="layoutFlatItems"
@@ -379,7 +364,7 @@ watch(
       </VueDraggable>
       <!-- 业务字段：平铺展示（不折叠），按类型下拉筛选 -->
       <VueDraggable
-        v-else-if="isFieldMode"
+        v-else
         v-model="fieldFlatItems"
         :group="{ name: 'edit-draggable', pull: 'clone', put: false }"
         :sort="false"
@@ -407,48 +392,6 @@ watch(
           <span class="ep-component-picker-label">{{ item.label }}</span>
         </div>
       </VueDraggable>
-      <!-- 输入组件：按分组展示 -->
-      <EpCollapse
-        v-else
-        :default-expand-all="!activeKeys.length"
-        v-model="activeKeys"
-      >
-        <EpCollapsePanel
-          v-for="group in pickerGroups"
-          :name="group.title"
-          :title="group.title"
-          :key="group.title"
-        >
-          <VueDraggable
-            v-model="group.items"
-            :group="{ name: 'edit-draggable', pull: 'clone', put: false }"
-            :sort="false"
-            :animation="180"
-            ghost-class="moving"
-            :clone="cloneItem"
-            item-key="key"
-            class="ep-component-picker-grid"
-          >
-            <div
-              v-for="item in group.items"
-              :key="item.key"
-              class="ep-component-picker-item"
-              :class="{
-                disabled: isPlaced(item),
-                selected: isSelected(item.key),
-              }"
-              :title="item.field?.field"
-              @click="toggleItem(item)"
-            >
-              <span class="ep-component-picker-check">
-                {{ isSelected(item.key) ? '✓' : '' }}
-              </span>
-              <NadaIcon :name="item.icon" />
-              <span class="ep-component-picker-label">{{ item.label }}</span>
-            </div>
-          </VueDraggable>
-        </EpCollapsePanel>
-      </EpCollapse>
       <div v-if="!hasItems" class="ep-component-picker-empty">
         没有查询到的{{ isFieldMode ? '字段' : '组件' }}
       </div>

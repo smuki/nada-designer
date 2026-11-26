@@ -10,6 +10,7 @@ import { pluginManager } from '@nada-designer/manager';
 import {
   findSchemaInfoById,
   generateNewSchema,
+  isControlledComponentType,
   mapPropertyType,
 } from '@nada-designer/utils';
 import { useStorage } from '@vueuse/core';
@@ -22,23 +23,9 @@ const groups = pluginManager.component.getComponentSchemaGroups();
 const keyword = ref('');
 const activeKeys = useStorage('ep-component-view-keys', []);
 
-/** 受控模式允许拖入的布局组件白名单（规格 D24） */
-const LAYOUT_WHITELIST = new Set(['card', 'form', 'row', 'tabs']);
-
-const isControlled = designer.designMode === 'controlled';
 const businessFields = designer.businessFields;
 
-/** 自由模式：按注册表分组渲染（现状） */
-const getSchemaTypeList = computed(() => {
-  return groups.value
-    .map((item) => ({
-      ...item,
-      list: item.list.filter((item) => item.label?.includes(keyword.value)),
-    }))
-    .filter((item) => item.list.length > 0);
-});
-
-/** 受控模式：业务字段平铺 + 搜索（v1 不做分组，规格 D43） */
+/** 业务字段平铺 + 搜索（受控模式唯一字段来源） */
 const businessFieldList = computed(() => {
   const properties = businessFields.properties.value;
   if (!keyword.value) return properties;
@@ -79,11 +66,11 @@ function createBusinessPlaceholder(meta: Property): ComponentSchema {
   };
 }
 
-/** 受控模式：布局白名单（用本地 ref 承接拖拽组件，避免直接改注册表数据） */
+/** 版式组件（布局/展示/动作，本地 ref 承接，避免直接改注册表数据） */
 const layoutItems = ref<ComponentSchema[]>([]);
 
 /**
- * 收集受控模式下允许出现的布局组件
+ * 收集受控模式允许放置的版式组件（注册表 ∩ 白名单）
  */
 function collectLayoutItems(): ComponentSchema[] {
   const seen = new Set<string>();
@@ -91,7 +78,7 @@ function collectLayoutItems(): ComponentSchema[] {
 
   groups.value.forEach((group) => {
     group.list.forEach((item) => {
-      if (!LAYOUT_WHITELIST.has(item.type) || seen.has(item.type)) return;
+      if (!isControlledComponentType(item.type) || seen.has(item.type)) return;
       seen.add(item.type);
       list.push(item);
     });
@@ -147,7 +134,7 @@ function handleFieldClick(meta: Property) {
 }
 
 /**
- * 点击添加节点（布局组件走注册表 defaultSchema）
+ * 点击添加版式组件（走注册表 defaultSchema）
  */
 function handleClick(schema: ComponentSchema) {
   const data = findSchemaInfoById(
@@ -173,7 +160,7 @@ function handleClick(schema: ComponentSchema) {
 
   list.splice(index + 1, 0, newSchema);
   designer.setSelectedNode(newSchema);
-  revoke.push('插入组件', true);
+  revoke.push('插入版式组件', true);
 }
 </script>
 <template>
@@ -183,7 +170,7 @@ function handleClick(schema: ComponentSchema) {
       <Input
         v-model="keyword"
         v-model:value="keyword"
-        placeholder="搜索组件"
+        placeholder="搜索字段/版式"
         clearable
         allow-clear
       >
@@ -197,11 +184,8 @@ function handleClick(schema: ComponentSchema) {
     </div>
     <!-- 搜素框 end -->
     <div class="flex flex-1 overflow-auto">
-      <!-- 分类选项 start  -->
       <div class="box-border h-full flex-1 overflow-auto">
-        <!-- 受控模式 start -->
         <EpCollapse
-          v-if="isControlled"
           :default-expand-all="!activeKeys.length"
           v-model="activeKeys"
         >
@@ -238,7 +222,7 @@ function handleClick(schema: ComponentSchema) {
               没有匹配的字段
             </div>
           </EpCollapsePanel>
-          <EpCollapsePanel name="布局" title="布局">
+          <EpCollapsePanel name="版式" title="版式">
             <VueDraggable
               v-model="layoutItems"
               :group="{ name: 'edit-draggable', pull: 'clone', put: false }"
@@ -266,59 +250,14 @@ function handleClick(schema: ComponentSchema) {
                 </div>
               </div>
             </VueDraggable>
-          </EpCollapsePanel>
-        </EpCollapse>
-        <!-- 受控模式 end -->
-
-        <!-- 自由模式（现状） start -->
-        <EpCollapse
-          v-else
-          :default-expand-all="!activeKeys.length"
-          v-model="activeKeys"
-        >
-          <EpCollapsePanel
-            v-for="group in getSchemaTypeList"
-            :name="group.title"
-            :title="group.title"
-            :key="group.title"
-          >
-            <VueDraggable
-              v-model="group.list"
-              :group="{ name: 'edit-draggable', pull: 'clone', put: false }"
-              :sort="false"
-              :animation="180"
-              ghost-class="moving"
-              :clone="generateNewSchema"
-              item-key="id"
-              class="grid grid-cols-[auto_auto] gap-2 px-2 pb-2 pt-1"
+            <div
+              v-if="layoutItems.length === 0"
+              class="pt-4 text-center text-gray-400"
             >
-              <div
-                v-for="item in group.list"
-                :key="item.type"
-                class="ep-component-item flex items-center truncate"
-                @click="handleClick(item)"
-              >
-                <NadaIcon
-                  :name="
-                    pluginManager.component.getConfigByType(item.type).icon ??
-                    ''
-                  "
-                />
-                <div class="ep-component-label w-0 flex-1 truncate">
-                  {{ item.label }}
-                </div>
-              </div>
-            </VueDraggable>
+              没有可用的版式组件
+            </div>
           </EpCollapsePanel>
         </EpCollapse>
-        <!-- 自由模式 end -->
-
-        <div
-          v-show="!isControlled && getSchemaTypeList.length === 0"
-          class="pt-42px text-center text-gray-400"
-        >
-          没有查询到的组件
-        </div>
       </div>
     </div>
   </div>

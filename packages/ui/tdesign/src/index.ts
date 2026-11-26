@@ -16,6 +16,7 @@ import Collapse from './collapse';
 import CollapseItem from './collapse-item';
 import ColorPicker from './color-picker';
 import DatePicker from './date-picker';
+import Divider from './divider';
 import Form from './form';
 import FormItem from './form-item';
 import Input from './input';
@@ -28,6 +29,7 @@ import Slider from './slider';
 import Switch from './switch';
 import TabPane from './tab-pane';
 import Tabs from './tabs';
+import TextBlock from './text-block';
 import Textarea from './textarea';
 import TimePicker from './time-picker';
 import UploadFile from './upload-file';
@@ -66,6 +68,8 @@ export function setupTDesign(
     UploadImage,
     TimePicker,
     Button,
+    Divider,
+    TextBlock,
     Card,
     Row,
     Col,

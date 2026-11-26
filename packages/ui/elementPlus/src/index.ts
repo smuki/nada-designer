@@ -21,6 +21,7 @@ import Collapse from './collapse';
 import CollapseItem from './collapse-item';
 import ColorPicker from './color-picker';
 import DatePicker from './date-picker';
+import Divider from './divider';
 import Form from './form';
 import FormItem from './formItem';
 import Input from './input';
@@ -33,6 +34,7 @@ import Slider from './slider';
 import Switch from './switch';
 import TabsPane from './tab-pane';
 import Tabs from './tabs';
+import TextBlock from './text-block';
 import Textarea from './textarea';
 import UploadFile from './upload-file';
 import UploadImage from './upload-image';
@@ -65,6 +67,8 @@ export function setupElementPlus(
     UploadFile,
     UploadImage,
     Button,
+    Divider,
+    TextBlock,
     Card,
     Row,
     Col,
