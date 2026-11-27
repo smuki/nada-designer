@@ -88,3 +88,24 @@
   gap: 8px;
   justify-content: flex-end;
 }
+
+// 设计态画布：每个节点外层都有 .ep-node-item 包裹，TDesign 按 parentElement 判断
+// “最后一个表单项”，导致每个字段都被判定为 last（margin: 0），字段间距全部丢失。
+// 这里在设计态恢复默认表单项间距（仅在最后一个节点取消底部间距）。
+.ep-designer-main .ep-draggable-range > .ep-node-item > .t-form__item {
+  margin-bottom: var(--td-comp-margin-xxl, 24px);
+}
+
+.ep-designer-main
+  .ep-draggable-range
+  > .ep-node-item:last-child
+  > .t-form__item {
+  margin-bottom: 0;
+}
+
+// 对齐其它 UI 适配包：TDesign 标签默认 padding-right 为 24px（--td-comp-paddingLR-xl），
+// 而 element-plus / naive-ui 为 12px（antd 为 0 + 冒号），导致同一份 schema 下
+// 标签文字右边缘位置不一致。这里统一为 12px，与 element-plus / naive-ui 对齐。
+.t-form .t-form__label {
+  padding-right: 12px;
+}
