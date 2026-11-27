@@ -1,4 +1,4 @@
-> **历史规格（2.0 起）**：产品已删除自由模式，designMode 与 isControlled 分支均已移除；当前实现见 specs/controlled-only.md。
+> **历史规格（1.1.19 起）**：产品已删除自由模式，designMode 与 isControlled 分支均已移除；当前实现见 specs/controlled-only.md。
 
 # 受控字段模式 · 一页摘要
 
